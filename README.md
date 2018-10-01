@@ -1,5 +1,7 @@
 # apiron
 
+[![Documentation Status](https://readthedocs.org/projects/apiron/badge/?version=latest)](https://apiron.readthedocs.io/en/latest/?badge=latest)
+
 `apiron` helps you cook a tasty client for RESTful APIs. Just don't wash it with SOAP.
 
 <img src="https://github.com/ithaka/apiron/raw/master/docs/_static/cast-iron-skillet.png" alt="Pie in a cast iron skillet" width="200">
