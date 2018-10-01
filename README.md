@@ -2,7 +2,7 @@
 
 `apiron` helps you cook a tasty client for RESTful APIs. Just don't wash it with SOAP.
 
-<img src="docs/_static/cast-iron-skillet.png" alt="Pie in a cast iron skillet" width="200">
+<img src="https://github.com/ithaka/apiron/raw/master/docs/_static/cast-iron-skillet.png" alt="Pie in a cast iron skillet" width="200">
 
 Gathering data from multiple services has become a ubiquitous task for web application developers.
 The complexity can grow quickly:
@@ -55,18 +55,18 @@ response = ServiceCaller.call(
 )  # {"description": "hub helps you win at git.", ...}
 ```
 
-To learn more about building clients, head over to [the docs](docs/).
+To learn more about building clients, head over to [the docs](https://github.com/ithaka/apiron/raw/master/docs).
 
 
 ## Contributing
 
 We are happy to consider contributions via pull request,
 especially if they address an existing bug or vulnerability.
-Please read our [contribution guidelines](.github/CONTRIBUTING.md) before getting started.
+Please read our [contribution guidelines](https://github.com/ithaka/apiron/raw/master/.github/CONTRIBUTING.md) before getting started.
 
 ## License
 
 This package is available under the MIT license.
-For more information, [view the full license and copyright notice](LICENSE).
+For more information, [view the full license and copyright notice](https://github.com/ithaka/apiron/raw/master/LICENSE).
 
 Copyright 2018 Ithaka Harbors, Inc.
