@@ -1,0 +1,15 @@
+language: python
+python:
+  - "3.4"
+  - "3.5"
+  - "3.6"
+script:
+  - coverage run -m unittest discover
+  - coverage report
+install:
+  - pip install -r dev-requirements.txt
+notifications:
+    slack:
+      rooms:
+        - secure: "igX7iqAUBuPq7C+8zjHu54BypPCZOdHjYliAoyoUaU8LXAsrPhMPmybEsVhG7TkZxFQXtO5A5JFOH/LmLZy4F+xzveG1u4tUvA7+h1fWtDwuadMLi5uCofoYltk8EhgZHTRHp1nFUUTPbml6OmVeynfJbxd3RRPKqYT7zktgW6EFFJZAM27TwyhY+Pm0QUfEqEvK2I8pZTpj2BQqt9trhxy5v5Yba0/kEVL8puX2BPTka2FZtBv9ewBRYNIzJnj+kLaAh479CeYco+jRcz1gKjMWKufVwkASyNEwACns63ZtbIsA8Vc1JgDozxXFL+Cjpj/K6ApDklKQwvCNkLpflWxCKb4IuLS9MmLaFTEyvzt1LJ8vIJpRtVYh2k8JY93fi3L9hs+mlllnPywU8l+qOi+JSoMUERGoXTDLxCxZg4Xj4oaTKETN9t06MfXi/vkKjut7jeld6zJCrg5n121qV7LQID8JCFQhQgeowOr9G+GjMJ+r4fAVOG7pLOSW3a+tOoVY/PqkHsH62ZmCrZ83oO+tZI4hQemtTkD0uc82M8bq4GVmv3FewpxuHVhNAKfou3BbxgraUsixhbT7v5qSKyy/eL0KltgXearDDVf9mw0WnOHlmRYh++iwnR47ufElOZMKD8GJTBQMsIN+TVNrG8xmY5SYZh/du9jBUIiNb/E="
+      on_success: change
