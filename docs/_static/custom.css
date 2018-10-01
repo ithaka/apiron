@@ -1,0 +1,18 @@
+div.related {
+    padding: 20px;
+    font-size: inherit;
+    width: inherit;
+    background: #e8e8e8;
+}
+
+div.sphinxsidebarwrapper p.logo {
+    text-align: left;
+    margin-bottom: 32px;
+}
+
+blockquote {
+    margin: 0 !important;
+    padding: 1rem 0 1rem 1rem !important;
+    border-left: 5px solid lightgray;
+    color: gray;
+}

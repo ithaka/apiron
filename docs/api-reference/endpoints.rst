@@ -1,0 +1,5 @@
+#########
+Endpoints
+#########
+
+.. automodule:: apiron.endpoint

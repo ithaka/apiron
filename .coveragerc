@@ -1,0 +1,10 @@
+[run]
+branch = True
+source = .
+omit =
+    */tests/*
+    setup.py
+
+[report]
+show_missing = True
+skip_covered = True

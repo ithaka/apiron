@@ -1,0 +1,5 @@
+include requirements.txt
+include README.md
+include apiron/VERSION
+include LICENSE
+recursive-include *.py
