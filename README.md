@@ -58,7 +58,7 @@ response = ServiceCaller.call(
 )  # {"description": "hub helps you win at git.", ...}
 ```
 
-To learn more about building clients, head over to [the docs](https://github.com/ithaka/apiron/tree/master/docs).
+To learn more about building clients, head over to [the docs](https://apiron.readthedocs.io).
 
 
 ## Contributing
