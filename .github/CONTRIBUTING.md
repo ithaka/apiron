@@ -35,7 +35,7 @@ To test `apiron`, check out the repository and:
 ```
 $ cd /path/to/apiron/
 $ pyenv virtualenv 3.7.0 apiron  # pick your favorite virtual environment tool
-$ pyenv local apiron  # activate your virtual environment
+$ pyenv activate apiron  # activate your virtual environment
 (apiron) $ pip install -r dev-requirements.txt
-(apiron) $ coverage erase && coverage run -m unittest discover && coverage report
+(apiron) $ pytest --cov=apiron
 ```
