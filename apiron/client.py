@@ -7,8 +7,7 @@ import requests
 from requests import adapters
 from requests.packages.urllib3.util import retry
 
-from apiron.exceptions import NoHostsAvailableException, UnfulfilledParameterException
-from apiron.service.discoverable import DiscoverableService
+from apiron.exceptions import NoHostsAvailableException
 
 LOGGER = logging.getLogger(__name__)
 
@@ -130,6 +129,8 @@ class ServiceCaller:
             The service that hosts the endpoint being called
         :param Endpoint endpoint:
             The endpoint being called
+        :param str method:
+            The HTTP method to use for the call
         :param dict path_kwargs:
             Arguments to be formatted into the ``endpoint`` argument's ``path`` attribute
             (default ``None``)
