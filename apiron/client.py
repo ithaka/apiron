@@ -36,6 +36,13 @@ class ServiceCaller:
     """
 
     @staticmethod
+    def choose_response_format(endpoint, response, raw=False):
+        if raw:
+            return response
+        else:
+            return endpoint.format_response(response)
+
+    @staticmethod
     def get_adapted_session(adapter):
         """
         Mounts an adapter capable of communication over HTTP or HTTPS to the supplied session.
@@ -123,6 +130,7 @@ class ServiceCaller:
         retry_spec=DEFAULT_RETRY,
         timeout_spec=DEFAULT_TIMEOUT,
         logger=None,
+        return_raw_response=False,
     ):
         """
         :param Service service:
@@ -214,4 +222,4 @@ class ServiceCaller:
 
         response.raise_for_status()
 
-        return endpoint.format_response(response)
+        return cls.choose_response_format(endpoint, response, return_raw_response)

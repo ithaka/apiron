@@ -5,6 +5,31 @@ from apiron.client import ServiceCaller
 from apiron.exceptions import NoHostsAvailableException
 
 class ClientTestCase(unittest.TestCase):
+    def test_choose_response_format_returns_formatted_response_by_default(self):
+        response = mock.Mock()
+        endpoint = mock.Mock()
+        endpoint.format_response.return_value = 'formatted'
+
+        self.assertEqual(
+            'formatted',
+            ServiceCaller.choose_response_format(
+                endpoint,
+                response,
+            )
+        )
+
+    def test_choose_response_format_returns_raw_response_when_requested(self):
+        response = mock.Mock()
+        endpoint = mock.Mock()
+        self.assertEqual(
+            response,
+            ServiceCaller.choose_response_format(
+                endpoint,
+                response,
+                raw=True,
+            )
+        )
+
     @mock.patch('requests.sessions.Session', autospec=True)
     def test_get_adapted_session(self, mock_session):
         adapter = mock.Mock()
