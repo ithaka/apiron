@@ -37,6 +37,20 @@ class ServiceCaller:
 
     @staticmethod
     def choose_response_format(endpoint, response, raw=False):
+        """
+        Determines whether to return the raw response object or one of its formatted derivatives.
+
+        :param apiron.endpoint.Endpoint endpoint:
+            The endpoint the response is from
+        :param requests.Response response:
+            The raw response object from a sent request
+        :param bool raw:
+            Whether to return the raw response object or not.
+            If ``False``, returns the formatted response as determined by ``endpoint``'s :func:`format_response()` method.
+            (Default ``False``)
+        :return:
+            The raw response or its formatted derivative.
+        """
         if raw:
             return response
         else:
@@ -47,10 +61,12 @@ class ServiceCaller:
         """
         Mounts an adapter capable of communication over HTTP or HTTPS to the supplied session.
 
-        :param adapter:
-            A :class:`requests.adapters.HTTPAdapter` instance
+        :param requests.adapters.HTTPAdapter adapter:
+            An adapter instance to apply to the session
         :return:
-            The adapted :class:`requests.Session` instance
+            The adapted session
+        :rtype:
+            requests.Session
         """
         session = requests.Session()
         session.mount('http://', adapter)
