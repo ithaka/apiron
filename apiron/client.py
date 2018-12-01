@@ -86,6 +86,7 @@ class ServiceCaller:
         data=None,
         headers=None,
         cookies=None,
+        auth=None,
     ):
         host = cls.choose_host(service=service)
 
@@ -104,6 +105,7 @@ class ServiceCaller:
             data=data,
             headers=headers,
             cookies=cookies,
+            auth=auth,
         )
 
         return session.prepare_request(request)
@@ -120,6 +122,7 @@ class ServiceCaller:
         data=None,
         headers=None,
         cookies=None,
+        auth=None,
         retry_spec=DEFAULT_RETRY,
         timeout_spec=DEFAULT_TIMEOUT,
         logger=None,
@@ -153,6 +156,8 @@ class ServiceCaller:
         :param dict cookies:
             Cookies to send to the endpoint
             (default ``None``)
+        :param auth:
+            An object suitable for the :class:`requests.Request` object's ``auth`` argument
         :param urllib3.util.retry.Retry retry_spec:
             (optional)
             An override of the retry behavior for this call.
@@ -190,6 +195,7 @@ class ServiceCaller:
             data=data,
             headers=headers,
             cookies=cookies,
+            auth=auth,
         )
 
         logger.info('{method} {url}'.format(
