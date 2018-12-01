@@ -38,7 +38,7 @@ class ServiceCaller:
     @staticmethod
     def choose_response_format(endpoint, response, raw=False):
         """
-        Determines whether to return the raw response object or one of its formatted derivatives.
+        Determine whether to return the raw response object or one of its formatted derivatives.
 
         :param apiron.endpoint.Endpoint endpoint:
             The endpoint the response is from
