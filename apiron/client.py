@@ -7,8 +7,7 @@ import requests
 from requests import adapters
 from requests.packages.urllib3.util import retry
 
-from apiron.exceptions import NoHostsAvailableException, UnfulfilledParameterException
-from apiron.service.discoverable import DiscoverableService
+from apiron.exceptions import NoHostsAvailableException
 
 LOGGER = logging.getLogger(__name__)
 
@@ -87,6 +86,7 @@ class ServiceCaller:
         data=None,
         headers=None,
         cookies=None,
+        auth=None,
     ):
         host = cls.choose_host(service=service)
 
@@ -105,6 +105,7 @@ class ServiceCaller:
             data=data,
             headers=headers,
             cookies=cookies,
+            auth=auth,
         )
 
         return session.prepare_request(request)
@@ -121,6 +122,8 @@ class ServiceCaller:
         data=None,
         headers=None,
         cookies=None,
+        auth=None,
+        encoding=None,
         retry_spec=DEFAULT_RETRY,
         timeout_spec=DEFAULT_TIMEOUT,
         logger=None,
@@ -130,6 +133,8 @@ class ServiceCaller:
             The service that hosts the endpoint being called
         :param Endpoint endpoint:
             The endpoint being called
+        :param str method:
+            The HTTP method to use for the call
         :param dict path_kwargs:
             Arguments to be formatted into the ``endpoint`` argument's ``path`` attribute
             (default ``None``)
@@ -151,6 +156,12 @@ class ServiceCaller:
             (default ``None``)
         :param dict cookies:
             Cookies to send to the endpoint
+            (default ``None``)
+        :param auth:
+            An object suitable for the :class:`requests.Request` object's ``auth`` argument
+        :param str encoding:
+            The codec to use when decoding the response.
+            Default behavior is to have ``requests`` guess the codec.
             (default ``None``)
         :param urllib3.util.retry.Retry retry_spec:
             (optional)
@@ -189,6 +200,7 @@ class ServiceCaller:
             data=data,
             headers=headers,
             cookies=cookies,
+            auth=auth,
         )
 
         logger.info('{method} {url}'.format(
@@ -212,5 +224,8 @@ class ServiceCaller:
             session.close()
 
         response.raise_for_status()
+
+        if encoding:
+            response.encoding = encoding
 
         return endpoint.format_response(response)

@@ -47,6 +47,7 @@ class ClientTestCase(unittest.TestCase):
         data = 'I am a data'
         headers = {'Accept': 'stuff'}
         cookies = {'chocolate-chip': 'yes'}
+        auth = mock.Mock()
 
         mock_get_required_headers.return_value = {'header': 'value'}
         expected_headers = {}
@@ -63,6 +64,7 @@ class ClientTestCase(unittest.TestCase):
                 data=data,
                 headers=headers,
                 cookies=cookies,
+                auth=auth,
             )
 
             mock_request_constructor.assert_called_once_with(
@@ -72,6 +74,7 @@ class ClientTestCase(unittest.TestCase):
                 cookies=cookies,
                 params=params,
                 data=data,
+                auth=auth,
             )
 
             self.assertEqual(1, mock_prepare_request.call_count)
@@ -186,6 +189,32 @@ class ClientTestCase(unittest.TestCase):
 
         self.assertFalse(mock_get_adapted_session.called)
         self.assertFalse(session.close.called)
+
+    def test_call_with_explicit_encoding(self):
+        service = mock.Mock()
+        service.get_hosts.return_value = ['http://host1.biz']
+        service.required_headers = {}
+
+        endpoint = mock.Mock()
+        endpoint.required_headers = {}
+        endpoint.get_formatted_path.return_value = '/foo/'
+
+        mock_logger = mock.Mock()
+        mock_response = mock.Mock()
+        mock_response.history = []
+
+        session = mock.Mock()
+        session.send.return_value = mock_response
+
+        ServiceCaller.call(
+            service,
+            endpoint,
+            session=session,
+            logger=mock_logger,
+            encoding='FAKE-CODEC'
+        )
+
+        self.assertEqual('FAKE-CODEC', mock_response.encoding)
 
     def test_build_request_object_raises_no_host_exception(self):
         service = mock.Mock()
