@@ -145,8 +145,8 @@ class JsonEndpoint(Endpoint):
     An endpoint that returns :mimetype:`application/json`
     """
 
-    def __init__(self, *args, path='/', default_method='GET', default_params=None, required_params=None, preserve_order=False):
-        super().__init__(path=path, default_method=default_method, default_params=default_params, required_params=required_params)
+    def __init__(self, *args, path='/', default_method='GET', default_params=None, required_params=None, check_for_trailing_slash=None, preserve_order=False):
+        super().__init__(path=path, default_method=default_method, default_params=default_params, required_params=required_params, check_for_trailing_slash=check_for_trailing_slash)
         self.preserve_order = preserve_order
 
     def format_response(self, response):
