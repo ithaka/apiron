@@ -123,6 +123,7 @@ class ServiceCaller:
         headers=None,
         cookies=None,
         auth=None,
+        encoding=None,
         retry_spec=DEFAULT_RETRY,
         timeout_spec=DEFAULT_TIMEOUT,
         logger=None,
@@ -158,6 +159,10 @@ class ServiceCaller:
             (default ``None``)
         :param auth:
             An object suitable for the :class:`requests.Request` object's ``auth`` argument
+        :param str encoding:
+            The codec to use when decoding the response.
+            Default behavior is to have ``requests`` guess the codec.
+            (default ``None``)
         :param urllib3.util.retry.Retry retry_spec:
             (optional)
             An override of the retry behavior for this call.
@@ -219,5 +224,8 @@ class ServiceCaller:
             session.close()
 
         response.raise_for_status()
+
+        if encoding:
+            response.encoding = encoding
 
         return endpoint.format_response(response)
