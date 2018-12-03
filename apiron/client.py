@@ -86,6 +86,7 @@ class ServiceCaller:
         data=None,
         headers=None,
         cookies=None,
+        auth=None,
     ):
         host = cls.choose_host(service=service)
 
@@ -104,6 +105,7 @@ class ServiceCaller:
             data=data,
             headers=headers,
             cookies=cookies,
+            auth=auth,
         )
 
         return session.prepare_request(request)
@@ -120,6 +122,7 @@ class ServiceCaller:
         data=None,
         headers=None,
         cookies=None,
+        auth=None,
         encoding=None,
         retry_spec=DEFAULT_RETRY,
         timeout_spec=DEFAULT_TIMEOUT,
@@ -154,6 +157,8 @@ class ServiceCaller:
         :param dict cookies:
             Cookies to send to the endpoint
             (default ``None``)
+        :param auth:
+            An object suitable for the :class:`requests.Request` object's ``auth`` argument
         :param str encoding:
             The codec to use when decoding the response.
             Default behavior is to have ``requests`` guess the codec.
@@ -195,6 +200,7 @@ class ServiceCaller:
             data=data,
             headers=headers,
             cookies=cookies,
+            auth=auth,
         )
 
         logger.info('{method} {url}'.format(

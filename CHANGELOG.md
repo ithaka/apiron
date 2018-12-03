@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Exposed ability to explicitly set the response encoding
+- Expose pass-through `auth` argument to `requests`
 
 ### Changed
 - Moved all tests to a top-level `tests` package and switched to using the `pytest` runner
