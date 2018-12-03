@@ -47,6 +47,7 @@ class ClientTestCase(unittest.TestCase):
         data = 'I am a data'
         headers = {'Accept': 'stuff'}
         cookies = {'chocolate-chip': 'yes'}
+        auth = mock.Mock()
 
         mock_get_required_headers.return_value = {'header': 'value'}
         expected_headers = {}
@@ -63,6 +64,7 @@ class ClientTestCase(unittest.TestCase):
                 data=data,
                 headers=headers,
                 cookies=cookies,
+                auth=auth,
             )
 
             mock_request_constructor.assert_called_once_with(
@@ -72,6 +74,7 @@ class ClientTestCase(unittest.TestCase):
                 cookies=cookies,
                 params=params,
                 data=data,
+                auth=auth,
             )
 
             self.assertEqual(1, mock_prepare_request.call_count)
