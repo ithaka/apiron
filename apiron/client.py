@@ -93,6 +93,10 @@ class ServiceCaller:
         path_kwargs = path_kwargs or {}
         path = endpoint.get_formatted_path(**path_kwargs)
 
+        if service.smart_urljoin:
+            host = host if host.endswith('/') else '/'.join((host, ''))
+            path = path.lstrip('/')
+
         merged_params = endpoint.get_merged_params(params)
 
         headers = headers or {}

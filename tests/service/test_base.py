@@ -19,3 +19,6 @@ class ServiceTestCase(unittest.TestCase):
 
     def test_required_hosts_returns_dictionary(self):
         self.assertDictEqual({}, self.service.required_headers)
+
+    def test_smart_urljoin(self):
+        self.assertTrue(self.service.smart_urljoin)

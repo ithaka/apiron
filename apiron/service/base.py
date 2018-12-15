@@ -29,6 +29,21 @@ class Service:
         """
         return {}
 
+    @property
+    def smart_urljoin(self):
+        """
+        Enable or disable intuitive pre-processing of domain and path.
+
+        Adds trailing slash to domain and removes leading slashes from paths
+        before passing values to :func:`urllib.parse.urljoin`
+
+        :return:
+            True (default) or False
+        :rtype:
+            bool
+        """
+        return True
+
     def __str__(self):
         return self.domain
 
