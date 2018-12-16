@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `check_for_trailing_slash` behavior can now be used on `JsonEndpoint`s
 
 ### Changed
-- Service domains and endpoint paths were previously joined per IETF RCF 1808, which has surprising edge cases.
+- Service domains and endpoint paths were previously joined per [IETF RCF 1808](https://tools.ietf.org/html/rfc1808.html),
+  which has surprising edge cases.
   These are now always joined by appending the endpoint path;
   the previous behavior can be achieved with multiple services or endpoints as needed.
 
