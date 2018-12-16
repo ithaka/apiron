@@ -1,6 +1,8 @@
 import unittest
 from unittest import mock
 
+import pytest
+
 from apiron.client import ServiceCaller
 from apiron.exceptions import NoHostsAvailableException
 
@@ -216,58 +218,6 @@ class ClientTestCase(unittest.TestCase):
 
         self.assertEqual('FAKE-CODEC', mock_response.encoding)
 
-    @mock.patch('apiron.client.requests.Request')
-    def test_build_url_with_non_root_host(self, mock_request_constructor):
-        def _try_multiple_joins(domain, path, smart, url):
-            service = mock.Mock()
-            service.get_hosts.return_value = [domain]
-            service.smart_urljoin = smart
-            service.required_headers = {}
-
-            endpoint = mock.Mock()
-            endpoint.get_merged_params.return_value = {}
-            endpoint.default_method = 'GET'
-            endpoint.required_headers = {}
-            endpoint.get_formatted_path.return_value = path
-
-            session = mock.Mock()
-            with mock.patch.object(session, 'prepare_request') as mock_prepare_request:
-                ServiceCaller.build_request_object(
-                    session,
-                    service,
-                    endpoint,
-                    path_kwargs=None,
-                    params={},
-                    data=None,
-                    headers=None,
-                    cookies=None,
-                    auth=None,
-                )
-
-                mock_request_constructor.assert_called_with(
-                    url=url,
-                    method=endpoint.default_method,
-                    headers={},
-                    params={},
-                    cookies=None,
-                    data=None,
-                    auth=None
-                )
-
-        non_root_tests = [
-                            ('http://biz.com/extra/', '/foo/', True, 'http://biz.com/extra/foo/'),
-                            ('http://biz.com/extra/', 'foo/', True, 'http://biz.com/extra/foo/'),
-                            ('http://biz.com/extra', '/foo/', True, 'http://biz.com/extra/foo/'),
-                            ('http://biz.com/extra', 'foo/', True, 'http://biz.com/extra/foo/'),
-                            ('http://biz.com/extra/', '/foo/', False, 'http://biz.com/foo/'),
-                            ('http://biz.com/extra/', 'foo/', False, 'http://biz.com/extra/foo/'),
-                            ('http://biz.com/extra', '/foo/', False, 'http://biz.com/foo/'),
-                            ('http://biz.com/extra', 'foo/', False, 'http://biz.com/foo/'),
-                        ]
-
-        for test in non_root_tests:
-            _try_multiple_joins(*test)
-
     def test_build_request_object_raises_no_host_exception(self):
         service = mock.Mock()
         service.get_hosts.return_value = []
@@ -286,3 +236,16 @@ class ClientTestCase(unittest.TestCase):
         service.get_hosts.return_value = []
         with self.assertRaises(NoHostsAvailableException):
             ServiceCaller.choose_host(service)
+
+@pytest.mark.parametrize('host,path,url', [
+    ('http://biz.com', '/endpoint', 'http://biz.com/endpoint'),
+    ('http://biz.com/', 'endpoint', 'http://biz.com/endpoint'),
+    ('http://biz.com/', '/endpoint', 'http://biz.com/endpoint'),
+    ('http://biz.com', 'endpoint', 'http://biz.com/endpoint'),
+    ('http://biz.com/v2', '/endpoint', 'http://biz.com/v2/endpoint'),
+    ('http://biz.com/v2/', 'endpoint', 'http://biz.com/v2/endpoint'),
+    ('http://biz.com/v2/', '/endpoint', 'http://biz.com/v2/endpoint'),
+    ('http://biz.com/v2', 'endpoint', 'http://biz.com/v2/endpoint'),
+])
+def test_build_url(host, path, url):
+    assert url == ServiceCaller.build_url(host, path)
