@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Added
+- The `check_for_trailing_slash` behavior can now be used on `JsonEndpoint`s
+
+### Changed
+- Service domains and endpoint paths were previously joined per IETF RCF 1808, which has surprising edge cases.
+  These are now always joined by appending the endpoint path;
+  the previous behavior can be achieved with multiple services or endpoints as needed.
+
 ## [1.1.0] - 2018-12-03
 ### Added
 - Exposed ability to explicitly set the response encoding
