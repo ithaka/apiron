@@ -36,6 +36,27 @@ class ServiceCaller:
     """
 
     @staticmethod
+    def build_url(host, path):
+        """
+        Builds a valid URL from a host and path which may or may not have slashes in the proper place.
+        Does not conform to `IETF RFC 1808 <https://tools.ietf.org/html/rfc1808.html>`_ but instead joins the host and path as given.
+        Does not append any additional slashes to the final URL; just joins the host and path properly.
+
+        :param str host:
+            An HTTP host like ``'https://awesome-api.com/v2'``
+        :param str path:
+            The path to an endpoint on the host like ``'/some-resource/'``
+        :return:
+            The properly-joined URL of host and path, e.g. ``'https://awesome-api.com/v2/some-resource/'``
+        :rtype:
+            str
+        """
+        host += '/' if not host.endswith('/') else ''
+        path = path.lstrip('/')
+
+        return parse.urljoin(host, path)
+
+    @staticmethod
     def get_adapted_session(adapter):
         """
         Mounts an adapter capable of communication over HTTP or HTTPS to the supplied session.
@@ -100,7 +121,7 @@ class ServiceCaller:
 
         request = requests.Request(
             method=method or endpoint.default_method,
-            url=parse.urljoin(host, path),
+            url=cls.build_url(host, path),
             params=merged_params,
             data=data,
             headers=headers,

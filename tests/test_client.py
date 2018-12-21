@@ -1,6 +1,8 @@
 import unittest
 from unittest import mock
 
+import pytest
+
 from apiron.client import ServiceCaller
 from apiron.exceptions import NoHostsAvailableException
 
@@ -234,3 +236,16 @@ class ClientTestCase(unittest.TestCase):
         service.get_hosts.return_value = []
         with self.assertRaises(NoHostsAvailableException):
             ServiceCaller.choose_host(service)
+
+@pytest.mark.parametrize('host,path,url', [
+    ('http://biz.com', '/endpoint', 'http://biz.com/endpoint'),
+    ('http://biz.com/', 'endpoint', 'http://biz.com/endpoint'),
+    ('http://biz.com/', '/endpoint', 'http://biz.com/endpoint'),
+    ('http://biz.com', 'endpoint', 'http://biz.com/endpoint'),
+    ('http://biz.com/v2', '/endpoint', 'http://biz.com/v2/endpoint'),
+    ('http://biz.com/v2/', 'endpoint', 'http://biz.com/v2/endpoint'),
+    ('http://biz.com/v2/', '/endpoint', 'http://biz.com/v2/endpoint'),
+    ('http://biz.com/v2', 'endpoint', 'http://biz.com/v2/endpoint'),
+])
+def test_build_url(host, path, url):
+    assert url == ServiceCaller.build_url(host, path)
