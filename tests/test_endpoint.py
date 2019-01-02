@@ -48,14 +48,6 @@ class EndpointTestCase(unittest.TestCase):
         path_kwargs = {'one': 'foo', 'two': 'bar', 'three': 'not used'}
         self.assertEqual('/foo/bar/', foo.get_formatted_path(**path_kwargs))
 
-    def test_path_when_doesnt_end_with_slash_and_check_is_on(self):
-        with warnings.catch_warnings(record=True) as warning_records:
-            warnings.simplefilter('always')
-            foo = endpoint.Endpoint(path='/foo')
-            self.assertEqual(1, len(warning_records))
-            self.assertTrue(issubclass(warning_records[-1].category, UserWarning))
-            self.assertEqual('/foo', foo.path)
-
     def test_query_parameter_in_path_generates_warning(self):
         with warnings.catch_warnings(record=True) as warning_records:
             warnings.simplefilter('always')
