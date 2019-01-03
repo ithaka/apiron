@@ -13,7 +13,7 @@ class Endpoint:
     A basic service endpoint that responds with the default ``Content-Type`` for that endpoint
     """
 
-    def __init__(self, path='/', default_method='GET', default_params=None, required_params=None, check_for_trailing_slash=True):
+    def __init__(self, path='/', default_method='GET', default_params=None, required_params=None):
         """
         :param str path:
             The URL path for this endpoint, without the protocol or domain
@@ -26,18 +26,8 @@ class Endpoint:
         :param required_params:
             An iterable of required parameter names.
             Calling an endpoint without its required parameters raises an exception.
-        :param bool check_for_trailing_slash:
-            (Default ``True``)
-            Check that this endpoint's path ends with a trailing slash, per the REST standard
         """
         self.default_method = default_method
-
-        if check_for_trailing_slash and not path.split('?')[0].endswith('/'):
-            warnings.warn(
-                'Endpoint path does not end in slash. '
-                'Paths should end with a slash when the endpoint supports it!'.format(path),
-                stacklevel=3
-            )
 
         if '?' in path:
             warnings.warn(
@@ -144,7 +134,6 @@ class JsonEndpoint(Endpoint):
     """
     An endpoint that returns :mimetype:`application/json`
     """
-
     def __init__(self, *args, path='/', default_method='GET', default_params=None, required_params=None, preserve_order=False):
         super().__init__(path=path, default_method=default_method, default_params=default_params, required_params=required_params)
         self.preserve_order = preserve_order
