@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.0] - 2019-01-31
 ### Added
-- Added ability to create a `StubEndpoint` for stubs.
+- Added ability to create a `StubEndpoint` for stubs
 
 ## [2.0.0] - 2019-01-03
 ### Removed
