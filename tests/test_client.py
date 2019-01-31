@@ -95,6 +95,7 @@ class ClientTestCase(unittest.TestCase):
         endpoint.get_formatted_path.return_value = '/foo/'
         endpoint.required_headers = {}
         endpoint.streaming = True
+        del endpoint.stub_response
 
         request = mock.Mock()
         request.url = 'http://host1.biz/foo/'
@@ -165,6 +166,29 @@ class ClientTestCase(unittest.TestCase):
             stream=endpoint.streaming,
         )
 
+
+    @mock.patch('apiron.client.Timeout')
+    @mock.patch('apiron.client.ServiceCaller.get_adapted_session')
+    @mock.patch('apiron.client.ServiceCaller.build_request_object')
+    @mock.patch('requests.adapters.HTTPAdapter', autospec=True)
+    @mock.patch('requests.Session', autospec=True)
+    def test_call_stub(self, MockSession, MockAdapter, mock_build_request_object, mock_get_adapted_session, mock_timeout):
+        """
+        Test getting a response for a ``StubEndpoint``
+        """
+        service = mock.Mock()
+        service.get_hosts.return_value = ['http://host1.biz']
+
+        stub_endpoint = mock.Mock()
+        stub_endpoint.stub_response = {'stub': 'response'}
+
+        actual_response = ServiceCaller.call(service, stub_endpoint)
+
+        expected_response = {'stub': 'response'}
+
+        self.assertDictEqual(actual_response, expected_response)
+
+
     @mock.patch('apiron.client.ServiceCaller.get_adapted_session')
     def test_call_with_existing_session(self, mock_get_adapted_session):
         service = mock.Mock()
@@ -174,6 +198,7 @@ class ClientTestCase(unittest.TestCase):
         endpoint = mock.Mock()
         endpoint.required_headers = {}
         endpoint.get_formatted_path.return_value = '/foo/'
+        del endpoint.stub_response
 
         mock_logger = mock.Mock()
         mock_response = mock.Mock()
@@ -200,6 +225,7 @@ class ClientTestCase(unittest.TestCase):
         endpoint = mock.Mock()
         endpoint.required_headers = {}
         endpoint.get_formatted_path.return_value = '/foo/'
+        del endpoint.stub_response
 
         mock_logger = mock.Mock()
         mock_response = mock.Mock()

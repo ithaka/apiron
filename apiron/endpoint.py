@@ -134,6 +134,7 @@ class JsonEndpoint(Endpoint):
     """
     An endpoint that returns :mimetype:`application/json`
     """
+
     def __init__(self, *args, path='/', default_method='GET', default_params=None, required_params=None, preserve_order=False):
         super().__init__(path=path, default_method=default_method, default_params=default_params, required_params=required_params)
         self.preserve_order = preserve_order
@@ -179,3 +180,23 @@ class StreamingEndpoint(Endpoint):
         """
 
         return response.iter_content(chunk_size=None)
+
+
+class StubEndpoint:
+    """
+    A stub endpoint designed to return a pre-baked response
+
+    The intent is to allow for a service to be implemented
+    before the endpoint is complete.
+    """
+
+    def __init__(self, stub_response=None, **kwargs):
+        """
+        :param stub_response:
+            A pre-baked response, like 'stub response' or {'stub': 'response'}
+        :param **kwargs:
+            Arbitrary parameters that can match the intended real endpoint.
+            These don't do anything for the stub but streamline the interface.
+        """
+        self.endpoint_params = kwargs if kwargs else {}
+        self.stub_response = stub_response or 'stub for {}'.format(self.endpoint_params)

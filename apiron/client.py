@@ -205,6 +205,13 @@ class ServiceCaller:
         """
         logger = logger or LOGGER
 
+        if hasattr(endpoint, 'stub_response'):
+            logger.info(
+                'Stub call for endpoint defined by {}'
+                .format(getattr(endpoint, 'endpoint_params', {}))
+            )
+            return endpoint.stub_response
+
         managing_session = False
 
         if not session:
