@@ -110,3 +110,29 @@ class StreamingEndpointTestCase(unittest.TestCase):
         foo = endpoint.StreamingEndpoint()
         mock_response = mock.Mock()
         self.assertEqual(mock_response.iter_content(chunk_size=None), foo.format_response(mock_response))
+
+
+class StubEndpointTestCase(unittest.TestCase):
+    def test_stub_response(self):
+        """
+        Test initializing a stub endpoint with a stub response
+        """
+        stub_endpoint = endpoint.StubEndpoint(stub_response='stub response')
+        self.assertEqual(stub_endpoint.stub_response, 'stub response')
+
+    def test_extra_params(self):
+        """
+        Test initializing a stub endpoint with extra params
+        """
+        stub_endpoint = endpoint.StubEndpoint(
+            stub_response='stub response',
+            path='/some/path/',
+            default_params={'param_name': 'param_val'},
+            required_params={'param_name'},
+        )
+        expected_params = {
+            'path': '/some/path/',
+            'default_params': {'param_name': 'param_val'},
+            'required_params': {'param_name'},
+        }
+        self.assertDictEqual(stub_endpoint.endpoint_params, expected_params)
