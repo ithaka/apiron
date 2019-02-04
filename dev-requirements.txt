@@ -4,3 +4,4 @@ pytest-cov==2.6.0
 sphinx==1.7.6
 sphinx-autobuild==0.7.1
 twine==1.11.0
+wheel==0.32.3
