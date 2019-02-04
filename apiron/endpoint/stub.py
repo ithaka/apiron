@@ -10,7 +10,7 @@ class StubEndpoint:
         """
         :param stub_response:
             A pre-baked response, like ``'stub response'`` or ``{'stub': 'response'}``
-        :param \**kwargs:
+        :param ``**kwargs``:
             Arbitrary parameters that can match the intended real endpoint.
             These don't do anything for the stub but streamline the interface.
         """
