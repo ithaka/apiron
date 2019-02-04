@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - The `endpoint` module has been split up into a module for each endpoint type, still importable as before
 
+### Fixed
+- Added the missing `wheel` dependency to `dev-requirements.txt` for creating a wheel distribution during release
+
 ## [2.1.0] - 2019-01-31
 ### Added
 - Added ability to create a `StubEndpoint` for stubs
