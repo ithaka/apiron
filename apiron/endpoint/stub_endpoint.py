@@ -9,8 +9,8 @@ class StubEndpoint:
     def __init__(self, stub_response=None, **kwargs):
         """
         :param stub_response:
-            A pre-baked response, like 'stub response' or {'stub': 'response'}
-        :param **kwargs:
+            A pre-baked response, like ``'stub response'`` or ``{'stub': 'response'}``
+        :param \**kwargs:
             Arbitrary parameters that can match the intended real endpoint.
             These don't do anything for the stub but streamline the interface.
         """
