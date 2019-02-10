@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- `pytest.ini` for `pytest` configuration
+
+### Changed
+- Update tests to use `pytest`-style `assert`s and fixtures (`unittest.mock` usage is still in place, for now)
+- Make `--cov=apiron` the default when running `pytest`
+- Make test output terse by default (`-v` when running restores previous behavior; `-vv` gives explicit test list)
+
 ### Fixed
 - End PyPI server URL with a slash to avoid a redirect, allowing deployment of build artifacts during release
 
