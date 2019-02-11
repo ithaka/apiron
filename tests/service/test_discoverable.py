@@ -1,4 +1,4 @@
-import unittest
+import pytest
 
 from apiron.service.discoverable import DiscoverableService
 
@@ -14,15 +14,17 @@ class FakeService(DiscoverableService):
     host_resolver_class = FakeResolver
 
 
-class DiscoverableServiceTestCase(unittest.TestCase):
-    def setUp(self):
-        self.service = FakeService()
+@pytest.fixture(scope='class')
+def service():
+    return FakeService()
 
-    def test_get_hosts_returns_hosts_from_resolver(self):
-        self.assertListEqual(['fake'], self.service.get_hosts())
 
-    def test_str_method(self):
-        self.assertEqual('fake-service', str(self.service))
+class TestDiscoverableService:
+    def test_get_hosts_returns_hosts_from_resolver(self, service):
+        assert ['fake'] == service.get_hosts()
 
-    def test_repr_method(self):
-        self.assertEqual('FakeService(service_name=fake-service, host_resolver=FakeResolver)', repr(self.service))
+    def test_str_method(self, service):
+        assert 'fake-service' == str(service)
+
+    def test_repr_method(self, service):
+        assert 'FakeService(service_name=fake-service, host_resolver=FakeResolver)' == repr(service)

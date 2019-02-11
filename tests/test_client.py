@@ -1,4 +1,3 @@
-import unittest
 from unittest import mock
 
 import pytest
@@ -6,13 +5,13 @@ import pytest
 from apiron.client import ServiceCaller
 from apiron.exceptions import NoHostsAvailableException
 
-class ClientTestCase(unittest.TestCase):
+class TestClient:
     @mock.patch('requests.sessions.Session', autospec=True)
     def test_get_adapted_session(self, mock_session):
         adapter = mock.Mock()
         adapted_session = ServiceCaller.get_adapted_session(adapter)
-        self.assertEqual(adapter, adapted_session.get_adapter('http://foo.com'))
-        self.assertEqual(adapter, adapted_session.get_adapter('https://foo.com'))
+        assert adapter == adapted_session.get_adapter('http://foo.com')
+        assert adapter == adapted_session.get_adapter('https://foo.com')
 
     def test_get_required_headers(self):
         service = mock.Mock()
@@ -22,7 +21,7 @@ class ClientTestCase(unittest.TestCase):
         expected_headers = {}
         expected_headers.update(service.required_headers)
         expected_headers.update(endpoint.required_headers)
-        self.assertDictEqual(expected_headers, ServiceCaller.get_required_headers(service, endpoint))
+        assert expected_headers == ServiceCaller.get_required_headers(service, endpoint)
 
     @mock.patch('apiron.client.requests.Request')
     @mock.patch('apiron.client.ServiceCaller.get_required_headers')
@@ -79,7 +78,7 @@ class ClientTestCase(unittest.TestCase):
                 auth=auth,
             )
 
-            self.assertEqual(1, mock_prepare_request.call_count)
+            assert 1 == mock_prepare_request.call_count
 
     @mock.patch('apiron.client.Timeout')
     @mock.patch('apiron.client.ServiceCaller.get_adapted_session')
@@ -186,7 +185,7 @@ class ClientTestCase(unittest.TestCase):
 
         expected_response = {'stub': 'response'}
 
-        self.assertDictEqual(actual_response, expected_response)
+        assert expected_response == actual_response
 
 
     @mock.patch('apiron.client.ServiceCaller.get_adapted_session')
@@ -214,8 +213,8 @@ class ClientTestCase(unittest.TestCase):
             logger=mock_logger,
         )
 
-        self.assertFalse(mock_get_adapted_session.called)
-        self.assertFalse(session.close.called)
+        assert not mock_get_adapted_session.called
+        assert not session.close.called
 
     def test_call_with_explicit_encoding(self):
         service = mock.Mock()
@@ -242,25 +241,25 @@ class ClientTestCase(unittest.TestCase):
             encoding='FAKE-CODEC'
         )
 
-        self.assertEqual('FAKE-CODEC', mock_response.encoding)
+        assert 'FAKE-CODEC' == mock_response.encoding
 
     def test_build_request_object_raises_no_host_exception(self):
         service = mock.Mock()
         service.get_hosts.return_value = []
 
-        with self.assertRaises(NoHostsAvailableException):
+        with pytest.raises(NoHostsAvailableException):
             ServiceCaller.build_request_object(None, service, None)
 
     def test_choose_host(self):
         hosts = ['foo', 'bar', 'baz']
         service = mock.Mock()
         service.get_hosts.return_value = hosts
-        self.assertIn(ServiceCaller.choose_host(service), hosts)
+        assert ServiceCaller.choose_host(service) in hosts
 
     def test_choose_host_raises_exception(self):
         service = mock.Mock()
         service.get_hosts.return_value = []
-        with self.assertRaises(NoHostsAvailableException):
+        with pytest.raises(NoHostsAvailableException):
             ServiceCaller.choose_host(service)
 
 @pytest.mark.parametrize('host,path,url', [
