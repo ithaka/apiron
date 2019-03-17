@@ -188,6 +188,64 @@ class TestClient:
         assert expected_response == actual_response
 
 
+    @mock.patch('apiron.client.Timeout')
+    @mock.patch('apiron.client.ServiceCaller.get_adapted_session')
+    @mock.patch('apiron.client.ServiceCaller.build_request_object')
+    @mock.patch('requests.adapters.HTTPAdapter', autospec=True)
+    @mock.patch('requests.Session', autospec=True)
+    def test_call_stub_dynamic(self, MockSession, MockAdapter, mock_build_request_object, mock_get_adapted_session, mock_timeout):
+        """
+        Test getting a response for a ``StubEndpoint`` using a dynamic response
+        """
+        service = mock.Mock()
+        service.get_hosts.return_value = ['http://host1.biz']
+
+        stub_endpoint = mock.Mock()
+        def stub_response(**kwargs):
+            return 'stub response'
+        stub_endpoint.stub_response = stub_response
+
+        actual_response = ServiceCaller.call(service, stub_endpoint)
+
+        expected_response = 'stub response'
+
+        assert expected_response == actual_response
+
+
+    @mock.patch('apiron.client.Timeout')
+    @mock.patch('apiron.client.ServiceCaller.get_adapted_session')
+    @mock.patch('apiron.client.ServiceCaller.build_request_object')
+    @mock.patch('requests.adapters.HTTPAdapter', autospec=True)
+    @mock.patch('requests.Session', autospec=True)
+    def test_call_stub_dynamic_params(self, MockSession, MockAdapter, mock_build_request_object, mock_get_adapted_session, mock_timeout):
+        """
+        Test getting a response for a ``StubEndpoint`` using a dynamic response with parameters
+        """
+        service = mock.Mock()
+        service.get_hosts.return_value = ['http://host1.biz']
+
+        stub_endpoint = mock.Mock()
+        def stub_response(**kwargs):
+            response_map = {
+                'param_value': 'correct',
+                'default': 'incorrect',
+            }
+            data_key = kwargs['params'].setdefault('param_key', 'default')
+            return response_map[data_key]
+
+        stub_endpoint.stub_response = stub_response
+
+        actual_response = ServiceCaller.call(
+            service,
+            stub_endpoint,
+            params={'param_key': 'param_value'}
+        )
+
+        expected_response = 'correct'
+
+        assert expected_response == actual_response
+
+
     @mock.patch('apiron.client.ServiceCaller.get_adapted_session')
     def test_call_with_existing_session(self, mock_get_adapted_session):
         service = mock.Mock()
