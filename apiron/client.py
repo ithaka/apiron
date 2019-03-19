@@ -210,7 +210,18 @@ class ServiceCaller:
                 'Stub call for endpoint defined by {}'
                 .format(getattr(endpoint, 'endpoint_params', {}))
             )
-            return endpoint.stub_response
+            if hasattr(endpoint.stub_response, '__call__'):
+                return endpoint.stub_response(
+                    method=method or endpoint.default_method,
+                    path_kwargs=path_kwargs,
+                    params=params,
+                    data=data,
+                    headers=headers,
+                    cookies=cookies,
+                    auth=auth,
+                )
+            else:
+                return endpoint.stub_response
 
         managing_session = False
 
