@@ -21,7 +21,7 @@ class TestEndpoint:
 
     def test_call_without_service_raises_exception(self):
         foo = endpoint.Endpoint()
-        with pytest.raises(AttributeError):
+        with pytest.raises(TypeError):
             foo()
 
     def test_default_attributes_from_constructor(self):
