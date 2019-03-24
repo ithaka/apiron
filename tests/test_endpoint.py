@@ -6,9 +6,24 @@ import pytest
 
 from apiron import endpoint
 from apiron.exceptions import UnfulfilledParameterException
+from apiron.service.base import Service
 
+@pytest.fixture
+def service():
+    class SomeService(Service):
+        domain = 'http://foo.com'
+    return SomeService
 
 class TestEndpoint:
+    def test_call(self, service):
+        service.foo = endpoint.Endpoint()
+        service.foo()
+
+    def test_call_without_service_raises_exception(self):
+        foo = endpoint.Endpoint()
+        with pytest.raises(AttributeError):
+            foo()
+
     def test_default_attributes_from_constructor(self):
         foo = endpoint.Endpoint()
         assert '/' == foo.path
