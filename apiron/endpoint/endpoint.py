@@ -21,7 +21,7 @@ class Endpoint:
         if hasattr(self, 'callable'):
             return self.callable(*args, **kwargs)
         else:
-            raise AttributeError('Endpoints are only callable in conjunction with a Service class.')
+            raise TypeError('Endpoints are only callable in conjunction with a Service class.')
 
     def __init__(self, path='/', default_method='GET', default_params=None, required_params=None):
         """
