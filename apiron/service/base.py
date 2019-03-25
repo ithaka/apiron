@@ -5,6 +5,10 @@ from apiron.endpoint import Endpoint
 
 
 class ServiceMeta(type):
+    @property
+    def required_headers(cls):
+        return cls().required_headers
+
     def __getattribute__(cls, *args):
         attribute = type.__getattribute__(cls, *args)
         if isinstance(attribute, Endpoint):
@@ -32,6 +36,7 @@ class Service(metaclass=ServiceMeta):
 
     A service has a domain off of which one or more endpoints stem.
     """
+
     required_headers = {}
 
     @classmethod
