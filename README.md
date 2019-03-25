@@ -38,23 +38,14 @@ class GitHub(Service):
 
 ## Interacting with a service
 
-Once your service definition is in place, you can interact with its endpoints
-using the `ServiceCaller`:
+Once your service definition is in place, you can interact with its endpoints:
 
 ```python
-from apiron.client import ServiceCaller
-
-github = GitHub()
-
-response = ServiceCaller.call(
-    github,
-    github.user,
+response = GitHub.user(
     path_kwargs={'username': 'defunkt'},
 )  # {"name": "Chris Wanstrath", ...}
 
-response = ServiceCaller.call(
-    github,
-    github.repo,
+response = GitHub.repo(
     path_kwargs={'org': 'github', 'repo': 'hub'},
 )  # {"description": "hub helps you win at git.", ...}
 ```
