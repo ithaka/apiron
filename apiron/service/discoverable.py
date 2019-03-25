@@ -14,11 +14,7 @@ class DiscoverableService(Service):
         return cls.host_resolver_class.resolve(cls.service_name)
 
     def __str__(self):
-        return self.service_name
+        return str(self.__class__)
 
     def __repr__(self):
-        return '{klass}(service_name={service_name}, host_resolver={host_resolver})'.format(
-            klass=self.__class__.__name__,
-            service_name=self.service_name,
-            host_resolver=self.host_resolver_class.__name__,
-        )
+        return repr(self.__class__)
