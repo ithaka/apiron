@@ -21,8 +21,7 @@ and one or more endpoints with which to interact:
 
 .. code-block:: python
 
-    from apiron.service.base import Service
-    from apiron.endpoint import JsonEndpoint
+    from apiron import JsonEndpoint, Service
 
     class GitHub(Service):
         domain = 'https://api.github.com'
