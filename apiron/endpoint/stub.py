@@ -1,4 +1,7 @@
-class StubEndpoint:
+from apiron.endpoint.endpoint import Endpoint
+
+
+class StubEndpoint(Endpoint):
     """
     A stub endpoint designed to return a pre-baked response
 
@@ -29,3 +32,4 @@ class StubEndpoint:
         """
         self.endpoint_params = kwargs if kwargs else {}
         self.stub_response = stub_response or 'stub for {}'.format(self.endpoint_params)
+        super().__init__(**kwargs)
