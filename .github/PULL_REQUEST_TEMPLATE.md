@@ -12,6 +12,7 @@
 - [ ] Title of this pull request clear, concise, and indicative of the issue number it addresses, if any?
 - [ ] Test suite passing?
 - [ ] Code coverage maximal?
+- [ ] Changelog up to date?
 
 **What does this change address?**
 A clear and concise description or a direct link to an issue [e.g. #15]
