@@ -1,4 +1,7 @@
-class StubEndpoint:
+from apiron.endpoint.endpoint import Endpoint
+
+
+class StubEndpoint(Endpoint):
     """
     A stub endpoint designed to return a pre-baked response
 
@@ -16,16 +19,15 @@ class StubEndpoint:
             Example of a response-determining function::
 
                 def stub_response(**kwargs):
-                    response_map = {
-                        'param_value': {'stub response': 'for param_key=param_value'},
-                        'default': {'default': 'response'},
-                    }
-                    data_key = kwargs['params'].setdefault('param_key', 'default')
-                    return response_map[data_key]
+                    if kwargs.get('params') and kwargs['params'].get('param_key') == 'param_value':
+                        return {'stub response': 'for param_key=param_value'}
+                    else:
+                        return {'default': 'response'}
 
         :param ``**kwargs``:
             Arbitrary parameters that can match the intended real endpoint.
             These don't do anything for the stub but streamline the interface.
         """
-        self.endpoint_params = kwargs if kwargs else {}
+        self.endpoint_params = kwargs or {}
         self.stub_response = stub_response or 'stub for {}'.format(self.endpoint_params)
+        super().__init__(**kwargs)
