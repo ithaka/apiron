@@ -156,7 +156,7 @@ class TestStubEndpoint:
         """
         Test calling a ``StubEndpoint`` with a static response
         """
-        service.stub_endpoint = endpoint.StubEndpoint(
+        service.stub_endpoint = apiron.StubEndpoint(
             stub_response='stub response',
         )
         actual_response = service.stub_endpoint()
@@ -174,7 +174,7 @@ class TestStubEndpoint:
                 else:
                     return {'default': 'response'}
 
-            service.stub_endpoint = endpoint.StubEndpoint(stub_response=stub_response)
+            service.stub_endpoint = apiron.StubEndpoint(stub_response=stub_response)
             actual_response = service.stub_endpoint(**call_kwargs)
             assert actual_response == expected_response
 
