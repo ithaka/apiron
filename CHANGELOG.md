@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `pytest.ini` for `pytest` configuration
 - Syntax sugar for calling endpoints
 
+### Fixed
+- Error in calling a dynamic stub endpoint
+
 ### Changed
 - Update tests to use `pytest`-style `assert`s and fixtures (`unittest.mock` usage is still in place, for now)
 - Make `--cov=apiron` the default when running `pytest`
