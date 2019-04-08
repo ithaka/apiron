@@ -127,6 +127,7 @@ class TestStreamingEndpoint:
 
 
 class TestStubEndpoint:
+
     def test_stub_response(self):
         """
         Test initializing a stub endpoint with a stub response
@@ -150,3 +151,38 @@ class TestStubEndpoint:
             'required_params': {'param_name'},
         }
         assert expected_params == stub_endpoint.endpoint_params
+
+    def test_call_static(self, service):
+        """
+        Test calling a ``StubEndpoint`` with a static response
+        """
+        service.stub_endpoint = endpoint.StubEndpoint(
+            stub_response='stub response',
+        )
+        actual_response = service.stub_endpoint()
+        expected_response = 'stub response'
+        assert actual_response == expected_response
+
+    def test_call_dynamic(self, service):
+        """
+        Test calling a StubEndpoint with a dynamic response
+        """
+        def _test_case(call_kwargs, expected_response):
+            def stub_response(**kwargs):
+                if kwargs.get('params') and kwargs['params'].get('param_key') == 'param_value':
+                    return {'stub response': 'for param_key=param_value'}
+                else:
+                    return {'default': 'response'}
+
+            service.stub_endpoint = endpoint.StubEndpoint(stub_response=stub_response)
+            actual_response = service.stub_endpoint(**call_kwargs)
+            assert actual_response == expected_response
+
+        _test_case(
+            call_kwargs={},
+            expected_response={'default': 'response'},
+        )
+        _test_case(
+            call_kwargs={'params': {'param_key': 'param_value'}},
+            expected_response={'stub response': 'for param_key=param_value'},
+        )

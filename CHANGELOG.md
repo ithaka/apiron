@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Simplify imports so that all commonly-used classes can be imported with `from apiron import <class>`
 
+### Fixed
+- Error in calling a dynamic stub endpoint
+
 ## [2.3.0] - 2019-03-25
 ### Added
 - `pytest.ini` for `pytest` configuration

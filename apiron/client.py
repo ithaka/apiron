@@ -210,7 +210,7 @@ class ServiceCaller:
                 'Stub call for endpoint defined by {}'
                 .format(getattr(endpoint, 'endpoint_params', {}))
             )
-            if hasattr(endpoint.stub_response, '__call__'):
+            if callable(endpoint.stub_response):
                 return endpoint.stub_response(
                     method=method or endpoint.default_method,
                     path_kwargs=path_kwargs,
