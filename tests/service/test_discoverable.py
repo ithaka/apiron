@@ -1,6 +1,6 @@
 import pytest
 
-from apiron.service.discoverable import DiscoverableService
+from apiron import DiscoverableService
 
 
 class FakeResolver:

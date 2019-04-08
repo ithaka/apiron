@@ -1,6 +1,6 @@
 import pytest
 
-from apiron.service.base import Service
+from apiron import Service
 
 
 @pytest.fixture(scope='class')

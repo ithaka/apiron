@@ -14,8 +14,7 @@ Service and endpoints
 .. code-block:: python
 
     # test_service.py
-    from apiron.service.base import Service
-    from apiron.endpoint import Endpoint, JsonEndpoint, StreamingEndpoint
+    from apiron import Endpoint, JsonEndpoint, Service, StreamingEndpoint
 
     class HttpBin(Service):
         domain = 'https://httpbin.org'
@@ -36,7 +35,7 @@ Using all the features
 
     import requests
 
-    from apiron.client import Timeout
+    from apiron import Timeout
 
     from test_service import HttpBin
 
@@ -81,8 +80,7 @@ Here is an example where the resolver application always resolves to ``https://w
 
 .. code-block:: python
 
-    from apiron.client import ServiceCaller
-    from apiron.service.discoverable import DiscoverableService
+    from apiron import DiscoverableService
 
     class Eureka:
         @staticmethod

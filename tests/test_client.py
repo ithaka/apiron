@@ -2,8 +2,7 @@ from unittest import mock
 
 import pytest
 
-from apiron.client import ServiceCaller
-from apiron.exceptions import NoHostsAvailableException
+from apiron import ServiceCaller, NoHostsAvailableException
 
 class TestClient:
     @mock.patch('requests.sessions.Session', autospec=True)
