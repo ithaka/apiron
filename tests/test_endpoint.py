@@ -144,11 +144,13 @@ class TestStubEndpoint:
             path='/some/path/',
             default_params={'param_name': 'param_val'},
             required_params={'param_name'},
+            arbitrary_kwarg='foo',
         )
         expected_params = {
             'path': '/some/path/',
             'default_params': {'param_name': 'param_val'},
             'required_params': {'param_name'},
+            'arbitrary_kwarg': 'foo',
         }
         assert expected_params == stub_endpoint.endpoint_params
 
@@ -186,3 +188,8 @@ class TestStubEndpoint:
             call_kwargs={'params': {'param_key': 'param_value'}},
             expected_response={'stub response': 'for param_key=param_value'},
         )
+
+    def test_call_without_service_raises_exception(self, service):
+        stub_endpoint = apiron.StubEndpoint(stub_response='foo')
+        with pytest.raises(TypeError):
+            stub_endpoint()

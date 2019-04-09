@@ -1,7 +1,7 @@
 from functools import partial
 
 from apiron.client import ServiceCaller
-from apiron.endpoint import Endpoint
+from apiron.endpoint import Endpoint, StubEndpoint
 
 
 class ServiceMeta(type):
@@ -11,7 +11,7 @@ class ServiceMeta(type):
 
     def __getattribute__(cls, *args):
         attribute = type.__getattribute__(cls, *args)
-        if isinstance(attribute, Endpoint):
+        if isinstance(attribute, Endpoint) or isinstance(attribute, StubEndpoint):
             attribute.callable = partial(ServiceCaller.call, cls, attribute)
         return attribute
 
