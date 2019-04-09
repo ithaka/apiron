@@ -1,13 +1,12 @@
-from apiron.endpoint.endpoint import Endpoint
-
-
-class StubEndpoint(Endpoint):
+class StubEndpoint:
     """
     A stub endpoint designed to return a pre-baked response
 
     The intent is to allow for a service to be implemented
     before the endpoint is complete.
     """
+    def __call__(self, **kwargs):
+        return self.stub_response(**kwargs) if callable(self.stub_response) else self.stub_response
 
     def __init__(self, stub_response=None, **kwargs):
         """
@@ -30,4 +29,3 @@ class StubEndpoint(Endpoint):
         """
         self.endpoint_params = kwargs or {}
         self.stub_response = stub_response or 'stub for {}'.format(self.endpoint_params)
-        super().__init__(**kwargs)
