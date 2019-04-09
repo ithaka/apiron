@@ -1,7 +1,7 @@
 from functools import partial
 
 from apiron.client import ServiceCaller
-from apiron.endpoint import Endpoint, StubEndpoint
+from apiron.endpoint import Endpoint
 
 
 class ServiceMeta(type):
