@@ -212,7 +212,7 @@ class ServiceCaller:
             )
             if callable(endpoint.stub_response):
                 return endpoint.stub_response(
-                    method=method or endpoint.default_method,
+                    method=method or getattr(endpoint, 'default_method', 'GET'),
                     path_kwargs=path_kwargs,
                     params=params,
                     data=data,
