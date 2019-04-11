@@ -38,13 +38,11 @@ using the :class:`ServiceCaller <apiron.client.ServiceCaller>`:
 
 .. code-block:: python
 
-    response = GitHub.user(
-        path_kwargs={'username': 'defunkt'},
-    )  # {"name": "Chris Wanstrath", ...}
+    response = GitHub.user(username='defunkt')
+    # {"name": "Chris Wanstrath", ...}
 
-    response = GitHub.repo(
-        path_kwargs={'org': 'github', 'repo': 'hub'},
-    )  # {"description": "hub helps you win at git.", ...}
+    response = GitHub.repo(org='github', repo='hub')
+    # {"description": "hub helps you win at git.", ...}
 
 
 **********
