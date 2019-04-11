@@ -105,7 +105,7 @@ class Endpoint:
                 'An unknown path kwarg was supplied to {}. '
                 'kwargs supplied: {}'.format(self, path_kwargs),
                 RuntimeWarning,
-                stacklevel=2,
+                stacklevel=6,
             )
 
     def get_merged_params(self, supplied_params=None):
@@ -137,7 +137,7 @@ class Endpoint:
                     empty_params=empty_params,
                 ),
                 RuntimeWarning,
-                stacklevel=4,
+                stacklevel=5,
             )
 
         unfulfilled_params = {
