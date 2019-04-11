@@ -57,12 +57,18 @@ class TestEndpoint:
         foo = apiron.Endpoint(path='/{one}/{two}/')
         path_kwargs = {'foo': 'bar'}
         with pytest.raises(KeyError):
-            foo.get_formatted_path(**path_kwargs)
+            with warnings.catch_warnings(record=True) as warning_records:
+                foo.get_formatted_path(**path_kwargs)
+            assert 1 == len(warning_records)
+            assert issubclass(warning_records[-1].category, RuntimeWarning)
 
     def test_format_path_with_extra_kwargs(self):
         foo = apiron.Endpoint(path='/{one}/{two}/')
         path_kwargs = {'one': 'foo', 'two': 'bar', 'three': 'not used'}
-        assert '/foo/bar/' == foo.get_formatted_path(**path_kwargs)
+        with warnings.catch_warnings(record=True) as warning_records:
+            assert '/foo/bar/' == foo.get_formatted_path(**path_kwargs)
+            assert 1 == len(warning_records)
+            assert issubclass(warning_records[-1].category, RuntimeWarning)
 
     def test_query_parameter_in_path_generates_warning(self):
         with warnings.catch_warnings(record=True) as warning_records:

@@ -108,10 +108,12 @@ class ServiceCaller:
         headers=None,
         cookies=None,
         auth=None,
+        **kwargs
     ):
         host = cls.choose_host(service=service)
 
         path_kwargs = path_kwargs or {}
+        path_kwargs.update(**kwargs)
         path = endpoint.get_formatted_path(**path_kwargs)
 
         merged_params = endpoint.get_merged_params(params)
@@ -148,6 +150,7 @@ class ServiceCaller:
         retry_spec=DEFAULT_RETRY,
         timeout_spec=DEFAULT_TIMEOUT,
         logger=None,
+        **kwargs
     ):
         """
         :param Service service:
@@ -240,6 +243,7 @@ class ServiceCaller:
             headers=headers,
             cookies=cookies,
             auth=auth,
+            **kwargs
         )
 
         logger.info('{method} {url}'.format(

@@ -1,4 +1,5 @@
 import logging
+import string
 import warnings
 
 from apiron.exceptions import UnfulfilledParameterException
@@ -85,7 +86,27 @@ class Endpoint:
         :rtype:
             str
         """
+        self._validate_path_placeholders(self.path_placeholders, kwargs)
+
         return self.path.format(**kwargs)
+
+    @property
+    def path_placeholders(self):
+        parser = string.Formatter()
+        return [
+            placeholder_name
+            for _, placeholder_name, _, _ in parser.parse(self.path)
+            if placeholder_name
+        ]
+
+    def _validate_path_placeholders(self, placeholder_names, path_kwargs):
+        if any(path_kwarg not in placeholder_names for path_kwarg in path_kwargs):
+            warnings.warn(
+                'An unknown path kwarg was supplied to {}. '
+                'kwargs supplied: {}'.format(self, path_kwargs),
+                RuntimeWarning,
+                stacklevel=2,
+            )
 
     def get_merged_params(self, supplied_params=None):
         """
