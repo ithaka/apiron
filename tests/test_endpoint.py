@@ -73,7 +73,7 @@ class TestEndpoint:
     def test_query_parameter_in_path_generates_warning(self):
         with warnings.catch_warnings(record=True) as warning_records:
             warnings.simplefilter('always')
-            foo = apiron.Endpoint(path='/?foo=bar')
+            _ = apiron.Endpoint(path='/?foo=bar')
             assert 1 == len(warning_records)
             assert issubclass(warning_records[-1].category, UserWarning)
 
@@ -85,7 +85,7 @@ class TestEndpoint:
         foo = apiron.JsonEndpoint(default_params={'foo': 'bar'}, required_params={'baz'})
 
         with pytest.raises(apiron.UnfulfilledParameterException):
-            foo.get_merged_params(None)
+            foo.get_merged_params()
 
     def test_get_merged_params_with_empty_param(self):
         foo = apiron.JsonEndpoint(default_params={'foo': 'bar'}, required_params={'baz'})
@@ -98,7 +98,7 @@ class TestEndpoint:
 
     def test_get_merged_params_with_required_and_default_param(self):
         foo = apiron.JsonEndpoint(default_params={'foo': 'bar'}, required_params={'foo'})
-        assert {'foo': 'bar'} == foo.get_merged_params(None)
+        assert {'foo': 'bar'} == foo.get_merged_params()
 
 
 class TestJsonEndpoint:
@@ -195,7 +195,7 @@ class TestStubEndpoint:
             expected_response={'stub response': 'for param_key=param_value'},
         )
 
-    def test_call_without_service_raises_exception(self, service):
+    def test_call_without_service_raises_exception(self):
         stub_endpoint = apiron.StubEndpoint(stub_response='foo')
         with pytest.raises(TypeError):
             stub_endpoint()
