@@ -92,6 +92,16 @@ class Endpoint:
 
     @property
     def path_placeholders(self):
+        """
+        The formattable placeholders from this endpoint's path, in the order they appear.
+
+        Example:
+
+            >>> endpoint = Endpoint(path='/api/{foo}/{bar}')
+            >>> endpoint.path_placeholders
+            ['foo', 'bar']
+        """
+
         parser = string.Formatter()
         return [
             placeholder_name

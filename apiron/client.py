@@ -120,7 +120,7 @@ class ServiceCaller:
                 RuntimeWarning,
                 stacklevel=4
             )
-            
+
         path_kwargs = path_kwargs or {}
         path_kwargs.update(**kwargs)
         path = endpoint.get_formatted_path(**path_kwargs)
