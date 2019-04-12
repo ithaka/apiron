@@ -1,6 +1,7 @@
 import collections
 import logging
 import random
+import warnings
 from urllib import parse
 
 import requests
@@ -112,6 +113,14 @@ class ServiceCaller:
     ):
         host = cls.choose_host(service=service)
 
+        if path_kwargs:
+            warnings.warn(
+                'path_kwargs is no longer necessary and will be removed in a future version of apiron. '
+                'You can call endpoints using plain keyword arguments instead!',
+                RuntimeWarning,
+                stacklevel=4
+            )
+            
         path_kwargs = path_kwargs or {}
         path_kwargs.update(**kwargs)
         path = endpoint.get_formatted_path(**path_kwargs)
