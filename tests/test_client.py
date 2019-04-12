@@ -4,6 +4,7 @@ import pytest
 
 from apiron import ServiceCaller, NoHostsAvailableException
 
+
 class TestClient:
     @mock.patch('requests.sessions.Session', autospec=True)
     def test_get_adapted_session(self, mock_session):
@@ -41,7 +42,6 @@ class TestClient:
         endpoint.default_params = {}
         endpoint.required_params = set()
 
-        path_kwargs = {'foo': 'bar'}
         params = {'baz': 'qux'}
         endpoint.get_merged_params.return_value = params
         data = 'I am a data'
@@ -59,12 +59,12 @@ class TestClient:
                 session,
                 service,
                 endpoint,
-                path_kwargs=path_kwargs,
                 params=params,
                 data=data,
                 headers=headers,
                 cookies=cookies,
                 auth=auth,
+                foo='bar',
             )
 
             mock_request_constructor.assert_called_once_with(
