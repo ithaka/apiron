@@ -3,6 +3,7 @@
 - [ ] Feature addition
 - [ ] Code style update
 - [ ] Refactor
+- [ ] Release activity
 
 **Is this a breaking change?** (check one)
 - [ ] Yes
