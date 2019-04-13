@@ -16,28 +16,37 @@ class ServiceMeta(type):
         return attribute
 
     def __str__(cls):
-        service_name = getattr(cls, 'service_name', None)
-        return service_name or cls.domain
+        return str(cls())
 
     def __repr__(cls):
-        if hasattr(cls, 'service_name'):
-            return '{klass}(service_name={service_name}, host_resolver={host_resolver})'.format(
-                klass=cls.__name__,
-                service_name=cls.service_name,
-                host_resolver=cls.host_resolver_class.__name__,
-            )
-        else:
-            return '{klass}(domain={domain})'.format(klass=cls.__name__, domain=cls.domain)
+        return repr(cls())
 
 
-class Service(metaclass=ServiceMeta):
+class ServiceBase(metaclass=ServiceMeta):
+    required_headers = {}
+
+    @classmethod
+    def get_hosts(cls):
+        """
+        The fully-qualified hostnames that correspond to this service.
+        These are often determined by asking a load balancer or service discovery mechanism.
+
+        :return:
+            The hostname strings corresponding to this service
+        :rtype:
+            list
+        """
+        return []
+
+
+class Service(ServiceBase):
     """
     A base class for low-level services.
 
     A service has a domain off of which one or more endpoints stem.
     """
 
-    required_headers = {}
+    domain = None
 
     @classmethod
     def get_hosts(cls):
@@ -53,7 +62,7 @@ class Service(metaclass=ServiceMeta):
         return [cls.domain]
 
     def __str__(self):
-        return str(self.__class__)
+        return self.__class__.domain
 
     def __repr__(self):
-        return repr(self.__class__)
+        return '{klass}(domain={domain})'.format(klass=self.__class__.__name__, domain=self.__class__.domain)
