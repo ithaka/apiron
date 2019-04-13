@@ -9,16 +9,13 @@ class DiscoverableService(ServiceBase):
     and returns a list of host names that correspond to that service.
     """
 
-    service_name = None
-    host_resolver_class = None
-
     @classmethod
     def get_hosts(cls):
         return cls.host_resolver_class.resolve(cls.service_name)
-    
+
     def __str__(self):
         return self.service_name
-    
+
     def __repr__(self):
         klass = self.__class__
         return '{klass}(service_name={service_name}, host_resolver={host_resolver})'.format(
