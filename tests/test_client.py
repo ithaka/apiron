@@ -45,6 +45,7 @@ class TestClient:
         params = {'baz': 'qux'}
         endpoint.get_merged_params.return_value = params
         data = 'I am a data'
+        json = {'raw': 'data'}
         headers = {'Accept': 'stuff'}
         cookies = {'chocolate-chip': 'yes'}
         auth = mock.Mock()
@@ -61,6 +62,7 @@ class TestClient:
                 endpoint,
                 params=params,
                 data=data,
+                json=json,
                 headers=headers,
                 cookies=cookies,
                 auth=auth,
@@ -74,6 +76,7 @@ class TestClient:
                 cookies=cookies,
                 params=params,
                 data=data,
+                json=json,
                 auth=auth,
             )
 
