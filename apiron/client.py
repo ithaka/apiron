@@ -1,6 +1,7 @@
 import collections
 import logging
 import random
+import warnings
 from urllib import parse
 
 import requests
@@ -108,10 +109,20 @@ class ServiceCaller:
         headers=None,
         cookies=None,
         auth=None,
+        **kwargs
     ):
         host = cls.choose_host(service=service)
 
+        if path_kwargs:
+            warnings.warn(
+                'path_kwargs is no longer necessary and will be removed in a future version of apiron. '
+                'You can call endpoints using plain keyword arguments instead!',
+                RuntimeWarning,
+                stacklevel=4
+            )
+
         path_kwargs = path_kwargs or {}
+        path_kwargs.update(**kwargs)
         path = endpoint.get_formatted_path(**path_kwargs)
 
         merged_params = endpoint.get_merged_params(params)
@@ -148,6 +159,7 @@ class ServiceCaller:
         retry_spec=DEFAULT_RETRY,
         timeout_spec=DEFAULT_TIMEOUT,
         logger=None,
+        **kwargs
     ):
         """
         :param Service service:
@@ -240,6 +252,7 @@ class ServiceCaller:
             headers=headers,
             cookies=cookies,
             auth=auth,
+            **kwargs
         )
 
         logger.info('{method} {url}'.format(

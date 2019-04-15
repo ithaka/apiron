@@ -40,13 +40,11 @@ class GitHub(Service):
 Once your service definition is in place, you can interact with its endpoints:
 
 ```python
-response = GitHub.user(
-    path_kwargs={'username': 'defunkt'},
-)  # {"name": "Chris Wanstrath", ...}
+response = GitHub.user(username='defunkt')
+# {"name": "Chris Wanstrath", ...}
 
-response = GitHub.repo(
-    path_kwargs={'org': 'github', 'repo': 'hub'},
-)  # {"description": "hub helps you win at git.", ...}
+response = GitHub.repo(org='github', repo='hub')
+# {"description": "hub helps you win at git.", ...}
 ```
 
 To learn more about building clients, head over to [the docs](https://apiron.readthedocs.io).

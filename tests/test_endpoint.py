@@ -48,6 +48,14 @@ class TestEndpoint:
         foo = apiron.Endpoint(path='/foo/bar/')
         assert '/foo/bar/' == str(foo)
 
+    def test_path_placeholders_when_none_present(self):
+        foo = apiron.Endpoint()
+        assert [] == foo.path_placeholders
+
+    def test_path_placeholders_when_present(self):
+        foo = apiron.Endpoint(path='/foo/{one}/{two}')
+        assert ['one', 'two'] == foo.path_placeholders
+
     def test_format_path_with_correct_kwargs(self):
         foo = apiron.Endpoint(path='/{one}/{two}/')
         path_kwargs = {'one': 'foo', 'two': 'bar'}
@@ -57,17 +65,24 @@ class TestEndpoint:
         foo = apiron.Endpoint(path='/{one}/{two}/')
         path_kwargs = {'foo': 'bar'}
         with pytest.raises(KeyError):
-            foo.get_formatted_path(**path_kwargs)
+            with warnings.catch_warnings(record=True) as warning_records:
+                warnings.simplefilter('always')
+                foo.get_formatted_path(**path_kwargs)
+            assert 1 == len(warning_records)
+            assert issubclass(warning_records[-1].category, RuntimeWarning)
 
     def test_format_path_with_extra_kwargs(self):
         foo = apiron.Endpoint(path='/{one}/{two}/')
         path_kwargs = {'one': 'foo', 'two': 'bar', 'three': 'not used'}
-        assert '/foo/bar/' == foo.get_formatted_path(**path_kwargs)
+        with warnings.catch_warnings(record=True) as warning_records:
+            assert '/foo/bar/' == foo.get_formatted_path(**path_kwargs)
+            assert 1 == len(warning_records)
+            assert issubclass(warning_records[-1].category, RuntimeWarning)
 
     def test_query_parameter_in_path_generates_warning(self):
         with warnings.catch_warnings(record=True) as warning_records:
             warnings.simplefilter('always')
-            foo = apiron.Endpoint(path='/?foo=bar')
+            _ = apiron.Endpoint(path='/?foo=bar')
             assert 1 == len(warning_records)
             assert issubclass(warning_records[-1].category, UserWarning)
 
@@ -79,7 +94,7 @@ class TestEndpoint:
         foo = apiron.JsonEndpoint(default_params={'foo': 'bar'}, required_params={'baz'})
 
         with pytest.raises(apiron.UnfulfilledParameterException):
-            foo.get_merged_params(None)
+            foo.get_merged_params()
 
     def test_get_merged_params_with_empty_param(self):
         foo = apiron.JsonEndpoint(default_params={'foo': 'bar'}, required_params={'baz'})
@@ -92,7 +107,16 @@ class TestEndpoint:
 
     def test_get_merged_params_with_required_and_default_param(self):
         foo = apiron.JsonEndpoint(default_params={'foo': 'bar'}, required_params={'foo'})
-        assert {'foo': 'bar'} == foo.get_merged_params(None)
+        assert {'foo': 'bar'} == foo.get_merged_params()
+
+    @mock.patch('apiron.client.requests.Session.send')
+    def test_using_path_kwargs_produces_warning(self, mock_send, service):
+        service.foo = apiron.Endpoint(path='/foo/{one}')
+        with warnings.catch_warnings(record=True) as warning_records:
+            warnings.simplefilter('always')
+            _ = service.foo(path_kwargs={'one': 'bar'})
+            assert 1 == len(warning_records)
+            assert issubclass(warning_records[-1].category, RuntimeWarning)
 
 
 class TestJsonEndpoint:
@@ -127,7 +151,6 @@ class TestStreamingEndpoint:
 
 
 class TestStubEndpoint:
-
     def test_stub_response(self):
         """
         Test initializing a stub endpoint with a stub response
@@ -189,7 +212,7 @@ class TestStubEndpoint:
             expected_response={'stub response': 'for param_key=param_value'},
         )
 
-    def test_call_without_service_raises_exception(self, service):
+    def test_call_without_service_raises_exception(self):
         stub_endpoint = apiron.StubEndpoint(stub_response='foo')
         with pytest.raises(TypeError):
             stub_endpoint()

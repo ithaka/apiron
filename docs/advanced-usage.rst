@@ -46,11 +46,11 @@ Using all the features
     HttpBin.poster(data={'foo': 'bar'})
 
     # A GET call with parameters formatted into the path
-    HttpBin.anything(path_kwargs={'anything': 42})
+    HttpBin.anything(anything=42)
 
     # A GET call with a 500 response, raises RetryError since we successfully tried but got a bad response
     try:
-        HttpBin.status(path_kwargs={'status_code': 500})
+        HttpBin.status(status_code=500)
     except requests.exceptions.RetryError:
         pass
 
@@ -66,7 +66,7 @@ Using all the features
     )
 
     # A streaming response
-    response = HttpBin.streamer(path_kwargs={'num_lines': 20})
+    response = HttpBin.streamer(num_lines=20)
     for chunk in response:
         print(chunk)
 
