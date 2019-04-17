@@ -106,6 +106,7 @@ class ServiceCaller:
         path_kwargs=None,
         params=None,
         data=None,
+        json=None,
         headers=None,
         cookies=None,
         auth=None,
@@ -135,6 +136,7 @@ class ServiceCaller:
             url=cls.build_url(host, path),
             params=merged_params,
             data=data,
+            json=json,
             headers=headers,
             cookies=cookies,
             auth=auth,
@@ -152,6 +154,7 @@ class ServiceCaller:
         session=None,
         params=None,
         data=None,
+        json=None,
         headers=None,
         cookies=None,
         auth=None,
@@ -183,6 +186,10 @@ class ServiceCaller:
             (optional)
             ``POST`` data to send to the endpoint.
             A :class:`dict` will be form-encoded, while a :class:`str` will be sent raw
+            (default ``None``)
+        :param dict json:
+            (optional)
+            A JSON-serializable dictionary that will be sent as the ``POST`` body
             (default ``None``)
         :param dict headers:
             HTTP Headers to send to the endpoint
@@ -228,6 +235,7 @@ class ServiceCaller:
                     path_kwargs=path_kwargs,
                     params=params,
                     data=data,
+                    json=json,
                     headers=headers,
                     cookies=cookies,
                     auth=auth,
@@ -249,6 +257,7 @@ class ServiceCaller:
             path_kwargs=path_kwargs,
             params=params,
             data=data,
+            json=json,
             headers=headers,
             cookies=cookies,
             auth=auth,

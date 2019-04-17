@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Ability to pass dict to `json` keyword argument for raw POST body instead of form-encoded data
 - Ability to use regular keyword arguments when calling an endpoint (instead of `path_kwargs`)
 
 ## [2.4.0] - 2019-04-09
