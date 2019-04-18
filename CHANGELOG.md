@@ -4,15 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.5.0] - 2019-04-18
 ### Added
 - Ability to pass dict to `json` keyword argument for raw POST body instead of form-encoded data
 - Ability to use regular keyword arguments when calling an endpoint (instead of `path_kwargs`)
 
+### Changed
+- `DiscoverableService` now inherits from `ServiceBase`, an ancestor common with `Service`, instead of `Service` itself
+
 ## [2.4.0] - 2019-04-09
 ### Changed
 - Simplify imports so that all commonly-used classes can be imported with `from apiron import <class>`
-- `DiscoverableService` now inherits from `ServiceBase`, an ancestor common with `Service`, instead of `Service` itself
 
 ### Fixed
 - Error in calling a dynamic stub endpoint
