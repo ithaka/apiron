@@ -19,12 +19,16 @@ class Endpoint:
         The callable attribute is set dynamically by the :class:`Service` subclass this endpoint is a part of.
         Arguments are identical to those of :func:`apiron.client.ServiceCaller.call`
         """
-        if hasattr(self, 'callable'):
+        if hasattr(self, "callable"):
             return self.callable(*args, **kwargs)
         else:
-            raise TypeError('Endpoints are only callable in conjunction with a Service class.')
+            raise TypeError(
+                "Endpoints are only callable in conjunction with a Service class."
+            )
 
-    def __init__(self, path='/', default_method='GET', default_params=None, required_params=None):
+    def __init__(
+        self, path="/", default_method="GET", default_params=None, required_params=None
+    ):
         """
         :param str path:
             The URL path for this endpoint, without the protocol or domain
@@ -40,11 +44,13 @@ class Endpoint:
         """
         self.default_method = default_method
 
-        if '?' in path:
+        if "?" in path:
             warnings.warn(
-                'Endpoint path may contain query parameters. '
-                'Use the default_params or required_params attributes in the initialization of this endpoint, '
-                'or the params argument when calling the endpoint instead.'.format(path),
+                "Endpoint path may contain query parameters. "
+                "Use the default_params or required_params attributes in the initialization of this endpoint, "
+                "or the params argument when calling the endpoint instead.".format(
+                    path
+                ),
                 stacklevel=3,
             )
 
@@ -112,8 +118,8 @@ class Endpoint:
     def _validate_path_placeholders(self, placeholder_names, path_kwargs):
         if any(path_kwarg not in placeholder_names for path_kwarg in path_kwargs):
             warnings.warn(
-                'An unknown path kwarg was supplied to {}. '
-                'kwargs supplied: {}'.format(self, path_kwargs),
+                "An unknown path kwarg was supplied to {}. "
+                "kwargs supplied: {}".format(self, path_kwargs),
                 RuntimeWarning,
                 stacklevel=6,
             )
@@ -137,14 +143,13 @@ class Endpoint:
         empty_params = {
             param: supplied_params[param]
             for param in supplied_params
-            if supplied_params[param] in (None, '')
+            if supplied_params[param] in (None, "")
         }
         if empty_params:
             warnings.warn(
-                'The {path} endpoint '
-                'was called with empty parameters: {empty_params}'.format(
-                    path=self.path,
-                    empty_params=empty_params,
+                "The {path} endpoint "
+                "was called with empty parameters: {empty_params}".format(
+                    path=self.path, empty_params=empty_params
                 ),
                 RuntimeWarning,
                 stacklevel=5,
@@ -153,15 +158,11 @@ class Endpoint:
         unfulfilled_params = {
             param
             for param in self.required_params
-            if param not in supplied_params
-            and param not in self.default_params
+            if param not in supplied_params and param not in self.default_params
         }
 
         if unfulfilled_params:
-            raise UnfulfilledParameterException(
-                self.path,
-                unfulfilled_params,
-            )
+            raise UnfulfilledParameterException(self.path, unfulfilled_params)
 
         merged_params = self.default_params.copy()
         merged_params.update(supplied_params)
