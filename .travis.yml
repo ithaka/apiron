@@ -25,6 +25,9 @@ script:
 jobs:
   include:
     - stage: lint
+      install:
+        - pip install -r dev-requirements.txt
+        - pip install black
       script: black --check -t py34 apiron tests
 
     - stage: deploy
