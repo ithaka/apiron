@@ -10,17 +10,19 @@ python:
   - '3.5'
   - '3.4'
 
+# The "install" and "script" here are the default stage (test).
 install:
   - pip install -r dev-requirements.txt
 
+script:
+  - pytest
+
+# The stages will run in the order they appear here.
 stages:
-  - name: lint
+  - lint
   - test
   - name: deploy
     if: branch = master AND tag IS present
-
-script:
-  - pytest
 
 jobs:
   include:
@@ -34,7 +36,7 @@ jobs:
       before_deploy:
         python setup.py sdist bdist_wheel
       deploy:
-        - provider: releases
+        - provider: releases  # GitHub releases
           api_key:
             secure: 'AEjhjd5YuhY1wfGEsjd1RELByc7XPKsuyQ+0HBm9vvowQEvfeVIzrJ5/C4rSS5GSYMqv2oFLhU8bssVz/p6XqXqnM73ZoAJe8bIxvYDXdeKMHLSg3HUltbfb4+4VDbgS0/gCs8K4WpAlcAChs3OXoS2ALb9g7R2HkX0rbBqqQczJBi6Gfj6NxpXr7HtRWUnJ08+RBtG8wtjrgY5WQsZuXzlmpyJV0f4/LpRNOiYxnUhyWJQf0gpuvQG/snqoFoT39Sz69HGHls5qYk4QO+I1Kpsy/a0A7vHWZE6jCj+HnCzKFSvgBk/nAQP19Yat6/4ZcooRLtLW81rW2L04OvSE/rWwC+6rrtzNX3eOilbG/Ctwsw1RhQugcIfgKcfMJed+0GpWvtUn5rGNSgx9/xKE9n6oX2l2hVa1rhxAYOYw7RP+bSTmGwL/Cld10bVKOrhIiuMnVUIy/7KlHyfo5Yz84HckZnXGpStKnz5apkx5076axO85vf6R+V6un+Wkwn2ABUB8QvNWObPfLZBb1/a83+pD3FOMAWlKfwC0JzTwzhLhlJ8s2RKwotJP+Fm3/h6Hr6ren6da88v56c4R3gjS4r1RsQPcEQ1MA1Nw74m8fC1ciTG5BLCWeQov6q4H6C6OVmAc14FQe/oNxVyJmKNcllFkpz4dMTkW05PjrwRvqN0='
           file_glob: true
@@ -47,7 +49,7 @@ jobs:
             branch: master
             tags: true
 
-        - &pypi
+        - &pypi  # Production PyPI
           provider: pypi
           user: apiron
           password:
@@ -59,5 +61,5 @@ jobs:
             branch: master
             tags: true
 
-        - <<: *pypi
+        - <<: *pypi  # Test PyPI
           server: 'https://test.pypi.org/legacy/'
