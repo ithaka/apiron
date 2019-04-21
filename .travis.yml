@@ -5,16 +5,16 @@ notifications:
   email: false
 
 python:
-  - '3.4'
-  - '3.5'
-  - '3.6'
   - '3.7'
+  - '3.6'
+  - '3.5'
+  - '3.4'
 
 install:
   - pip install -r dev-requirements.txt
 
 stages:
-  - lint
+  - name: lint
   - test
   - name: deploy
     if: branch = master AND tag IS present
@@ -25,7 +25,7 @@ script:
 jobs:
   include:
     - stage: lint
-      script: black --check apiron tests
+      script: black --check -t py34 apiron tests
 
     - stage: deploy
       before_deploy:
@@ -43,7 +43,6 @@ jobs:
             repo: ithaka/apiron
             branch: master
             tags: true
-            python: '3.4'
 
         - &pypi
           provider: pypi
@@ -56,7 +55,6 @@ jobs:
             repo: ithaka/apiron
             branch: master
             tags: true
-            python: '3.4'
 
         - <<: *pypi
           server: 'https://test.pypi.org/legacy/'
