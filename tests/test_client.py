@@ -85,14 +85,7 @@ class TestClient:
     @mock.patch("apiron.client.ServiceCaller.build_request_object")
     @mock.patch("requests.adapters.HTTPAdapter", autospec=True)
     @mock.patch("requests.Session", autospec=True)
-    def test_call(
-        self,
-        MockSession,
-        MockAdapter,
-        mock_build_request_object,
-        mock_get_adapted_session,
-        mock_timeout,
-    ):
+    def test_call(self, MockSession, MockAdapter, mock_build_request_object, mock_get_adapted_session, mock_timeout):
         service = mock.Mock()
         service.get_hosts.return_value = ["http://host1.biz"]
 
@@ -118,15 +111,11 @@ class TestClient:
         mock_session.send.return_value = mock_response
         mock_get_adapted_session.return_value = mock_session
 
-        ServiceCaller.call(
-            service, endpoint, timeout_spec=mock_timeout, logger=mock_logger
-        )
+        ServiceCaller.call(service, endpoint, timeout_spec=mock_timeout, logger=mock_logger)
 
         mock_get_adapted_session.assert_called_once_with(MockAdapter())
         mock_session.send.assert_called_once_with(
-            request,
-            timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout),
-            stream=endpoint.streaming,
+            request, timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout), stream=endpoint.streaming
         )
 
         mock_logger.info.assert_any_call("GET http://host1.biz/foo/")
@@ -135,18 +124,10 @@ class TestClient:
         endpoint.default_method = "POST"
         request.method = "POST"
 
-        ServiceCaller.call(
-            service,
-            endpoint,
-            session=mock_session,
-            timeout_spec=mock_timeout,
-            logger=mock_logger,
-        )
+        ServiceCaller.call(service, endpoint, session=mock_session, timeout_spec=mock_timeout, logger=mock_logger)
 
         mock_session.send.assert_any_call(
-            request,
-            timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout),
-            stream=endpoint.streaming,
+            request, timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout), stream=endpoint.streaming
         )
 
         mock_logger.info.assert_any_call("GET http://host1.biz/foo/")
@@ -155,18 +136,11 @@ class TestClient:
         request.method = "PUT"
 
         ServiceCaller.call(
-            service,
-            endpoint,
-            method="PUT",
-            session=mock_session,
-            timeout_spec=mock_timeout,
-            logger=mock_logger,
+            service, endpoint, method="PUT", session=mock_session, timeout_spec=mock_timeout, logger=mock_logger
         )
 
         mock_session.send.assert_any_call(
-            request,
-            timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout),
-            stream=endpoint.streaming,
+            request, timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout), stream=endpoint.streaming
         )
 
     @mock.patch("apiron.client.ServiceCaller.get_adapted_session")
@@ -209,13 +183,7 @@ class TestClient:
         session = mock.Mock()
         session.send.return_value = mock_response
 
-        ServiceCaller.call(
-            service,
-            endpoint,
-            session=session,
-            logger=mock_logger,
-            encoding="FAKE-CODEC",
-        )
+        ServiceCaller.call(service, endpoint, session=session, logger=mock_logger, encoding="FAKE-CODEC")
 
         assert "FAKE-CODEC" == mock_response.encoding
 
@@ -246,12 +214,7 @@ class TestClient:
 @mock.patch("requests.Session", autospec=True)
 class TestClientStubCall:
     def test_call_stub(
-        self,
-        MockSession,
-        MockAdapter,
-        mock_build_request_object,
-        mock_get_adapted_session,
-        mock_timeout,
+        self, MockSession, MockAdapter, mock_build_request_object, mock_get_adapted_session, mock_timeout
     ):
         """
         Test getting a response for a ``StubEndpoint``
@@ -269,12 +232,7 @@ class TestClientStubCall:
         assert expected_response == actual_response
 
     def test_call_stub_dynamic(
-        self,
-        MockSession,
-        MockAdapter,
-        mock_build_request_object,
-        mock_get_adapted_session,
-        mock_timeout,
+        self, MockSession, MockAdapter, mock_build_request_object, mock_get_adapted_session, mock_timeout
     ):
         """
         Test getting a response for a ``StubEndpoint`` using a dynamic response
@@ -296,12 +254,7 @@ class TestClientStubCall:
         assert expected_response == actual_response
 
     def test_call_stub_dynamic_params(
-        self,
-        MockSession,
-        MockAdapter,
-        mock_build_request_object,
-        mock_get_adapted_session,
-        mock_timeout,
+        self, MockSession, MockAdapter, mock_build_request_object, mock_get_adapted_session, mock_timeout
     ):
         """
         Test getting a response for a ``StubEndpoint`` using a dynamic response with parameters
@@ -318,9 +271,7 @@ class TestClientStubCall:
 
         stub_endpoint.stub_response = stub_response
 
-        actual_response = ServiceCaller.call(
-            service, stub_endpoint, params={"param_key": "param_value"}
-        )
+        actual_response = ServiceCaller.call(service, stub_endpoint, params={"param_key": "param_value"})
 
         expected_response = "correct"
 

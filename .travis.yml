@@ -32,7 +32,7 @@ jobs:
         - pip install black pyflakes
       script:
         - pyflakes apiron tests
-        - black --check -t py34 apiron tests
+        - black --check apiron tests
 
     - stage: deploy
       before_deploy:

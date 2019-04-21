@@ -88,23 +88,17 @@ class TestEndpoint:
             assert issubclass(warning_records[-1].category, UserWarning)
 
     def test_get_merged_params(self):
-        foo = apiron.JsonEndpoint(
-            default_params={"foo": "bar"}, required_params={"baz"}
-        )
+        foo = apiron.JsonEndpoint(default_params={"foo": "bar"}, required_params={"baz"})
         assert {"foo": "bar", "baz": "qux"} == foo.get_merged_params({"baz": "qux"})
 
     def test_get_merged_params_with_unsupplied_param(self):
-        foo = apiron.JsonEndpoint(
-            default_params={"foo": "bar"}, required_params={"baz"}
-        )
+        foo = apiron.JsonEndpoint(default_params={"foo": "bar"}, required_params={"baz"})
 
         with pytest.raises(apiron.UnfulfilledParameterException):
             foo.get_merged_params()
 
     def test_get_merged_params_with_empty_param(self):
-        foo = apiron.JsonEndpoint(
-            default_params={"foo": "bar"}, required_params={"baz"}
-        )
+        foo = apiron.JsonEndpoint(default_params={"foo": "bar"}, required_params={"baz"})
 
         with warnings.catch_warnings(record=True) as warning_records:
             warnings.simplefilter("always")
@@ -113,9 +107,7 @@ class TestEndpoint:
             assert issubclass(warning_records[-1].category, RuntimeWarning)
 
     def test_get_merged_params_with_required_and_default_param(self):
-        foo = apiron.JsonEndpoint(
-            default_params={"foo": "bar"}, required_params={"foo"}
-        )
+        foo = apiron.JsonEndpoint(default_params={"foo": "bar"}, required_params={"foo"})
         assert {"foo": "bar"} == foo.get_merged_params()
 
     @mock.patch("apiron.client.requests.Session.send")
@@ -156,9 +148,7 @@ class TestStreamingEndpoint:
     def test_format_response(self):
         foo = apiron.StreamingEndpoint()
         mock_response = mock.Mock()
-        assert mock_response.iter_content(chunk_size=None) == foo.format_response(
-            mock_response
-        )
+        assert mock_response.iter_content(chunk_size=None) == foo.format_response(mock_response)
 
 
 class TestStubEndpoint:
@@ -204,10 +194,7 @@ class TestStubEndpoint:
 
         def _test_case(call_kwargs, expected_response):
             def stub_response(**kwargs):
-                if (
-                    kwargs.get("params")
-                    and kwargs["params"].get("param_key") == "param_value"
-                ):
+                if kwargs.get("params") and kwargs["params"].get("param_key") == "param_value":
                     return {"stub response": "for param_key=param_value"}
                 else:
                     return {"default": "response"}

@@ -19,7 +19,5 @@ class DiscoverableService(ServiceBase):
     def __repr__(self):
         klass = self.__class__
         return "{klass}(service_name={service_name}, host_resolver={host_resolver})".format(
-            klass=klass.__name__,
-            service_name=klass.service_name,
-            host_resolver=klass.host_resolver_class.__name__,
+            klass=klass.__name__, service_name=klass.service_name, host_resolver=klass.host_resolver_class.__name__
         )

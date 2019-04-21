@@ -15,9 +15,7 @@ class StubEndpoint:
         if hasattr(self, "callable"):
             return self.callable(*args, **kwargs)
         else:
-            raise TypeError(
-                "Endpoints are only callable in conjunction with a Service class."
-            )
+            raise TypeError("Endpoints are only callable in conjunction with a Service class.")
 
     def __init__(self, stub_response=None, **kwargs):
         """

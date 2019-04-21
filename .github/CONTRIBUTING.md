@@ -43,11 +43,5 @@ $ pyenv activate apiron  # activate your virtual environment
 ## Code formatting
 
 This project uses [`black`](https://github.com/ambv/black) for consistent code formatting.
-Before opening a pull request, try to remember to run `black` on your code.
-Since we support Python versions as early as 3.4, the following command should be used to format your code:
-
-```
-$ black --target py34 apiron tests
-```
-
+Before opening a pull request, try to remember to run `black` on your code; the build will fail otherwise.
 Note that `black` requires Python 3.6+ to run, although it supports formatting compatible with earlier versions of Python.

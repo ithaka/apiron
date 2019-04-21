@@ -22,9 +22,7 @@ DEFAULT_STATUS_CODES_TO_RETRY_ON = range(500, 600)
 
 Timeout = collections.namedtuple("Timeout", ["connection_timeout", "read_timeout"])
 
-DEFAULT_TIMEOUT = Timeout(
-    connection_timeout=DEFAULT_CONNECTION_TIMEOUT, read_timeout=DEFAULT_READ_TIMEOUT
-)
+DEFAULT_TIMEOUT = Timeout(connection_timeout=DEFAULT_CONNECTION_TIMEOUT, read_timeout=DEFAULT_READ_TIMEOUT)
 DEFAULT_RETRY = retry.Retry(
     total=DEFAULT_TOTAL_RETRIES,
     connect=DEFAULT_CONNECTION_RETRIES,
@@ -227,11 +225,7 @@ class ServiceCaller:
         logger = logger or LOGGER
 
         if hasattr(endpoint, "stub_response"):
-            logger.info(
-                "Stub call for endpoint defined by {}".format(
-                    getattr(endpoint, "endpoint_params", {})
-                )
-            )
+            logger.info("Stub call for endpoint defined by {}".format(getattr(endpoint, "endpoint_params", {})))
             if callable(endpoint.stub_response):
                 return endpoint.stub_response(
                     method=method or getattr(endpoint, "default_method", "GET"),
@@ -249,9 +243,7 @@ class ServiceCaller:
         managing_session = False
 
         if not session:
-            session = cls.get_adapted_session(
-                adapters.HTTPAdapter(max_retries=retry_spec)
-            )
+            session = cls.get_adapted_session(adapters.HTTPAdapter(max_retries=retry_spec))
             managing_session = True
 
         request = cls.build_request_object(
@@ -269,11 +261,7 @@ class ServiceCaller:
             **kwargs
         )
 
-        logger.info(
-            "{method} {url}".format(
-                method=method or endpoint.default_method, url=request.url
-            )
-        )
+        logger.info("{method} {url}".format(method=method or endpoint.default_method, url=request.url))
 
         response = session.send(
             request,
@@ -285,9 +273,7 @@ class ServiceCaller:
             "{status} {url}{history}".format(
                 status=response.status_code,
                 url=response.url,
-                history=" ({} redirect(s))".format(len(response.history))
-                if response.history
-                else "",
+                history=" ({} redirect(s))".format(len(response.history)) if response.history else "",
             )
         )
 
