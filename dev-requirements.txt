@@ -1,5 +1,6 @@
 -r requirements.txt
 
+black==19.3b0
 pytest==4.2.0
 pytest-cov==2.6.1
 sphinx==1.7.6
