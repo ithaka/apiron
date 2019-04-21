@@ -29,8 +29,10 @@ jobs:
     - stage: lint
       install:
         - pip install -r dev-requirements.txt
-        - pip install black
-      script: black --check -t py34 apiron tests
+        - pip install black pyflakes
+      script:
+        - pyflakes apiron tests
+        - black --check -t py34 apiron tests
 
     - stage: deploy
       before_deploy:
