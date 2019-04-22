@@ -20,7 +20,7 @@ DEFAULT_READ_RETRIES = 1
 DEFAULT_TOTAL_RETRIES = 1
 DEFAULT_STATUS_CODES_TO_RETRY_ON = range(500, 600)
 
-Timeout = collections.namedtuple('Timeout', ['connection_timeout', 'read_timeout'])
+Timeout = collections.namedtuple("Timeout", ["connection_timeout", "read_timeout"])
 
 DEFAULT_TIMEOUT = Timeout(connection_timeout=DEFAULT_CONNECTION_TIMEOUT, read_timeout=DEFAULT_READ_TIMEOUT)
 DEFAULT_RETRY = retry.Retry(
@@ -52,8 +52,8 @@ class ServiceCaller:
         :rtype:
             str
         """
-        host += '/' if not host.endswith('/') else ''
-        path = path.lstrip('/')
+        host += "/" if not host.endswith("/") else ""
+        path = path.lstrip("/")
 
         return parse.urljoin(host, path)
 
@@ -68,8 +68,8 @@ class ServiceCaller:
             The adapted :class:`requests.Session` instance
         """
         session = requests.Session()
-        session.mount('http://', adapter)
-        session.mount('https://', adapter)
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
         return session
 
     @staticmethod
@@ -116,10 +116,10 @@ class ServiceCaller:
 
         if path_kwargs:
             warnings.warn(
-                'path_kwargs is no longer necessary and will be removed in a future version of apiron. '
-                'You can call endpoints using plain keyword arguments instead!',
+                "path_kwargs is no longer necessary and will be removed in a future version of apiron. "
+                "You can call endpoints using plain keyword arguments instead!",
                 RuntimeWarning,
-                stacklevel=4
+                stacklevel=4,
             )
 
         path_kwargs = path_kwargs or {}
@@ -224,14 +224,11 @@ class ServiceCaller:
         """
         logger = logger or LOGGER
 
-        if hasattr(endpoint, 'stub_response'):
-            logger.info(
-                'Stub call for endpoint defined by {}'
-                .format(getattr(endpoint, 'endpoint_params', {}))
-            )
+        if hasattr(endpoint, "stub_response"):
+            logger.info("Stub call for endpoint defined by {}".format(getattr(endpoint, "endpoint_params", {})))
             if callable(endpoint.stub_response):
                 return endpoint.stub_response(
-                    method=method or getattr(endpoint, 'default_method', 'GET'),
+                    method=method or getattr(endpoint, "default_method", "GET"),
                     path_kwargs=path_kwargs,
                     params=params,
                     data=data,
@@ -264,22 +261,21 @@ class ServiceCaller:
             **kwargs
         )
 
-        logger.info('{method} {url}'.format(
-            method=method or endpoint.default_method,
-            url=request.url,
-        ))
+        logger.info("{method} {url}".format(method=method or endpoint.default_method, url=request.url))
 
         response = session.send(
             request,
             timeout=(timeout_spec.connection_timeout, timeout_spec.read_timeout),
-            stream=getattr(endpoint, 'streaming', False),
+            stream=getattr(endpoint, "streaming", False),
         )
 
-        logger.info('{status} {url}{history}'.format(
-            status=response.status_code,
-            url=response.url,
-            history=' ({} redirect(s))'.format(len(response.history)) if response.history else '',
-        ))
+        logger.info(
+            "{status} {url}{history}".format(
+                status=response.status_code,
+                url=response.url,
+                history=" ({} redirect(s))".format(len(response.history)) if response.history else "",
+            )
+        )
 
         if managing_session:
             session.close()
