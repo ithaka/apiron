@@ -4,9 +4,4 @@ from apiron.endpoint.streaming import StreamingEndpoint
 from apiron.endpoint.stub import StubEndpoint
 
 
-__all__ = [
-    'Endpoint',
-    'JsonEndpoint',
-    'StreamingEndpoint',
-    'StubEndpoint',
-]
+__all__ = ["Endpoint", "JsonEndpoint", "StreamingEndpoint", "StubEndpoint"]
