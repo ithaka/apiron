@@ -1,5 +1,4 @@
 import collections
-import warnings
 from unittest import mock
 
 import pytest
@@ -65,27 +64,19 @@ class TestEndpoint:
     def test_format_path_with_incorrect_kwargs(self):
         foo = apiron.Endpoint(path="/{one}/{two}/")
         path_kwargs = {"foo": "bar"}
-        with pytest.raises(KeyError):
-            with warnings.catch_warnings(record=True) as warning_records:
-                warnings.simplefilter("always")
+        with pytest.warns(RuntimeWarning, match="An unknown path kwarg was supplied"):
+            with pytest.raises(KeyError):
                 foo.get_formatted_path(**path_kwargs)
-            assert 1 == len(warning_records)
-            assert issubclass(warning_records[-1].category, RuntimeWarning)
 
     def test_format_path_with_extra_kwargs(self):
         foo = apiron.Endpoint(path="/{one}/{two}/")
         path_kwargs = {"one": "foo", "two": "bar", "three": "not used"}
-        with warnings.catch_warnings(record=True) as warning_records:
+        with pytest.warns(RuntimeWarning, match="An unknown path kwarg was supplied"):
             assert "/foo/bar/" == foo.get_formatted_path(**path_kwargs)
-            assert 1 == len(warning_records)
-            assert issubclass(warning_records[-1].category, RuntimeWarning)
 
     def test_query_parameter_in_path_generates_warning(self):
-        with warnings.catch_warnings(record=True) as warning_records:
-            warnings.simplefilter("always")
+        with pytest.warns(UserWarning, match="Endpoint path may contain query parameters"):
             _ = apiron.Endpoint(path="/?foo=bar")
-            assert 1 == len(warning_records)
-            assert issubclass(warning_records[-1].category, UserWarning)
 
     def test_get_merged_params(self):
         foo = apiron.JsonEndpoint(default_params={"foo": "bar"}, required_params={"baz"})
@@ -99,12 +90,8 @@ class TestEndpoint:
 
     def test_get_merged_params_with_empty_param(self):
         foo = apiron.JsonEndpoint(default_params={"foo": "bar"}, required_params={"baz"})
-
-        with warnings.catch_warnings(record=True) as warning_records:
-            warnings.simplefilter("always")
+        with pytest.warns(RuntimeWarning, match="endpoint was called with empty parameters"):
             assert {"foo": "bar", "baz": None} == foo.get_merged_params({"baz": None})
-            assert 1 == len(warning_records)
-            assert issubclass(warning_records[-1].category, RuntimeWarning)
 
     def test_get_merged_params_with_required_and_default_param(self):
         foo = apiron.JsonEndpoint(default_params={"foo": "bar"}, required_params={"foo"})
@@ -113,11 +100,8 @@ class TestEndpoint:
     @mock.patch("apiron.client.requests.Session.send")
     def test_using_path_kwargs_produces_warning(self, mock_send, service):
         service.foo = apiron.Endpoint(path="/foo/{one}")
-        with warnings.catch_warnings(record=True) as warning_records:
-            warnings.simplefilter("always")
+        with pytest.warns(RuntimeWarning, match="path_kwargs is no longer necessary"):
             _ = service.foo(path_kwargs={"one": "bar"})
-            assert 1 == len(warning_records)
-            assert issubclass(warning_records[-1].category, RuntimeWarning)
 
 
 class TestJsonEndpoint:
