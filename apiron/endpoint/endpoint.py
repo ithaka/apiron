@@ -20,6 +20,9 @@ class Endpoint:
         update_wrapper(caller, ServiceCaller.call)
         return caller
 
+    def __call__(self):
+        raise TypeError("Endpoints are only callable in conjunction with a Service class.")
+
     def __init__(self, path="/", default_method="GET", default_params=None, required_params=None):
         """
         :param str path:
