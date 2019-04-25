@@ -1,19 +1,7 @@
-from functools import partial
-
-from apiron.client import ServiceCaller
-from apiron.endpoint import Endpoint, StubEndpoint
-
-
 class ServiceMeta(type):
     @property
     def required_headers(cls):
         return cls().required_headers
-
-    def __getattribute__(cls, *args):
-        attribute = type.__getattribute__(cls, *args)
-        if isinstance(attribute, Endpoint) or isinstance(attribute, StubEndpoint):
-            attribute.callable = partial(ServiceCaller.call, cls, attribute)
-        return attribute
 
     def __str__(cls):
         return str(cls())
