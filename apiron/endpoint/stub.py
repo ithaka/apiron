@@ -1,3 +1,8 @@
+from functools import partial, update_wrapper
+
+from apiron import ServiceCaller
+
+
 class StubEndpoint:
     """
     A stub endpoint designed to return a pre-baked response
@@ -6,16 +11,10 @@ class StubEndpoint:
     before the endpoint is complete.
     """
 
-    def __call__(self, *args, **kwargs):
-        """
-        Used to provide syntax sugar on top of :func:`apiron.client.ServiceCaller.call`.
-        The callable attribute is set dynamically by the :class:`Service` subclass this endpoint is a part of.
-        Arguments are identical to those of :func:`apiron.client.ServiceCaller.call`
-        """
-        if hasattr(self, "callable"):
-            return self.callable(*args, **kwargs)
-        else:
-            raise TypeError("Endpoints are only callable in conjunction with a Service class.")
+    def __get__(self, instance, owner):
+        caller = partial(ServiceCaller.call, owner, self)
+        update_wrapper(caller, ServiceCaller.call)
+        return caller
 
     def __init__(self, stub_response=None, **kwargs):
         """
