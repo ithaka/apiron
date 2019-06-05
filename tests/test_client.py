@@ -115,7 +115,10 @@ class TestClient:
 
         mock_get_adapted_session.assert_called_once_with(MockAdapter())
         mock_session.send.assert_called_once_with(
-            request, timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout), stream=endpoint.streaming
+            request,
+            timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout),
+            stream=endpoint.streaming,
+            allow_redirects=True
         )
 
         mock_logger.info.assert_any_call("GET http://host1.biz/foo/")
@@ -127,7 +130,10 @@ class TestClient:
         ServiceCaller.call(service, endpoint, session=mock_session, timeout_spec=mock_timeout, logger=mock_logger)
 
         mock_session.send.assert_any_call(
-            request, timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout), stream=endpoint.streaming
+            request,
+            timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout),
+            stream=endpoint.streaming,
+            allow_redirects=True
         )
 
         mock_logger.info.assert_any_call("GET http://host1.biz/foo/")
@@ -140,7 +146,10 @@ class TestClient:
         )
 
         mock_session.send.assert_any_call(
-            request, timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout), stream=endpoint.streaming
+            request,
+            timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout),
+            stream=endpoint.streaming,
+            allow_redirects=True
         )
 
     @mock.patch("apiron.client.ServiceCaller.get_adapted_session")

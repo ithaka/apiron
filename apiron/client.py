@@ -162,6 +162,7 @@ class ServiceCaller:
         retry_spec=DEFAULT_RETRY,
         timeout_spec=DEFAULT_TIMEOUT,
         logger=None,
+        allow_redirects=True,
         **kwargs
     ):
         """
@@ -214,6 +215,10 @@ class ServiceCaller:
         :param logging.Logger logger:
             (optional)
             An existing logger for logging from the proper caller for better correlation
+        :param bool allow_redirects:
+            (optional)
+            Enable/disable GET/OPTIONS/POST/PUT/PATCH/DELETE/HEAD redirection
+            (default ``True``)
         :return:
             The result of ``endpoint``'s :func:`format_response`
         :rtype: The type returned by ``endpoint``'s :func:`format_response`
@@ -267,6 +272,7 @@ class ServiceCaller:
             request,
             timeout=(timeout_spec.connection_timeout, timeout_spec.read_timeout),
             stream=getattr(endpoint, "streaming", False),
+            allow_redirects=allow_redirects
         )
 
         logger.info(
