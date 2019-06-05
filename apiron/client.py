@@ -272,7 +272,7 @@ class ServiceCaller:
             request,
             timeout=(timeout_spec.connection_timeout, timeout_spec.read_timeout),
             stream=getattr(endpoint, "streaming", False),
-            allow_redirects=allow_redirects
+            allow_redirects=allow_redirects,
         )
 
         logger.info(
