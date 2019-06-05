@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Ability to pass optional parameter `allow_redirects` to enable/disable HTTP redirection when calling an endpoint
+
 ### Changed
 - Move to the descriptor protocol from metaclassing under the hood for turning an endpoint into a callable
 
