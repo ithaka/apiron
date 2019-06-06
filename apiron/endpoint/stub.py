@@ -12,9 +12,11 @@ class StubEndpoint:
     """
 
     def __get__(self, instance, owner):
-        caller = partial(ServiceCaller.call, owner, self)
-        update_wrapper(caller, ServiceCaller.call)
-        return caller
+        if not instance:
+            caller = partial(ServiceCaller.call, owner, self)
+            update_wrapper(caller, ServiceCaller.call)
+            return caller
+        return self
 
     def __call__(self):
         raise TypeError("Endpoints are only callable in conjunction with a Service class.")

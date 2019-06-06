@@ -4,6 +4,7 @@ from unittest import mock
 import pytest
 
 import apiron
+from apiron import ServiceCaller
 
 
 @pytest.fixture
@@ -102,6 +103,20 @@ class TestEndpoint:
         service.foo = apiron.Endpoint(path="/foo/{one}")
         with pytest.warns(RuntimeWarning, match="path_kwargs is no longer necessary"):
             _ = service.foo(path_kwargs={"one": "bar"})
+
+    @mock.patch("apiron.client.Timeout")
+    @mock.patch("requests.Session", autospec=True)
+    def test_legacy_endpoint_usage_with_instantiated_service(self, MockSession, mock_timeout, service):
+        service.foo = apiron.Endpoint(path="/foo/")
+        instantiated_service = service()
+
+        mock_logger = mock.Mock()
+        request = mock.Mock()
+        request.url = "http://host1.biz/foo/"
+
+        ServiceCaller.call(
+            instantiated_service, instantiated_service.foo, timeout_spec=mock_timeout, logger=mock_logger
+        )
 
 
 class TestJsonEndpoint:
