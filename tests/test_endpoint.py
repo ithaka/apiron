@@ -212,3 +212,7 @@ class TestStubEndpoint:
         stub_endpoint = apiron.StubEndpoint(stub_response="foo")
         with pytest.raises(TypeError):
             stub_endpoint()
+
+    def test_call_with_initialized_service_works(self, service):
+        service.stub = apiron.StubEndpoint(stub_response="foo")
+        assert ServiceCaller.call(service(), service().stub) == "foo"
