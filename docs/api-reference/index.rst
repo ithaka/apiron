@@ -7,4 +7,4 @@ API reference
 
     services
     endpoints
-    service-caller
+    service-client

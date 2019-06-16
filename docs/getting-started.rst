@@ -1,7 +1,6 @@
 ###############
-Getting Started
+Getting started
 ###############
-
 
 The goal of ``apiron`` is to get you up and running quickly,
 consuming a service with little initial configuration
