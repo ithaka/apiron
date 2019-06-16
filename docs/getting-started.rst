@@ -34,7 +34,7 @@ Interacting with a service
 **************************
 
 Once your service definition is in place, you can interact with its endpoints
-using the :class:`ServiceCaller <apiron.client.ServiceCaller>`:
+in an SDK-like manner:
 
 .. code-block:: python
 

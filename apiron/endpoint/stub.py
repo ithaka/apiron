@@ -1,6 +1,6 @@
 from functools import partial, update_wrapper
 
-from apiron import ServiceCaller
+from apiron import client
 
 
 class StubEndpoint:
@@ -13,8 +13,8 @@ class StubEndpoint:
 
     def __get__(self, instance, owner):
         if not instance:
-            caller = partial(ServiceCaller.call, owner, self)
-            update_wrapper(caller, ServiceCaller.call)
+            caller = partial(client.call, owner, self)
+            update_wrapper(caller, client.call)
             return caller
         return self
 

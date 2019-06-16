@@ -4,7 +4,7 @@ from unittest import mock
 import pytest
 
 import apiron
-from apiron import ServiceCaller
+from apiron import client
 
 
 @pytest.fixture
@@ -114,7 +114,7 @@ class TestEndpoint:
         request = mock.Mock()
         request.url = "http://host1.biz/foo/"
 
-        ServiceCaller.call(
+        client.call(
             instantiated_service, instantiated_service.foo, timeout_spec=mock_timeout, logger=mock_logger
         )
 
@@ -215,4 +215,4 @@ class TestStubEndpoint:
 
     def test_call_with_initialized_service_works(self, service):
         service.stub = apiron.StubEndpoint(stub_response="foo")
-        assert ServiceCaller.call(service(), service().stub) == "foo"
+        assert client.call(service(), service().stub) == "foo"
