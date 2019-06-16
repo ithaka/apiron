@@ -195,6 +195,8 @@ def call(
         (optional)
         Enable/disable GET/OPTIONS/POST/PUT/PATCH/DELETE/HEAD redirection
         (default ``True``)
+    :param ``**kwargs``:
+        Arguments to be formatted into the ``endpoint`` argument's ``path`` attribute
     :return:
         The result of ``endpoint``'s :func:`format_response`
     :rtype: The type returned by ``endpoint``'s :func:`format_response`
