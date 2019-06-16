@@ -98,12 +98,6 @@ class TestEndpoint:
         foo = apiron.JsonEndpoint(default_params={"foo": "bar"}, required_params={"foo"})
         assert {"foo": "bar"} == foo.get_merged_params()
 
-    @mock.patch("apiron.client.requests.Session.send")
-    def test_using_path_kwargs_produces_warning(self, mock_send, service):
-        service.foo = apiron.Endpoint(path="/foo/{one}")
-        with pytest.warns(RuntimeWarning, match="path_kwargs is no longer necessary"):
-            _ = service.foo(path_kwargs={"one": "bar"})
-
     @mock.patch("apiron.client.Timeout")
     @mock.patch("requests.Session", autospec=True)
     def test_legacy_endpoint_usage_with_instantiated_service(self, MockSession, mock_timeout, service):

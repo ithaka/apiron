@@ -96,7 +96,6 @@ def build_request_object(
     service,
     endpoint,
     method=None,
-    path_kwargs=None,
     params=None,
     data=None,
     json=None,
@@ -107,17 +106,7 @@ def build_request_object(
 ):
     host = choose_host(service=service)
 
-    if path_kwargs:
-        warnings.warn(
-            "path_kwargs is no longer necessary and will be removed in a future version of apiron. "
-            "You can call endpoints using plain keyword arguments instead!",
-            RuntimeWarning,
-            stacklevel=4,
-        )
-
-    path_kwargs = path_kwargs or {}
-    path_kwargs.update(**kwargs)
-    path = endpoint.get_formatted_path(**path_kwargs)
+    path = endpoint.get_formatted_path(**kwargs)
 
     merged_params = endpoint.get_merged_params(params)
 
@@ -142,7 +131,6 @@ def call(
     service,
     endpoint,
     method=None,
-    path_kwargs=None,
     session=None,
     params=None,
     data=None,
@@ -164,9 +152,6 @@ def call(
         The endpoint being called
     :param str method:
         The HTTP method to use for the call
-    :param dict path_kwargs:
-        Arguments to be formatted into the ``endpoint`` argument's ``path`` attribute
-        (default ``None``)
     :param requests.Session session:
         (optional)
         An existing session, useful for making many calls in a single session
@@ -226,7 +211,6 @@ def call(
         if callable(endpoint.stub_response):
             return endpoint.stub_response(
                 method=method or getattr(endpoint, "default_method", "GET"),
-                path_kwargs=path_kwargs,
                 params=params,
                 data=data,
                 json=json,
@@ -248,7 +232,6 @@ def call(
         service,
         endpoint,
         method=method or endpoint.default_method,
-        path_kwargs=path_kwargs,
         params=params,
         data=data,
         json=json,
