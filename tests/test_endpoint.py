@@ -108,9 +108,7 @@ class TestEndpoint:
         request = mock.Mock()
         request.url = "http://host1.biz/foo/"
 
-        client.call(
-            instantiated_service, instantiated_service.foo, timeout_spec=mock_timeout, logger=mock_logger
-        )
+        client.call(instantiated_service, instantiated_service.foo, timeout_spec=mock_timeout, logger=mock_logger)
 
 
 class TestJsonEndpoint:
