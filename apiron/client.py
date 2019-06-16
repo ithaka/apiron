@@ -1,7 +1,6 @@
 import collections
 import logging
 import random
-import warnings
 from urllib import parse
 
 import requests
