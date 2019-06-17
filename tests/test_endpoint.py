@@ -4,7 +4,7 @@ from unittest import mock
 import pytest
 
 import apiron
-from apiron import ServiceCaller
+from apiron import client
 
 
 @pytest.fixture
@@ -98,12 +98,6 @@ class TestEndpoint:
         foo = apiron.JsonEndpoint(default_params={"foo": "bar"}, required_params={"foo"})
         assert {"foo": "bar"} == foo.get_merged_params()
 
-    @mock.patch("apiron.client.requests.Session.send")
-    def test_using_path_kwargs_produces_warning(self, mock_send, service):
-        service.foo = apiron.Endpoint(path="/foo/{one}")
-        with pytest.warns(RuntimeWarning, match="path_kwargs is no longer necessary"):
-            _ = service.foo(path_kwargs={"one": "bar"})
-
     @mock.patch("apiron.client.Timeout")
     @mock.patch("requests.Session", autospec=True)
     def test_legacy_endpoint_usage_with_instantiated_service(self, MockSession, mock_timeout, service):
@@ -114,9 +108,7 @@ class TestEndpoint:
         request = mock.Mock()
         request.url = "http://host1.biz/foo/"
 
-        ServiceCaller.call(
-            instantiated_service, instantiated_service.foo, timeout_spec=mock_timeout, logger=mock_logger
-        )
+        client.call(instantiated_service, instantiated_service.foo, timeout_spec=mock_timeout, logger=mock_logger)
 
 
 class TestJsonEndpoint:
@@ -215,4 +207,4 @@ class TestStubEndpoint:
 
     def test_call_with_initialized_service_works(self, service):
         service.stub = apiron.StubEndpoint(stub_response="foo")
-        assert ServiceCaller.call(service(), service().stub) == "foo"
+        assert client.call(service(), service().stub) == "foo"

@@ -1,7 +1,6 @@
 ###############
-Getting Started
+Getting started
 ###############
-
 
 The goal of ``apiron`` is to get you up and running quickly,
 consuming a service with little initial configuration
@@ -34,7 +33,7 @@ Interacting with a service
 **************************
 
 Once your service definition is in place, you can interact with its endpoints
-using the :class:`ServiceCaller <apiron.client.ServiceCaller>`:
+in an SDK-like manner:
 
 .. code-block:: python
 

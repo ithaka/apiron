@@ -1,8 +1,11 @@
-#######
+######
 apiron
-#######
+######
 
-A Python wrapper for interacting with RESTful APIs
+``apiron`` ("API" + "iron") is a Python wrapper for interacting with RESTful APIs
+
+.. TIP::
+    Read the :doc:`upgrade guide <upgrade-guide>` to make sure you're prepared for the latest version of apiron.
 
 Welcome to the documentation for ``apiron``!
 You can use this documentation to orient yourself to the codebase,
@@ -18,6 +21,7 @@ feel free to change it in a pull request!
 
     getting-started
     advanced-usage
+    upgrade-guide
     api-reference/index
 
 

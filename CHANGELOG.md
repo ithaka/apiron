@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - More testing for the bug fixed in v2.6.1
 
+### Changed
+- Extract `ServiceCaller` behaviors to module level and remove class
+- Remove `path_kwargs` argument from the `call` function (previously a `ServiceCaller` method)
+
 ## [2.6.1] - 2019-06-06
 ### Added
 - Backwards compatibility to allow `ServiceCaller.call()` to use endpoints that live in an instantiated `Service`
