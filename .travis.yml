@@ -46,6 +46,9 @@ jobs:
             - dist/apiron-*-py3-none-any.whl
             - dist/apiron-*.tar.gz
           skip_cleanup: true
+          on:
+              tags: true
+              python: '3.7'
 
         - &pypi  # Production PyPI
           provider: pypi
@@ -54,6 +57,9 @@ jobs:
             secure: 'Y9qZ8MzvisM3VNMeiL9yL9RkIyW8qzcvrpSkzf0haz2tLtMoidW8mXoC2pj5g5iXTLrK5uG/5PHrJ7loWns4BvDHU/amhzTm+m5vu6De4PSlKRy4uqnR7CtbsfbeR2+wz9YnPuejr/iP5yQSpZS2EokdsG4kXAVgdVTNA9M9l3vdlt04hN/knszmUv6L7Exd4YV390POTwzVFnXX9QpMy2S2JVHQfn3ZvYd+yurNb92b5IsXXxVAdcFniAhfyThSX5Yo1I1QoD2zINB/3IfYndm5/W715SASNCvZdDPuA7cOsuQBuyb2ImNbmG9y8TW8ll9owuGTfZUQ3jqYijH5TwKH6+CEM2fYKFJ2s2/9DsJyW3wl9CHfWBPfj3weOoFfVxVHYBz5eqRoL7j7qYPJgibnJM6+6h8HRDMsiOB5OJqZDXupxBhCVJc8SjLnEQjjJPYbScVXobh6NAH5r51hti41jUhy4XEqjW3TiaYQP4v8FcPOVog0eH5MXN7C/BYrQ0vHrOHs0Yb60LZGXMlAZYKO0mNV7mhgaOjwIEr0w1zROKAUMWvOH2WgiPOJDOxS2mrjej+f60zVjgAmRw19O63M2qczjbUnOda+hfqV7QodurWLwq7OPJEkeK2KfjVvUqqnlhfuVgc7XFsAuPnsf1jJFtOV0vdwYkDb9Ah6/Ho='
           skip_cleanup: true
           skip_existing: true
+          on:
+              tags: true
+              python: '3.7'
 
         - <<: *pypi  # Test PyPI
           server: 'https://test.pypi.org/legacy/'
