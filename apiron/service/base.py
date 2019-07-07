@@ -8,7 +8,7 @@ class ServiceMeta(type):
 
     @property
     def endpoints(cls):
-        return [attr for attr_name, attr in cls.__dict__.items() if isinstance(attr, Endpoint)]
+        return {attr for attr_name, attr in cls.__dict__.items() if isinstance(attr, Endpoint)}
 
     def __str__(cls):
         return str(cls())

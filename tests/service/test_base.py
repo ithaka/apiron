@@ -33,12 +33,12 @@ class TestService:
         assert {} == service.required_headers
 
     def test_endpoints_when_no_endpoints(self, service):
-        assert service.endpoints == []
+        assert service.endpoints == set()
 
     def test_endpoints_when_one_endpoint(self, service):
         foo = Endpoint(path="/foo")
         service.foo = foo
-        assert service.endpoints == [foo]
+        assert service.endpoints == {foo}
 
     def test_endpoints_when_multiple_endpoints(self, service):
         foo = Endpoint(path="/foo")
@@ -47,4 +47,4 @@ class TestService:
         service.foo = foo
         service.bar = bar
 
-        assert service.endpoints == [foo, bar]
+        assert service.endpoints == {foo, bar}
