@@ -1,6 +1,3 @@
-from functools import partial, update_wrapper
-
-from apiron import client
 from apiron.endpoint import Endpoint
 
 

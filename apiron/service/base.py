@@ -1,4 +1,4 @@
-from apiron import Endpoint, StubEndpoint
+from apiron import Endpoint
 
 
 class ServiceMeta(type):

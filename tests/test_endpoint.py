@@ -4,7 +4,6 @@ from unittest import mock
 import pytest
 
 import apiron
-from apiron import client
 
 
 @pytest.fixture
@@ -55,10 +54,6 @@ class TestEndpoint:
     def test_required_headers(self):
         foo = apiron.Endpoint()
         assert {} == foo.required_headers
-
-    def test_str_method(self):
-        foo = apiron.Endpoint(path="/foo/bar/")
-        assert "/foo/bar/" == str(foo)
 
     def test_path_placeholders_when_none_present(self):
         foo = apiron.Endpoint()
