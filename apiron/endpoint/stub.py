@@ -1,9 +1,10 @@
 from functools import partial, update_wrapper
 
 from apiron import client
+from apiron.endpoint import Endpoint
 
 
-class StubEndpoint:
+class StubEndpoint(Endpoint):
     """
     A stub endpoint designed to return a pre-baked response
 
@@ -12,14 +13,7 @@ class StubEndpoint:
     """
 
     def __get__(self, instance, owner):
-        if not instance:
-            caller = partial(client.call, owner, self)
-            update_wrapper(caller, client.call)
-            return caller
-        return self
-
-    def __call__(self):
-        raise TypeError("Endpoints are only callable in conjunction with a Service class.")
+        return self.stub_response
 
     def __init__(self, stub_response=None, **kwargs):
         """
@@ -40,5 +34,10 @@ class StubEndpoint:
             Arbitrary parameters that can match the intended real endpoint.
             These don't do anything for the stub but streamline the interface.
         """
-        self.endpoint_params = kwargs or {}
-        self.stub_response = stub_response or "stub for {}".format(self.endpoint_params)
+        super().__init__(**kwargs)
+        if callable(stub_response):
+            self.stub_response = stub_response
+        elif stub_response:
+            self.stub_response = lambda *args, **kwargs: stub_response
+        else:
+            self.stub_response = lambda *args, **kwargs: {"response": repr(self)}

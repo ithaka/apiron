@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Added
+- An `endpoints` attribute on `Service` classes returns a list of that service's configured endpoints
+- `Endpoint` classes now have a useful `__repr__` implementation, e.g. `"JsonEndpoint(path='/foo')"`.
+
+### Changed
+- `StubEndpoint` now inherits from `Endpoint` and as a result does not accept arbitrary keyword arguments
+
 ## [3.0.0] - 2019-06-20
 ### Added
 - More testing for the bug fixed in v2.6.1

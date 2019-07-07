@@ -16,11 +16,9 @@ class Endpoint:
     """
 
     def __get__(self, instance, owner):
-        if not instance:
-            caller = partial(client.call, owner, self)
-            update_wrapper(caller, client.call)
-            return caller
-        return self
+        caller = partial(client.call, owner, self)
+        update_wrapper(caller, client.call)
+        return caller
 
     def __call__(self):
         raise TypeError("Endpoints are only callable in conjunction with a Service class.")
@@ -154,3 +152,6 @@ class Endpoint:
 
     def __str__(self):
         return self.path
+
+    def __repr__(self):
+        return "{klass}(path='{path}')".format(klass=self.__class__.__name__, path=self.path)

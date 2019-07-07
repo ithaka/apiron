@@ -15,6 +15,17 @@ def service():
     return SomeService
 
 
+@pytest.fixture
+def stub_function():
+    def stub_response(**kwargs):
+        if kwargs.get("params") and kwargs["params"].get("param_key") == "param_value":
+            return {"stub response": "stubby!"}
+        else:
+            return {"default": "response"}
+
+    return stub_response
+
+
 class TestEndpoint:
     def test_call(self, service):
         service.foo = apiron.Endpoint()
@@ -80,35 +91,31 @@ class TestEndpoint:
             _ = apiron.Endpoint(path="/?foo=bar")
 
     def test_get_merged_params(self):
-        foo = apiron.JsonEndpoint(default_params={"foo": "bar"}, required_params={"baz"})
+        foo = apiron.Endpoint(default_params={"foo": "bar"}, required_params={"baz"})
         assert {"foo": "bar", "baz": "qux"} == foo.get_merged_params({"baz": "qux"})
 
     def test_get_merged_params_with_unsupplied_param(self):
-        foo = apiron.JsonEndpoint(default_params={"foo": "bar"}, required_params={"baz"})
+        foo = apiron.Endpoint(default_params={"foo": "bar"}, required_params={"baz"})
 
         with pytest.raises(apiron.UnfulfilledParameterException):
             foo.get_merged_params()
 
     def test_get_merged_params_with_empty_param(self):
-        foo = apiron.JsonEndpoint(default_params={"foo": "bar"}, required_params={"baz"})
+        foo = apiron.Endpoint(default_params={"foo": "bar"}, required_params={"baz"})
         with pytest.warns(RuntimeWarning, match="endpoint was called with empty parameters"):
             assert {"foo": "bar", "baz": None} == foo.get_merged_params({"baz": None})
 
     def test_get_merged_params_with_required_and_default_param(self):
-        foo = apiron.JsonEndpoint(default_params={"foo": "bar"}, required_params={"foo"})
+        foo = apiron.Endpoint(default_params={"foo": "bar"}, required_params={"foo"})
         assert {"foo": "bar"} == foo.get_merged_params()
 
-    @mock.patch("apiron.client.Timeout")
-    @mock.patch("requests.Session", autospec=True)
-    def test_legacy_endpoint_usage_with_instantiated_service(self, MockSession, mock_timeout, service):
-        service.foo = apiron.Endpoint(path="/foo/")
-        instantiated_service = service()
+    def test_str_method(self):
+        foo = apiron.Endpoint(path="/bar/baz")
+        assert str(foo) == "/bar/baz"
 
-        mock_logger = mock.Mock()
-        request = mock.Mock()
-        request.url = "http://host1.biz/foo/"
-
-        client.call(instantiated_service, instantiated_service.foo, timeout_spec=mock_timeout, logger=mock_logger)
+    def test_repr_method(self):
+        foo = apiron.Endpoint(path="/bar/baz")
+        assert repr(foo) == "Endpoint(path='/bar/baz')"
 
 
 class TestJsonEndpoint:
@@ -134,6 +141,14 @@ class TestJsonEndpoint:
         foo = apiron.JsonEndpoint()
         assert {"Accept": "application/json"} == foo.required_headers
 
+    def test_str_method(self):
+        foo = apiron.JsonEndpoint(path="/bar/baz")
+        assert str(foo) == "/bar/baz"
+
+    def test_repr_method(self):
+        foo = apiron.JsonEndpoint(path="/bar/baz")
+        assert repr(foo) == "JsonEndpoint(path='/bar/baz')"
+
 
 class TestStreamingEndpoint:
     def test_format_response(self):
@@ -141,70 +156,42 @@ class TestStreamingEndpoint:
         mock_response = mock.Mock()
         assert mock_response.iter_content(chunk_size=None) == foo.format_response(mock_response)
 
+    def test_str_method(self):
+        foo = apiron.StreamingEndpoint(path="/bar/baz")
+        assert str(foo) == "/bar/baz"
+
+    def test_repr_method(self):
+        foo = apiron.StreamingEndpoint(path="/bar/baz")
+        assert repr(foo) == "StreamingEndpoint(path='/bar/baz')"
+
 
 class TestStubEndpoint:
-    def test_stub_response(self):
-        """
-        Test initializing a stub endpoint with a stub response
-        """
-        stub_endpoint = apiron.StubEndpoint(stub_response="stub response")
-        assert "stub response" == stub_endpoint.stub_response
-
-    def test_extra_params(self):
-        """
-        Test initializing a stub endpoint with extra params
-        """
-        stub_endpoint = apiron.StubEndpoint(
-            stub_response="stub response",
-            path="/some/path/",
-            default_params={"param_name": "param_val"},
-            required_params={"param_name"},
-            arbitrary_kwarg="foo",
-        )
-        expected_params = {
-            "path": "/some/path/",
-            "default_params": {"param_name": "param_val"},
-            "required_params": {"param_name"},
-            "arbitrary_kwarg": "foo",
-        }
-        assert expected_params == stub_endpoint.endpoint_params
+    def test_stub_default_response(self, service):
+        service.stub_endpoint = apiron.StubEndpoint()
+        assert service.stub_endpoint() == {"response": "StubEndpoint(path='/')"}
 
     def test_call_static(self, service):
-        """
-        Test calling a ``StubEndpoint`` with a static response
-        """
         service.stub_endpoint = apiron.StubEndpoint(stub_response="stub response")
-        actual_response = service.stub_endpoint()
-        expected_response = "stub response"
+        assert service.stub_endpoint() == "stub response"
+
+    @pytest.mark.parametrize(
+        "test_call_kwargs,expected_response",
+        [({}, {"default": "response"}), ({"params": {"param_key": "param_value"}}, {"stub response": "stubby!"})],
+    )
+    def test_call_dynamic(self, test_call_kwargs, expected_response, service, stub_function):
+        service.stub_endpoint = apiron.StubEndpoint(stub_response=stub_function)
+        actual_response = service.stub_endpoint(**test_call_kwargs)
         assert actual_response == expected_response
-
-    def test_call_dynamic(self, service):
-        """
-        Test calling a StubEndpoint with a dynamic response
-        """
-
-        def _test_case(call_kwargs, expected_response):
-            def stub_response(**kwargs):
-                if kwargs.get("params") and kwargs["params"].get("param_key") == "param_value":
-                    return {"stub response": "for param_key=param_value"}
-                else:
-                    return {"default": "response"}
-
-            service.stub_endpoint = apiron.StubEndpoint(stub_response=stub_response)
-            actual_response = service.stub_endpoint(**call_kwargs)
-            assert actual_response == expected_response
-
-        _test_case(call_kwargs={}, expected_response={"default": "response"})
-        _test_case(
-            call_kwargs={"params": {"param_key": "param_value"}},
-            expected_response={"stub response": "for param_key=param_value"},
-        )
 
     def test_call_without_service_raises_exception(self):
         stub_endpoint = apiron.StubEndpoint(stub_response="foo")
         with pytest.raises(TypeError):
             stub_endpoint()
 
-    def test_call_with_initialized_service_works(self, service):
-        service.stub = apiron.StubEndpoint(stub_response="foo")
-        assert client.call(service(), service().stub) == "foo"
+    def test_str_method(self):
+        foo = apiron.StubEndpoint(path="/bar/baz")
+        assert str(foo) == "/bar/baz"
+
+    def test_repr_method(self):
+        foo = apiron.StubEndpoint(path="/bar/baz")
+        assert repr(foo) == "StubEndpoint(path='/bar/baz')"
