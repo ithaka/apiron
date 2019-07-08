@@ -112,6 +112,31 @@ class Endpoint:
                 stacklevel=6,
             )
 
+    def _check_for_empty_params(self, params):
+        empty_params = {
+            param: params[param] for param in params if params[param] in (None, "")
+        }
+
+        if empty_params:
+            warnings.warn(
+                "The {path} endpoint "
+                "was called with empty parameters: {empty_params}".format(path=self.path, empty_params=empty_params),
+                RuntimeWarning,
+                stacklevel=6,
+            )
+
+    def _check_for_unfulfilled_params(self, params):
+        unfulfilled_params = {
+            param for param in self.required_params if param not in params and param not in self.default_params
+        }
+
+        if unfulfilled_params:
+            raise UnfulfilledParameterException(self.path, unfulfilled_params)
+
+    def _validate_params(self, params):
+        self._check_for_empty_params(params)
+        self._check_for_unfulfilled_params(params)
+
     def get_merged_params(self, supplied_params=None):
         """
         Merge this endpoint's default parameters with the supplied parameters
@@ -128,23 +153,7 @@ class Endpoint:
         """
         supplied_params = supplied_params or {}
 
-        empty_params = {
-            param: supplied_params[param] for param in supplied_params if supplied_params[param] in (None, "")
-        }
-        if empty_params:
-            warnings.warn(
-                "The {path} endpoint "
-                "was called with empty parameters: {empty_params}".format(path=self.path, empty_params=empty_params),
-                RuntimeWarning,
-                stacklevel=5,
-            )
-
-        unfulfilled_params = {
-            param for param in self.required_params if param not in supplied_params and param not in self.default_params
-        }
-
-        if unfulfilled_params:
-            raise UnfulfilledParameterException(self.path, unfulfilled_params)
+        self._validate_params(supplied_params)
 
         merged_params = self.default_params.copy()
         merged_params.update(supplied_params)

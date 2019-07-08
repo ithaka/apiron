@@ -207,17 +207,17 @@ def call(
     """
     logger = logger or LOGGER
 
-    managing_session = False
+    managing_session = not session
 
-    if not session:
-        session = get_adapted_session(adapters.HTTPAdapter(max_retries=retry_spec))
-        managing_session = True
+    session = get_adapted_session(adapters.HTTPAdapter(max_retries=retry_spec)) if managing_session else session
+
+    method = method or endpoint.default_method
 
     request = build_request_object(
         session,
         service,
         endpoint,
-        method=method or endpoint.default_method,
+        method=method,
         params=params,
         data=data,
         json=json,
@@ -227,7 +227,7 @@ def call(
         **kwargs
     )
 
-    logger.info("{method} {url}".format(method=method or endpoint.default_method, url=request.url))
+    logger.info("{method} {url}".format(method=method, url=request.url))
 
     response = session.send(
         request,
