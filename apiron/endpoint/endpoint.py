@@ -113,9 +113,7 @@ class Endpoint:
             )
 
     def _check_for_empty_params(self, params):
-        empty_params = {
-            param: params[param] for param in params if params[param] in (None, "")
-        }
+        empty_params = {param: params[param] for param in params if params[param] in (None, "")}
 
         if empty_params:
             warnings.warn(
