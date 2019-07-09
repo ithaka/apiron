@@ -207,32 +207,17 @@ def call(
     """
     logger = logger or LOGGER
 
-    if hasattr(endpoint, "stub_response"):
-        logger.info("Stub call for endpoint defined by {}".format(getattr(endpoint, "endpoint_params", {})))
-        if callable(endpoint.stub_response):
-            return endpoint.stub_response(
-                method=method or getattr(endpoint, "default_method", "GET"),
-                params=params,
-                data=data,
-                json=json,
-                headers=headers,
-                cookies=cookies,
-                auth=auth,
-            )
-        else:
-            return endpoint.stub_response
+    managing_session = not session
 
-    managing_session = False
+    session = get_adapted_session(adapters.HTTPAdapter(max_retries=retry_spec)) if managing_session else session
 
-    if not session:
-        session = get_adapted_session(adapters.HTTPAdapter(max_retries=retry_spec))
-        managing_session = True
+    method = method or endpoint.default_method
 
     request = build_request_object(
         session,
         service,
         endpoint,
-        method=method or endpoint.default_method,
+        method=method,
         params=params,
         data=data,
         json=json,
@@ -242,7 +227,7 @@ def call(
         **kwargs
     )
 
-    logger.info("{method} {url}".format(method=method or endpoint.default_method, url=request.url))
+    logger.info("{method} {url}".format(method=method, url=request.url))
 
     response = session.send(
         request,
