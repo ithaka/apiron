@@ -5,6 +5,7 @@ notifications:
   email: false
 
 python:
+  - '3.8-dev'
   - '3.7'
   - '3.6'
   - '3.5'
@@ -15,7 +16,7 @@ install:
   - pip install -r dev-requirements.txt
 
 script:
-  - pytest
+  - tox
 
 # The stages will run in the order they appear here.
 stages:
