@@ -11,10 +11,7 @@ python:
   - '3.5'
   - '3.4'
 
-# The "install" and "script" here are the default stage (test).
-install:
-  - pip install -r dev-requirements.txt
-
+# The "script" here is the default stage (test).
 script:
   - tox
 
