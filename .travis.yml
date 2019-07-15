@@ -5,6 +5,7 @@ notifications:
   email: false
 
 python:
+  - '3.8-dev'
   - '3.7'
   - '3.6'
   - '3.5'
@@ -12,10 +13,10 @@ python:
 
 # The "install" and "script" here are the default stage (test).
 install:
-  - pip install -r dev-requirements.txt
+  - pip install tox tox-travis
 
 script:
-  - pytest
+  - tox
 
 # The stages will run in the order they appear here.
 stages:

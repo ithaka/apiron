@@ -4,5 +4,7 @@ pytest==4.2.0
 pytest-cov==2.6.1
 sphinx==1.7.6
 sphinx-autobuild==0.7.1
+tox==3.13.2
+tox-pyenv==1.1.0
 twine==1.11.0
 wheel==0.32.3
