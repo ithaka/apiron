@@ -11,7 +11,10 @@ python:
   - '3.5'
   - '3.4'
 
-# The "script" here is the default stage (test).
+# The "install" and "script" here are the default stage (test).
+install:
+  - pip install tox
+
 script:
   - tox
 
