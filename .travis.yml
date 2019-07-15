@@ -13,7 +13,7 @@ python:
 
 # The "install" and "script" here are the default stage (test).
 install:
-  - pip install tox
+  - pip install tox tox-travis
 
 script:
   - tox
