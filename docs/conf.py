@@ -13,6 +13,7 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import datetime
+import importlib_metadata
 import os
 import sys
 
@@ -28,10 +29,7 @@ project = 'apiron'
 copyright = '{} {}'.format(CURRENT_YEAR, ORG)
 author = ORG
 
-VERSION_FILEPATH = os.path.join(REPO, 'apiron', 'VERSION')
-
-with open(VERSION_FILEPATH) as version_file:
-    RELEASE_VERSION = version_file.readlines()[0].strip()
+RELEASE_VERSION = importlib_metadata.version('apiron')
 
 # The short X.Y version
 version = RELEASE_VERSION
