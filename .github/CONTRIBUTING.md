@@ -35,9 +35,9 @@ To test `apiron`, check out the repository and:
 ```
 $ cd /path/to/apiron/
 $ pyenv virtualenv 3.7.3 apiron  # pick your favorite virtual environment tool
-$ pyenv local apiron:3.7.3:3.6.8:3.5.7:3.4.3  # use any Python versions you want to test
-(apiron:3.7.3:3.6.8:3.5.7:3.4.3) $ pip install -r dev-requirements.txt
-(apiron:3.7.3:3.6.8:3.5.7:3.4.3) $ python -m tox
+$ pyenv local apiron:3.8-dev:3.7.3:3.6.8:3.5.7:3.4.3  # use any Python versions you want to test
+(apiron:3.8-dev:3.7.3:3.6.8:3.5.7:3.4.3) $ pip install -r dev-requirements.txt
+(apiron:3.8-dev:3.7.3:3.6.8:3.5.7:3.4.3) $ python -m tox
 ```
 
 ## Code formatting

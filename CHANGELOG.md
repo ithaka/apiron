@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - `StubEndpoint` now inherits from `Endpoint` and as a result does not accept arbitrary keyword arguments
+- Use `setup.cfg` for most project metadata and tool configuration, aside from `black`.
 
 ## [3.0.0] - 2019-06-20
 ### Added
