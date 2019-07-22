@@ -1,3 +1,4 @@
+importlib-metadata==0.18
 pytest==4.2.0
 pytest-cov==2.6.1
 sphinx==1.7.6
