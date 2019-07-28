@@ -8,6 +8,9 @@ These docs are built using `sphinx <http://www.sphinx-doc.org/en/master/>`_.
 Developing
 **********
 
+If you have `tox` installed, you may build these docs by running `tox -e docs`.
+Otherwise, you can follow the instructions below to manually install dependencies and build the docs.
+
 Installation
 ============
 
@@ -16,7 +19,7 @@ Installation
     $ cd /path/to/apiron/
     $ pyenv virtualenv 3.7.0 apiron  # pick your favorite virtual environment tool
     $ pyenv local apiron
-    (apiron) $ pip install -r dev-requirements.txt
+    (apiron) $ pip install -e .[docs]
 
 
 Building
