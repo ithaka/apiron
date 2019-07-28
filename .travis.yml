@@ -21,6 +21,7 @@ script:
 # The stages will run in the order they appear here.
 stages:
   - lint
+  - docs
   - test
   - name: deploy
     if: tag IS present
@@ -28,11 +29,12 @@ stages:
 jobs:
   include:
     - stage: lint
-      install:
-        - pip install black pyflakes
       script:
-        - pyflakes apiron tests
-        - black --check apiron tests
+        - tox -e lint
+
+    - stage: docs
+      script:
+        - tox -e docs
 
     - stage: deploy
       before_deploy:
