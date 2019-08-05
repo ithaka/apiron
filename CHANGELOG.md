@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Ability to run linting and build docs using `tox`
+- Ability to access raw response object when making a call using `return_raw_response_object=True`.
+  Useful for accessing things like response cookies or headers.
 
 ### Changed
 - Moved implementation to `src/` directory for improved end-to-end testing with packaging.

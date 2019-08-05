@@ -142,6 +142,7 @@ def call(
     timeout_spec=DEFAULT_TIMEOUT,
     logger=None,
     allow_redirects=True,
+    return_raw_response_object=False,
     **kwargs
 ):
     """
@@ -195,6 +196,9 @@ def call(
         (optional)
         Enable/disable GET/OPTIONS/POST/PUT/PATCH/DELETE/HEAD redirection
         (default ``True``)
+    :param bool return_raw_response_object:
+        Whether to return a :class:`requests.Response` object or call :func:`format_response` on it first.
+        (Default ``False``)
     :param ``**kwargs``:
         Arguments to be formatted into the ``endpoint`` argument's ``path`` attribute
     :return:
@@ -252,4 +256,4 @@ def call(
     if encoding:
         response.encoding = encoding
 
-    return endpoint.format_response(response)
+    return response if return_raw_response_object else endpoint.format_response(response)
