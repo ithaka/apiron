@@ -106,6 +106,7 @@ class ServiceCaller:
         path_kwargs=None,
         params=None,
         data=None,
+        files=None,
         json=None,
         headers=None,
         cookies=None,
@@ -136,6 +137,7 @@ class ServiceCaller:
             url=cls.build_url(host, path),
             params=merged_params,
             data=data,
+            files=files,
             json=json,
             headers=headers,
             cookies=cookies,
@@ -154,6 +156,7 @@ class ServiceCaller:
         session=None,
         params=None,
         data=None,
+        files=None,
         json=None,
         headers=None,
         cookies=None,
@@ -187,6 +190,10 @@ class ServiceCaller:
             (optional)
             ``POST`` data to send to the endpoint.
             A :class:`dict` will be form-encoded, while a :class:`str` will be sent raw
+            (default ``None``)
+        :param dict files:
+            (optional)
+            Dictionary of ``'filename': file-like-objects`` for multipart encoding upload.
             (default ``None``)
         :param dict json:
             (optional)
@@ -259,6 +266,7 @@ class ServiceCaller:
             path_kwargs=path_kwargs,
             params=params,
             data=data,
+            files=files,
             json=json,
             headers=headers,
             cookies=cookies,
