@@ -8,6 +8,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Ability to pass dict to `files` keyword argument for file-like-objects for multipart encoding upload
 
+## [4.1.0] - 2019-08-05
+### Added
+- Ability to run linting and build docs using `tox`
+- Ability to access raw response object when making a call using `return_raw_response_object=True`.
+  Useful for accessing things like response cookies or headers.
+
+### Changed
+- Moved implementation to `src/` directory for improved end-to-end testing with packaging.
+
+## [4.0.0] - 2019-07-18
+### Added
+- An `endpoints` attribute on `Service` classes returns a list of that service's configured endpoints
+- `Endpoint` classes now have a useful `__repr__` implementation, e.g. `"JsonEndpoint(path='/foo')"`.
+
+### Changed
+- `StubEndpoint` now inherits from `Endpoint` and as a result does not accept arbitrary keyword arguments
+- Use `setup.cfg` for most project metadata and tool configuration, aside from `black`.
+
+## [3.0.0] - 2019-06-20
+### Added
+- More testing for the bug fixed in v2.6.1
+
+### Changed
+- Extract `ServiceCaller` behaviors to module level and remove class
+- Remove `path_kwargs` argument from the `call` function (previously a `ServiceCaller` method)
+
 ## [2.6.1] - 2019-06-06
 ### Added
 - Backwards compatibility to allow `ServiceCaller.call()` to use endpoints that live in an instantiated `Service`

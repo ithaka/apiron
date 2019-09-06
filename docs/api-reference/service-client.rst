@@ -1,5 +1,5 @@
 ##############
-Service caller
+Service client
 ##############
 
 .. automodule:: apiron.client

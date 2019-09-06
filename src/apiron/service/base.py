@@ -1,7 +1,14 @@
+from apiron import Endpoint
+
+
 class ServiceMeta(type):
     @property
     def required_headers(cls):
         return cls().required_headers
+
+    @property
+    def endpoints(cls):
+        return {attr for attr_name, attr in cls.__dict__.items() if isinstance(attr, Endpoint)}
 
     def __str__(cls):
         return str(cls())

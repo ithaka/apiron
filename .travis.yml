@@ -9,30 +9,32 @@ python:
   - '3.6'
   - '3.5'
   - '3.4'
+  - '3.8-dev'
 
 # The "install" and "script" here are the default stage (test).
 install:
-  - pip install -r dev-requirements.txt
+  - pip install tox tox-travis
 
 script:
-  - pytest
+  - tox
 
 # The stages will run in the order they appear here.
 stages:
   - lint
+  - docs
   - test
   - name: deploy
-    if: branch = master AND tag IS present
+    if: tag IS present
 
 jobs:
   include:
     - stage: lint
-      install:
-        - pip install -r dev-requirements.txt
-        - pip install black pyflakes
       script:
-        - pyflakes apiron tests
-        - black --check apiron tests
+        - tox -e lint
+
+    - stage: docs
+      script:
+        - tox -e docs
 
     - stage: deploy
       before_deploy:
@@ -47,9 +49,8 @@ jobs:
             - dist/apiron-*.tar.gz
           skip_cleanup: true
           on:
-            repo: ithaka/apiron
-            branch: master
-            tags: true
+              tags: true
+              python: '3.7'
 
         - &pypi  # Production PyPI
           provider: pypi
@@ -59,9 +60,8 @@ jobs:
           skip_cleanup: true
           skip_existing: true
           on:
-            repo: ithaka/apiron
-            branch: master
-            tags: true
+              tags: true
+              python: '3.7'
 
         - <<: *pypi  # Test PyPI
           server: 'https://test.pypi.org/legacy/'
