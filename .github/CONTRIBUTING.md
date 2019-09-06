@@ -7,7 +7,7 @@ You should also read and follow the [code of conduct](../CODE_OF_CONDUCT.md).
 
 ## Submitting a pull request
 
-`apiron` releases are developed on the `dev` branch and only merged to `master` when a new release is imminent.
+All `apiron` changes and releases are done with the dev branch.
 As such, when developing, please cut a branch from `dev` and open your pull request against `dev`.
 We squash commits when merging to `dev`, so it's okay if you have several commits within your pull request.
 That being said, please make sure your commit messages are clear so we can tell what's happening!
