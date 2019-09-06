@@ -56,11 +56,11 @@ To learn more about building clients, head over to [the docs](https://apiron.rea
 
 We are happy to consider contributions via pull request,
 especially if they address an existing bug or vulnerability.
-Please read our [contribution guidelines](https://github.com/ithaka/apiron/tree/master/.github/CONTRIBUTING.md) before getting started.
+Please read our [contribution guidelines](./.github/CONTRIBUTING.md) before getting started.
 
 ## License
 
 This package is available under the MIT license.
-For more information, [view the full license and copyright notice](https://github.com/ithaka/apiron/tree/master/LICENSE).
+For more information, [view the full license and copyright notice](./LICENSE).
 
 Copyright 2018 Ithaka Harbors, Inc.
