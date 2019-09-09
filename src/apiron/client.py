@@ -97,6 +97,7 @@ def build_request_object(
     method=None,
     params=None,
     data=None,
+    files=None,
     json=None,
     headers=None,
     cookies=None,
@@ -117,6 +118,7 @@ def build_request_object(
         url=build_url(host, path),
         params=merged_params,
         data=data,
+        files=files,
         json=json,
         headers=headers,
         cookies=cookies,
@@ -133,6 +135,7 @@ def call(
     session=None,
     params=None,
     data=None,
+    files=None,
     json=None,
     headers=None,
     cookies=None,
@@ -164,6 +167,10 @@ def call(
         (optional)
         ``POST`` data to send to the endpoint.
         A :class:`dict` will be form-encoded, while a :class:`str` will be sent raw
+        (default ``None``)
+    :param dict files:
+        (optional)
+        Dictionary of ``'filename': file-like-objects`` for multipart encoding upload.
         (default ``None``)
     :param dict json:
         (optional)
@@ -224,6 +231,7 @@ def call(
         method=method,
         params=params,
         data=data,
+        files=files,
         json=json,
         headers=headers,
         cookies=cookies,

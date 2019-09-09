@@ -1,3 +1,4 @@
+import io
 from unittest import mock
 
 import pytest
@@ -55,6 +56,7 @@ class TestClient:
         params = {"baz": "qux"}
         mock_endpoint.get_merged_params.return_value = params
         data = "I am a data"
+        files = {"file_name": io.BytesIO(b"this is a test")}
         json = {"raw": "data"}
         headers = {"Accept": "stuff"}
         cookies = {"chocolate-chip": "yes"}
@@ -72,6 +74,7 @@ class TestClient:
                 mock_endpoint,
                 params=params,
                 data=data,
+                files=files,
                 json=json,
                 headers=headers,
                 cookies=cookies,
@@ -86,6 +89,7 @@ class TestClient:
                 cookies=cookies,
                 params=params,
                 data=data,
+                files=files,
                 json=json,
                 auth=auth,
             )
