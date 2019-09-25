@@ -8,7 +8,7 @@
 
 `apiron` helps you cook a tasty client for RESTful APIs. Just don't wash it with SOAP.
 
-<img src="https://github.com/ithaka/apiron/raw/master/docs/_static/cast-iron-skillet.png" alt="Pie in a cast iron skillet" width="200">
+<img src="https://github.com/ithaka/apiron/raw/dev/docs/_static/cast-iron-skillet.png" alt="Pie in a cast iron skillet" width="200">
 
 Gathering data from multiple services has become a ubiquitous task for web application developers.
 The complexity can grow quickly:
