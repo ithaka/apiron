@@ -102,7 +102,7 @@ def build_request_object(
     headers=None,
     cookies=None,
     auth=None,
-    **kwargs
+    **kwargs,
 ):
     host = choose_host(service=service)
 
@@ -146,7 +146,7 @@ def call(
     logger=None,
     allow_redirects=True,
     return_raw_response_object=False,
-    **kwargs
+    **kwargs,
 ):
     """
     :param Service service:
@@ -236,10 +236,10 @@ def call(
         headers=headers,
         cookies=cookies,
         auth=auth,
-        **kwargs
+        **kwargs,
     )
 
-    logger.info("{method} {url}".format(method=method, url=request.url))
+    logger.info(f"{method} {request.url}")
 
     response = session.send(
         request,

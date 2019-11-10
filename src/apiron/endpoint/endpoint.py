@@ -41,9 +41,9 @@ class Endpoint:
 
         if "?" in path:
             warnings.warn(
-                "Endpoint path may contain query parameters. "
-                "Use the default_params or required_params attributes in the initialization of this endpoint, "
-                "or the params argument when calling the endpoint instead.".format(path),
+                f"Endpoint path ('{path}') may contain query parameters. "
+                f"Use the default_params or required_params attributes in the initialization of this endpoint, "
+                f"or the params argument when calling the endpoint instead.",
                 stacklevel=3,
             )
 
@@ -107,7 +107,7 @@ class Endpoint:
     def _validate_path_placeholders(self, placeholder_names, path_kwargs):
         if any(path_kwarg not in placeholder_names for path_kwarg in path_kwargs):
             warnings.warn(
-                "An unknown path kwarg was supplied to {}. kwargs supplied: {}".format(self, path_kwargs),
+                "An unknown path kwarg was supplied to {self}. kwargs supplied: {path_kwargs}",
                 RuntimeWarning,
                 stacklevel=6,
             )
@@ -117,8 +117,7 @@ class Endpoint:
 
         if empty_params:
             warnings.warn(
-                "The {path} endpoint "
-                "was called with empty parameters: {empty_params}".format(path=self.path, empty_params=empty_params),
+                f"The {self.path} endpoint " f"was called with empty parameters: {empty_params}",
                 RuntimeWarning,
                 stacklevel=6,
             )
@@ -161,4 +160,4 @@ class Endpoint:
         return self.path
 
     def __repr__(self):
-        return "{klass}(path='{path}')".format(klass=self.__class__.__name__, path=self.path)
+        return f"{self.__class__.__name__}(path='{self.path}')"
