@@ -58,4 +58,4 @@ class Service(ServiceBase):
         return self.__class__.domain
 
     def __repr__(self):
-        return "{klass}(domain={domain})".format(klass=self.__class__.__name__, domain=self.__class__.domain)
+        return f"{self.__class__.__name__}(domain={self.__class__.domain})"

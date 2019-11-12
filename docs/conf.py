@@ -26,7 +26,7 @@ CURRENT_YEAR = datetime.datetime.now().year
 ORG = 'Ithaka Harbors, Inc.'
 
 project = 'apiron'
-copyright = '{} {}'.format(CURRENT_YEAR, ORG)
+copyright = f'{CURRENT_YEAR} {ORG}'
 author = ORG
 
 RELEASE_VERSION = importlib_metadata.version('apiron')
@@ -54,7 +54,10 @@ extensions = [
     'sphinx.ext.coverage',
 ]
 
-autodoc_default_flags = ['members', 'show-inheritance']
+autodoc_default_options = {
+    'members': True,
+    'show-inheritance': True,
+}
 autodoc_mock_imports = []
 autoclass_content = 'both'
 
@@ -182,8 +185,8 @@ texinfo_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    'https://docs.python.org/3/': None,
-    'requests': ('https://2.python-requests.org/en/master/', None),
+    'python': ('https://docs.python.org/3/', None),
+    'requests': ('https://requests.readthedocs.io/en/master/', None),
     'urllib3': ('https://urllib3.readthedocs.io/en/latest/', None),
 }
 

@@ -82,7 +82,7 @@ class TestEndpoint:
             assert "/foo/bar/" == foo.get_formatted_path(**path_kwargs)
 
     def test_query_parameter_in_path_generates_warning(self):
-        with pytest.warns(UserWarning, match="Endpoint path may contain query parameters"):
+        with pytest.warns(UserWarning, match=r"Endpoint path \('/\?foo=bar'\) may contain query parameters"):
             _ = apiron.Endpoint(path="/?foo=bar")
 
     def test_get_merged_params(self):
