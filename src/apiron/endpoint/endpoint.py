@@ -107,7 +107,7 @@ class Endpoint:
     def _validate_path_placeholders(self, placeholder_names, path_kwargs):
         if any(path_kwarg not in placeholder_names for path_kwarg in path_kwargs):
             warnings.warn(
-                "An unknown path kwarg was supplied to {self}. kwargs supplied: {path_kwargs}",
+                f"An unknown path kwarg was supplied to {self}. kwargs supplied: {path_kwargs}",
                 RuntimeWarning,
                 stacklevel=6,
             )
