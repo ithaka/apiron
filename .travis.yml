@@ -59,7 +59,7 @@ jobs:
           skip_existing: true
           on:
               tags: true
-              python: '3.7'
+              python: '3.8'
 
         - <<: *pypi  # Test PyPI
           server: 'https://test.pypi.org/legacy/'
