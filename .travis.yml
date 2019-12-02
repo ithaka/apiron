@@ -48,7 +48,7 @@ jobs:
           skip_cleanup: true
           on:
               tags: true
-              python: '3.7'
+              python: '3.8'
 
         - &pypi  # Production PyPI
           provider: pypi
