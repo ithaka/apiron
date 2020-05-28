@@ -102,6 +102,7 @@ def build_request_object(
     headers=None,
     cookies=None,
     auth=None,
+    proxies=proxies,
     **kwargs,
 ):
     host = choose_host(service=service)
@@ -141,6 +142,7 @@ def call(
     headers=None,
     cookies=None,
     auth=None,
+    proxies=proxies,
     encoding=None,
     retry_spec=DEFAULT_RETRY,
     timeout_spec=DEFAULT_TIMEOUT,
@@ -185,6 +187,8 @@ def call(
         (default ``None``)
     :param auth:
         An object suitable for the :class:`requests.Request` object's ``auth`` argument
+    :param proxies:
+        An object suitable for the :class:`requests.Request` object's ``auth`` argument        
     :param str encoding:
         The codec to use when decoding the response.
         Default behavior is to have ``requests`` guess the codec.
