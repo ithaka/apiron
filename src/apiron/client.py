@@ -123,6 +123,7 @@ def build_request_object(
         headers=headers,
         cookies=cookies,
         auth=auth,
+        proxies=proxies,
     )
 
     return session.prepare_request(request)
@@ -236,6 +237,7 @@ def call(
         headers=headers,
         cookies=cookies,
         auth=auth,
+        proxies=proxies,
         **kwargs,
     )
 
