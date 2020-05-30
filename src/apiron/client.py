@@ -102,7 +102,6 @@ def build_request_object(
     headers=None,
     cookies=None,
     auth=None,
-    proxies=proxies,
     **kwargs,
 ):
     host = choose_host(service=service)
@@ -124,7 +123,6 @@ def build_request_object(
         headers=headers,
         cookies=cookies,
         auth=auth,
-        proxies=proxies,
     )
 
     return session.prepare_request(request)
@@ -142,7 +140,6 @@ def call(
     headers=None,
     cookies=None,
     auth=None,
-    proxies=proxies,
     encoding=None,
     retry_spec=DEFAULT_RETRY,
     timeout_spec=DEFAULT_TIMEOUT,
@@ -187,8 +184,6 @@ def call(
         (default ``None``)
     :param auth:
         An object suitable for the :class:`requests.Request` object's ``auth`` argument
-    :param proxies:
-        An object suitable for the :class:`requests.Request` object's ``auth`` argument        
     :param str encoding:
         The codec to use when decoding the response.
         Default behavior is to have ``requests`` guess the codec.
@@ -241,7 +236,6 @@ def call(
         headers=headers,
         cookies=cookies,
         auth=auth,
-        proxies=proxies,
         **kwargs,
     )
 
