@@ -128,6 +128,7 @@ class TestClient:
 
         mock_session = MockSession()
         mock_session.send.return_value = mock_response
+        mock_session.proxies = {}
         mock_get_adapted_session.return_value = mock_session
 
         client.call(service, mock_endpoint, timeout_spec=mock_timeout, logger=mock_logger)
