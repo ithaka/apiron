@@ -128,6 +128,7 @@ class TestClient:
 
         mock_session = MockSession()
         mock_session.send.return_value = mock_response
+        mock_session.proxies = {}
         mock_get_adapted_session.return_value = mock_session
 
         client.call(service, mock_endpoint, timeout_spec=mock_timeout, logger=mock_logger)
@@ -138,6 +139,7 @@ class TestClient:
             timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout),
             stream=mock_endpoint.streaming,
             allow_redirects=True,
+            proxies=service.proxies,
         )
 
         mock_logger.info.assert_any_call("GET http://host1.biz/foo/")
@@ -153,6 +155,7 @@ class TestClient:
             timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout),
             stream=mock_endpoint.streaming,
             allow_redirects=True,
+            proxies=service.proxies,
         )
 
         mock_logger.info.assert_any_call("GET http://host1.biz/foo/")
@@ -169,6 +172,7 @@ class TestClient:
             timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout),
             stream=mock_endpoint.streaming,
             allow_redirects=True,
+            proxies=service.proxies,
         )
 
     @mock.patch("apiron.client.get_adapted_session")

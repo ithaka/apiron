@@ -246,6 +246,7 @@ def call(
         timeout=(timeout_spec.connection_timeout, timeout_spec.read_timeout),
         stream=getattr(endpoint, "streaming", False),
         allow_redirects=allow_redirects,
+        proxies=session.proxies or service.proxies,
     )
 
     logger.info(
