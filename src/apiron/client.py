@@ -224,7 +224,7 @@ def call(
 
     method = method or endpoint.default_method
 
-    auth = session.auth or service.auth
+    auth = auth or session.auth or service.auth
 
     request = build_request_object(
         session,
