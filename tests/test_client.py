@@ -2,7 +2,6 @@ import io
 from unittest import mock
 
 import pytest
-from requests import Session
 
 from apiron import client, NoHostsAvailableException
 
