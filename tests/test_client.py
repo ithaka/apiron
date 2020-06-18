@@ -2,6 +2,7 @@ import io
 from unittest import mock
 
 import pytest
+from requests import Session
 
 from apiron import client, NoHostsAvailableException
 
@@ -22,220 +23,253 @@ def mock_endpoint():
     return endpoint
 
 
-class TestClient:
-    @mock.patch("requests.sessions.Session", autospec=True)
-    def test_get_adapted_session(self, mock_session):
-        adapter = mock.Mock()
-        adapted_session = client.get_adapted_session(adapter)
-        assert adapter == adapted_session.get_adapter("http://foo.com")
-        assert adapter == adapted_session.get_adapter("https://foo.com")
+@mock.patch("requests.sessions.Session", autospec=True)
+def test_get_adapted_session(mock_session):
+    adapter = mock.Mock()
+    adapted_session = client.get_adapted_session(adapter)
+    assert adapter == adapted_session.get_adapter("http://foo.com")
+    assert adapter == adapted_session.get_adapter("https://foo.com")
 
-    def test_get_required_headers(self, mock_endpoint):
-        service = mock.Mock()
-        service.required_headers = {"one": "two"}
-        mock_endpoint.required_headers = {"foo": "bar"}
-        expected_headers = {}
-        expected_headers.update(service.required_headers)
-        expected_headers.update(mock_endpoint.required_headers)
-        assert expected_headers == client.get_required_headers(service, mock_endpoint)
 
-    @mock.patch("apiron.client.requests.Request")
-    @mock.patch("apiron.client.get_required_headers")
-    def test_build_request_object_passes_arguments_to_request_constructor(
-        self, mock_get_required_headers, mock_request_constructor, mock_endpoint
-    ):
-        session = mock.Mock()
+def test_get_required_headers(mock_endpoint):
+    service = mock.Mock()
+    service.required_headers = {"one": "two"}
+    mock_endpoint.required_headers = {"foo": "bar"}
+    expected_headers = {}
+    expected_headers.update(service.required_headers)
+    expected_headers.update(mock_endpoint.required_headers)
+    assert expected_headers == client.get_required_headers(service, mock_endpoint)
 
-        service = mock.Mock()
-        service.get_hosts.return_value = ["http://host1.biz"]
 
-        mock_endpoint.default_method = "POST"
-        mock_endpoint.required_headers = {"header": "value"}
-        mock_endpoint.required_params = set()
+@mock.patch("apiron.client.requests.Request")
+@mock.patch("apiron.client.get_required_headers")
+def test_build_request_object_passes_arguments_to_request_constructor(
+    mock_get_required_headers, mock_request_constructor, mock_endpoint
+):
+    session = mock.Mock()
 
-        params = {"baz": "qux"}
-        mock_endpoint.get_merged_params.return_value = params
-        data = "I am a data"
-        files = {"file_name": io.BytesIO(b"this is a test")}
-        json = {"raw": "data"}
-        headers = {"Accept": "stuff"}
-        cookies = {"chocolate-chip": "yes"}
-        auth = mock.Mock()
+    service = mock.Mock()
+    service.get_hosts.return_value = ["http://host1.biz"]
 
-        mock_get_required_headers.return_value = {"header": "value"}
-        expected_headers = {}
-        expected_headers.update(headers)
-        expected_headers.update(mock_endpoint.required_headers)
+    mock_endpoint.default_method = "POST"
+    mock_endpoint.required_headers = {"header": "value"}
+    mock_endpoint.required_params = set()
 
-        with mock.patch.object(session, "prepare_request") as mock_prepare_request:
-            client.build_request_object(
-                session,
-                service,
-                mock_endpoint,
-                params=params,
-                data=data,
-                files=files,
-                json=json,
-                headers=headers,
-                cookies=cookies,
-                auth=auth,
-                foo="bar",
-            )
+    params = {"baz": "qux"}
+    mock_endpoint.get_merged_params.return_value = params
+    data = "I am a data"
+    files = {"file_name": io.BytesIO(b"this is a test")}
+    json = {"raw": "data"}
+    headers = {"Accept": "stuff"}
+    cookies = {"chocolate-chip": "yes"}
+    auth = mock.Mock()
 
-            mock_request_constructor.assert_called_once_with(
-                url="http://host1.biz/foo/",
-                method=mock_endpoint.default_method,
-                headers=expected_headers,
-                cookies=cookies,
-                params=params,
-                data=data,
-                files=files,
-                json=json,
-                auth=auth,
-            )
+    mock_get_required_headers.return_value = {"header": "value"}
+    expected_headers = {}
+    expected_headers.update(headers)
+    expected_headers.update(mock_endpoint.required_headers)
 
-            assert 1 == mock_prepare_request.call_count
-
-    @mock.patch("apiron.client.Timeout")
-    @mock.patch("apiron.client.get_adapted_session")
-    @mock.patch("apiron.client.build_request_object")
-    @mock.patch("requests.adapters.HTTPAdapter", autospec=True)
-    @mock.patch("requests.Session", autospec=True)
-    def test_call(
-        self,
-        MockSession,
-        MockAdapter,
-        mock_build_request_object,
-        mock_get_adapted_session,
-        mock_timeout,
-        mock_response,
-        mock_endpoint,
-    ):
-        service = mock.Mock()
-        service.get_hosts.return_value = ["http://host1.biz"]
-
-        mock_endpoint.default_method = "GET"
-        mock_endpoint.streaming = True
-
-        request = mock.Mock()
-        request.url = "http://host1.biz/foo/"
-        mock_build_request_object.return_value = request
-
-        mock_logger = mock.Mock()
-
-        mock_response.status_code = 200
-        mock_response.url = "http://host1.biz/foo/"
-
-        mock_session = MockSession()
-        mock_session.send.return_value = mock_response
-        mock_session.proxies = {}
-        mock_session.auth = ()
-        mock_get_adapted_session.return_value = mock_session
-
-        client.call(service, mock_endpoint, timeout_spec=mock_timeout, logger=mock_logger)
-
-        mock_get_adapted_session.assert_called_once_with(MockAdapter())
-        mock_session.send.assert_called_once_with(
-            request,
-            timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout),
-            stream=mock_endpoint.streaming,
-            allow_redirects=True,
-            proxies=service.proxies,
+    with mock.patch.object(session, "prepare_request") as mock_prepare_request:
+        client.build_request_object(
+            session,
+            service,
+            mock_endpoint,
+            params=params,
+            data=data,
+            files=files,
+            json=json,
+            headers=headers,
+            cookies=cookies,
+            auth=auth,
+            foo="bar",
         )
 
-        mock_logger.info.assert_any_call("GET http://host1.biz/foo/")
-        mock_logger.info.assert_any_call("200 http://host1.biz/foo/")
-
-        mock_endpoint.default_method = "POST"
-        request.method = "POST"
-
-        client.call(service, mock_endpoint, session=mock_session, timeout_spec=mock_timeout, logger=mock_logger)
-
-        mock_session.send.assert_any_call(
-            request,
-            timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout),
-            stream=mock_endpoint.streaming,
-            allow_redirects=True,
-            proxies=service.proxies,
+        mock_request_constructor.assert_called_once_with(
+            url="http://host1.biz/foo/",
+            method=mock_endpoint.default_method,
+            headers=expected_headers,
+            cookies=cookies,
+            params=params,
+            data=data,
+            files=files,
+            json=json,
+            auth=auth,
         )
 
-        mock_logger.info.assert_any_call("GET http://host1.biz/foo/")
-        mock_logger.info.assert_any_call("200 http://host1.biz/foo/")
+        assert 1 == mock_prepare_request.call_count
 
-        request.method = "PUT"
 
-        client.call(
-            service, mock_endpoint, method="PUT", session=mock_session, timeout_spec=mock_timeout, logger=mock_logger
-        )
+@mock.patch("apiron.client.Timeout")
+@mock.patch("apiron.client.get_adapted_session")
+@mock.patch("apiron.client.build_request_object")
+@mock.patch("requests.adapters.HTTPAdapter", autospec=True)
+@mock.patch("requests.Session", autospec=True)
+def test_call(
+    MockSession,
+    MockAdapter,
+    mock_build_request_object,
+    mock_get_adapted_session,
+    mock_timeout,
+    mock_response,
+    mock_endpoint,
+):
+    service = mock.Mock()
+    service.get_hosts.return_value = ["http://host1.biz"]
 
-        mock_session.send.assert_any_call(
-            request,
-            timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout),
-            stream=mock_endpoint.streaming,
-            allow_redirects=True,
-            proxies=service.proxies,
-        )
+    mock_endpoint.default_method = "GET"
+    mock_endpoint.streaming = True
 
-    @mock.patch("apiron.client.get_adapted_session")
-    def test_call_with_existing_session(self, mock_get_adapted_session, mock_response, mock_endpoint):
-        service = mock.Mock()
-        service.get_hosts.return_value = ["http://host1.biz"]
-        service.required_headers = {}
+    request = mock.Mock()
+    request.url = "http://host1.biz/foo/"
+    mock_build_request_object.return_value = request
 
-        mock_logger = mock.Mock()
+    mock_logger = mock.Mock()
 
-        session = mock.Mock()
-        session.send.return_value = mock_response
+    mock_response.status_code = 200
+    mock_response.url = "http://host1.biz/foo/"
 
-        client.call(service, mock_endpoint, session=session, logger=mock_logger)
+    mock_session = MockSession()
+    mock_session.send.return_value = mock_response
+    mock_session.proxies = {}
+    mock_session.auth = ()
+    mock_get_adapted_session.return_value = mock_session
 
-        assert not mock_get_adapted_session.called
-        assert not session.close.called
+    client.call(service, mock_endpoint, timeout_spec=mock_timeout, logger=mock_logger)
 
-    def test_call_with_explicit_encoding(self, mock_response, mock_endpoint):
-        service = mock.Mock()
-        service.get_hosts.return_value = ["http://host1.biz"]
-        service.required_headers = {}
+    mock_get_adapted_session.assert_called_once_with(MockAdapter())
+    mock_session.send.assert_called_once_with(
+        request,
+        timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout),
+        stream=mock_endpoint.streaming,
+        allow_redirects=True,
+        proxies=service.proxies,
+    )
 
-        session = mock.Mock()
-        session.send.return_value = mock_response
+    mock_logger.info.assert_any_call("GET http://host1.biz/foo/")
+    mock_logger.info.assert_any_call("200 http://host1.biz/foo/")
 
-        client.call(service, mock_endpoint, session=session, logger=mock.Mock(), encoding="FAKE-CODEC")
+    mock_endpoint.default_method = "POST"
+    request.method = "POST"
 
-        assert "FAKE-CODEC" == mock_response.encoding
+    client.call(service, mock_endpoint, session=mock_session, timeout_spec=mock_timeout, logger=mock_logger)
 
-    def test_build_request_object_raises_no_host_exception(self):
-        service = mock.Mock()
-        service.get_hosts.return_value = []
+    mock_session.send.assert_any_call(
+        request,
+        timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout),
+        stream=mock_endpoint.streaming,
+        allow_redirects=True,
+        proxies=service.proxies,
+    )
 
-        with pytest.raises(NoHostsAvailableException):
-            client.build_request_object(None, service, None)
+    mock_logger.info.assert_any_call("GET http://host1.biz/foo/")
+    mock_logger.info.assert_any_call("200 http://host1.biz/foo/")
 
-    def test_choose_host_returns_one_of_the_available_hosts(self):
-        hosts = ["foo", "bar", "baz"]
-        service = mock.Mock()
-        service.get_hosts.return_value = hosts
-        assert client.choose_host(service) in hosts
+    request.method = "PUT"
 
-    def test_choose_host_raises_exception_when_no_hosts_available(self):
-        service = mock.Mock()
-        service.get_hosts.return_value = []
-        with pytest.raises(NoHostsAvailableException):
-            client.choose_host(service)
+    client.call(
+        service, mock_endpoint, method="PUT", session=mock_session, timeout_spec=mock_timeout, logger=mock_logger
+    )
 
-    def test_call_when_raw_response_object_requested(self, mock_response, mock_endpoint):
-        service = mock.Mock()
-        service.get_hosts.return_value = ["http://host1.biz"]
-        service.required_headers = {}
+    mock_session.send.assert_any_call(
+        request,
+        timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout),
+        stream=mock_endpoint.streaming,
+        allow_redirects=True,
+        proxies=service.proxies,
+    )
 
-        session = mock.Mock()
-        session.send.return_value = mock_response
 
-        response = client.call(
-            service, mock_endpoint, session=session, logger=mock.Mock(), return_raw_response_object=True
-        )
+@mock.patch("apiron.client.build_request_object")
+@mock.patch("apiron.client.get_adapted_session")
+@mock.patch("requests.Session", autospec=True)
+def test_call_auth_priority(MockSession, mock_get_adapted_session, mock_build_request_object, mock_endpoint):
+    service = mock.Mock()
+    service.get_hosts.return_value = ["http://host1.biz"]
+    service.required_headers = {}
+    service.auth = ("service-user", "p455w0rd!")
 
-        assert response is mock_response
+    mock_logger = mock.Mock()
+
+    mock_session = MockSession()
+    mock_session.proxies = {}
+    mock_session.auth = ("session-user", "p455w0rd!")
+
+    mock_get_adapted_session.return_value = mock_session
+
+    client.call(service, mock_endpoint, auth=("direct-user", "p455w0rd!"), session=mock_session, logger=mock_logger)
+    assert mock_build_request_object.call_args[1]["auth"] == ("direct-user", "p455w0rd!")
+
+    client.call(service, mock_endpoint, session=mock_session, logger=mock_logger)
+    assert mock_build_request_object.call_args[1]["auth"] == ("session-user", "p455w0rd!")
+
+    mock_session.auth = ()
+    client.call(service, mock_endpoint, logger=mock_logger)
+    assert mock_build_request_object.call_args[1]["auth"] == ("service-user", "p455w0rd!")
+
+
+@mock.patch("apiron.client.get_adapted_session")
+def test_call_with_existing_session(mock_get_adapted_session, mock_response, mock_endpoint):
+    service = mock.Mock()
+    service.get_hosts.return_value = ["http://host1.biz"]
+    service.required_headers = {}
+
+    mock_logger = mock.Mock()
+
+    session = mock.Mock()
+    session.send.return_value = mock_response
+
+    client.call(service, mock_endpoint, session=session, logger=mock_logger)
+
+    assert not mock_get_adapted_session.called
+    assert not session.close.called
+
+
+def test_call_with_explicit_encoding(mock_response, mock_endpoint):
+    service = mock.Mock()
+    service.get_hosts.return_value = ["http://host1.biz"]
+    service.required_headers = {}
+
+    session = mock.Mock()
+    session.send.return_value = mock_response
+
+    client.call(service, mock_endpoint, session=session, logger=mock.Mock(), encoding="FAKE-CODEC")
+
+    assert "FAKE-CODEC" == mock_response.encoding
+
+
+def test_build_request_object_raises_no_host_exception():
+    service = mock.Mock()
+    service.get_hosts.return_value = []
+
+    with pytest.raises(NoHostsAvailableException):
+        client.build_request_object(None, service, None)
+
+
+def test_choose_host_returns_one_of_the_available_hosts():
+    hosts = ["foo", "bar", "baz"]
+    service = mock.Mock()
+    service.get_hosts.return_value = hosts
+    assert client.choose_host(service) in hosts
+
+
+def test_choose_host_raises_exception_when_no_hosts_available():
+    service = mock.Mock()
+    service.get_hosts.return_value = []
+    with pytest.raises(NoHostsAvailableException):
+        client.choose_host(service)
+
+
+def test_call_when_raw_response_object_requested(mock_response, mock_endpoint):
+    service = mock.Mock()
+    service.get_hosts.return_value = ["http://host1.biz"]
+    service.required_headers = {}
+
+    session = mock.Mock()
+    session.send.return_value = mock_response
+
+    response = client.call(service, mock_endpoint, session=session, logger=mock.Mock(), return_raw_response_object=True)
+
+    assert response is mock_response
 
 
 @pytest.mark.parametrize(

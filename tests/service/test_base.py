@@ -3,7 +3,7 @@ import pytest
 from apiron import Endpoint, Service, ServiceBase
 
 
-@pytest.fixture(scope="class")
+@pytest.fixture
 def service():
     class SomeService(Service):
         domain = "http://foo.com"
