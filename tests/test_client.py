@@ -22,6 +22,11 @@ def mock_endpoint():
     return endpoint
 
 
+@pytest.fixture
+def mock_logger():
+    return mock.Mock()
+
+
 @mock.patch("requests.sessions.Session", autospec=True)
 def test_get_adapted_session(mock_session):
     adapter = mock.Mock()
@@ -111,6 +116,7 @@ def test_call(
     mock_timeout,
     mock_response,
     mock_endpoint,
+    mock_logger,
 ):
     service = mock.Mock()
     service.get_hosts.return_value = ["http://host1.biz"]
@@ -121,8 +127,6 @@ def test_call(
     request = mock.Mock()
     request.url = "http://host1.biz/foo/"
     mock_build_request_object.return_value = request
-
-    mock_logger = mock.Mock()
 
     mock_response.status_code = 200
     mock_response.url = "http://host1.biz/foo/"
@@ -181,13 +185,13 @@ def test_call(
 @mock.patch("apiron.client.build_request_object")
 @mock.patch("apiron.client.get_adapted_session")
 @mock.patch("requests.Session", autospec=True)
-def test_call_auth_priority(MockSession, mock_get_adapted_session, mock_build_request_object, mock_endpoint):
+def test_call_auth_priority(
+    MockSession, mock_get_adapted_session, mock_build_request_object, mock_endpoint, mock_logger
+):
     service = mock.Mock()
     service.get_hosts.return_value = ["http://host1.biz"]
     service.required_headers = {}
     service.auth = ("service-user", "p455w0rd!")
-
-    mock_logger = mock.Mock()
 
     mock_session = MockSession()
     mock_session.proxies = {}
@@ -207,12 +211,10 @@ def test_call_auth_priority(MockSession, mock_get_adapted_session, mock_build_re
 
 
 @mock.patch("apiron.client.get_adapted_session")
-def test_call_with_existing_session(mock_get_adapted_session, mock_response, mock_endpoint):
+def test_call_with_existing_session(mock_get_adapted_session, mock_response, mock_endpoint, mock_logger):
     service = mock.Mock()
     service.get_hosts.return_value = ["http://host1.biz"]
     service.required_headers = {}
-
-    mock_logger = mock.Mock()
 
     session = mock.Mock()
     session.send.return_value = mock_response
@@ -223,7 +225,7 @@ def test_call_with_existing_session(mock_get_adapted_session, mock_response, moc
     assert not session.close.called
 
 
-def test_call_with_explicit_encoding(mock_response, mock_endpoint):
+def test_call_with_explicit_encoding(mock_response, mock_endpoint, mock_logger):
     service = mock.Mock()
     service.get_hosts.return_value = ["http://host1.biz"]
     service.required_headers = {}
@@ -231,7 +233,7 @@ def test_call_with_explicit_encoding(mock_response, mock_endpoint):
     session = mock.Mock()
     session.send.return_value = mock_response
 
-    client.call(service, mock_endpoint, session=session, logger=mock.Mock(), encoding="FAKE-CODEC")
+    client.call(service, mock_endpoint, session=session, logger=mock_logger, encoding="FAKE-CODEC")
 
     assert "FAKE-CODEC" == mock_response.encoding
 
@@ -258,7 +260,7 @@ def test_choose_host_raises_exception_when_no_hosts_available():
         client.choose_host(service)
 
 
-def test_call_when_raw_response_object_requested(mock_response, mock_endpoint):
+def test_call_when_raw_response_object_requested(mock_response, mock_endpoint, mock_logger):
     service = mock.Mock()
     service.get_hosts.return_value = ["http://host1.biz"]
     service.required_headers = {}
@@ -266,7 +268,7 @@ def test_call_when_raw_response_object_requested(mock_response, mock_endpoint):
     session = mock.Mock()
     session.send.return_value = mock_response
 
-    response = client.call(service, mock_endpoint, session=session, logger=mock.Mock(), return_raw_response_object=True)
+    response = client.call(service, mock_endpoint, session=session, logger=mock_logger, return_raw_response_object=True)
 
     assert response is mock_response
 
