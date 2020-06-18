@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Added
 - Ability to specify `proxies` for a `Service` definition so all calls to the service use the defined proxies
+- Ability to specify `auth` for a `Service` definition so all calls to the service use the defined authentication
 
 ## [5.0.0] - 2019-12-02
 ### Removed
