@@ -273,6 +273,38 @@ def test_call_when_raw_response_object_requested(mock_response, mock_endpoint, m
     assert response is mock_response
 
 
+def test_call_when_raw_response_object_requested_on_endpoint(mock_response, mock_endpoint):
+    service = mock.Mock()
+    service.get_hosts.return_value = ["http://host1.biz"]
+    service.required_headers = {}
+
+    session = mock.Mock()
+    session.send.return_value = mock_response
+
+    mock_endpoint.return_raw_response_object = True
+
+    response = client.call(service, mock_endpoint, session=session, logger=mock.Mock())
+
+    assert response is mock_response
+
+
+def test_return_raw_response_object_in_call_overrides_endpoint(mock_response, mock_endpoint):
+    service = mock.Mock()
+    service.get_hosts.return_value = ["http://host1.biz"]
+    service.required_headers = {}
+
+    session = mock.Mock()
+    session.send.return_value = mock_response
+
+    mock_endpoint.return_raw_response_object = False
+
+    response = client.call(
+        service, mock_endpoint, session=session, logger=mock.Mock(), return_raw_response_object=True,
+    )
+
+    assert response is mock_response
+
+
 @pytest.mark.parametrize(
     "host,path,url",
     [
