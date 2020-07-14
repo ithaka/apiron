@@ -1,0 +1,43 @@
+####################################################
+# Checks about the pre-commit configuration itself #
+####################################################
+
+repos:
+-   repo: meta
+    hooks:
+    -   id: check-hooks-apply      # Ensures all defined hooks affect at least one file in the repo
+    -   id: check-useless-excludes # Ensures all defined excludes apply to at least one file in the repo
+
+###########################
+# General use / built-ins #
+###########################
+
+# Click through to this repository to see what other goodies are available
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+    -   id: trailing-whitespace  # Removes trailing whitespace from lines in all file types
+    -   id: end-of-file-fixer    # Fixes last line of all file types
+    -   id: check-merge-conflict # Checks if you're about to commit a file that hasn't had conflicts resolved
+    -   id: no-commit-to-branch  # Checks if you're committing to a disallowed branch
+        args: [--branch, dev]
+    -   id: check-ast            # Checks that Python files are valid syntax
+
+##########
+# Python #
+##########
+
+# pyupgrade updates older syntax to newer syntax.
+# It's particularly handy for updating `.format()` calls to f-strings.
+-   repo: https://github.com/asottile/pyupgrade
+    rev: v2.6.2
+    hooks:
+    -   id: pyupgrade
+        args: [--py36-plus]
+
+# Run black last on Python code so all changes from previous hooks are reformatted
+-   repo: https://github.com/psf/black
+    rev: 19.10b0
+    hooks:
+    -   id: black
+        language_version: python3.7

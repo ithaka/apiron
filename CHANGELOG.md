@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ability to specify `auth` for a `Service` definition so all calls to the service use the defined authentication
 - Ability to specify `return_raw_response_object` at the endpoint level, overridden by any value specified at call time
 
+### Maintenance
+- Add [pre-commit](https://pre-commit.com/) configuration for earlier linting and formatting checks
+
 ## [5.0.0] - 2019-12-02
 ### Removed
 - Support for Python 3.4 and 3.5 has been removed based on official Python support timelines and usage statistics
