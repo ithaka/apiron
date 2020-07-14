@@ -19,6 +19,7 @@ class ServiceMeta(type):
 
 class ServiceBase(metaclass=ServiceMeta):
     required_headers = {}
+    auth = ()
     proxies = {}
 
     @classmethod
