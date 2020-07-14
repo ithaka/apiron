@@ -13,7 +13,14 @@ We squash commits when merging to `dev`, so it's okay if you have several commit
 That being said, please make sure your commit messages are clear so we can tell what's happening!
 
 
-## Commit messages
+## Commits
+
+### Pre-commit hooks
+
+This project uses [pre-commit](https://pre-commit.com/) to run checks on the code prior to a successful commit.
+Installing pre-commit and using its hooks can ease your development by uncovering issues earlier in the development life cycle.
+
+### Commit messages
 
 We don't currently have a strict commit message convention, but here are a few guidelines:
 
