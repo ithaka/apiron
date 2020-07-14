@@ -43,6 +43,10 @@ class Endpoint:
         :param required_params:
             An iterable of required parameter names.
             Calling an endpoint without its required parameters raises an exception.
+        :param bool return_raw_response_object:
+            Whether to return a :class:`requests.Response` object or call :func:`format_response` on it first.
+            This can be overridden when calling the endpoint.
+            (Default ``False``)
         """
         self.default_method = default_method
 
