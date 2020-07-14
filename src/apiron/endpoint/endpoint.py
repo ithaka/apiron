@@ -23,7 +23,14 @@ class Endpoint:
     def __call__(self):
         raise TypeError("Endpoints are only callable in conjunction with a Service class.")
 
-    def __init__(self, path="/", default_method="GET", default_params=None, required_params=None):
+    def __init__(
+        self,
+        path="/",
+        default_method="GET",
+        default_params=None,
+        required_params=None,
+        return_raw_response_object=False,
+    ):
         """
         :param str path:
             The URL path for this endpoint, without the protocol or domain
@@ -50,6 +57,7 @@ class Endpoint:
         self.path = path
         self.default_params = default_params or {}
         self.required_params = required_params or set()
+        self.return_raw_response_object = return_raw_response_object
 
     def format_response(self, response):
         """

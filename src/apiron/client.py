@@ -145,7 +145,7 @@ def call(
     timeout_spec=DEFAULT_TIMEOUT,
     logger=None,
     allow_redirects=True,
-    return_raw_response_object=False,
+    return_raw_response_object=None,
     **kwargs,
 ):
     """
@@ -265,4 +265,11 @@ def call(
     if encoding:
         response.encoding = encoding
 
-    return response if return_raw_response_object else endpoint.format_response(response)
+    # Use the explicitly passed in option, if any
+    # Otherwise, use the endpoint's setting
+    if return_raw_response_object is None:
+        return_raw_response = endpoint.return_raw_response_object
+    else:
+        return_raw_response = return_raw_response_object
+
+    return response if return_raw_response else endpoint.format_response(response)
