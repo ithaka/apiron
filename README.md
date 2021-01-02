@@ -63,4 +63,4 @@ Please read our [contribution guidelines](./.github/CONTRIBUTING.md) before gett
 This package is available under the MIT license.
 For more information, [view the full license and copyright notice](./LICENSE).
 
-Copyright 2018-2020 Ithaka Harbors, Inc.
+Copyright 2018-2021 Ithaka Harbors, Inc.
