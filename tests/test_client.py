@@ -299,7 +299,11 @@ def test_return_raw_response_object_in_call_overrides_endpoint(mock_response, mo
     mock_endpoint.return_raw_response_object = False
 
     response = client.call(
-        service, mock_endpoint, session=session, logger=mock.Mock(), return_raw_response_object=True,
+        service,
+        mock_endpoint,
+        session=session,
+        logger=mock.Mock(),
+        return_raw_response_object=True,
     )
 
     assert response is mock_response
