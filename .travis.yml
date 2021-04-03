@@ -5,9 +5,11 @@ notifications:
   email: false
 
 python:
+  - '3.9'
   - '3.8'
   - '3.7'
   - '3.6'
+  - '3.10-dev'
 
 # The "install" and "script" here are the default stage (test).
 install:
