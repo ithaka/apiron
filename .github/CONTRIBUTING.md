@@ -41,10 +41,10 @@ To test `apiron`, check out the repository and:
 
 ```
 $ cd /path/to/apiron/
-$ pyenv virtualenv 3.7.3 apiron  # pick your favorite virtual environment tool
-$ pyenv local apiron:3.8.0:3.7.3:3.6.8  # use any Python versions you want to test
-(apiron:3.8.0:3.7.3:3.6.8) $ pip install -e .[test]
-(apiron:3.8.0:3.7.3:3.6.8) $ pytest
+$ pyenv virtualenv 3.7.10 apiron  # pick your favorite virtual environment tool
+$ pyenv local apiron:3.10-dev:3.9.4:3.8.9:3.7.10:3.6.13  # use any Python versions you want to test
+(apiron:3.10-dev:3.9.4:3.8.9:3.7.10:3.6.13) $ pip install -e .[test]
+(apiron:3.10-dev:3.9.4:3.8.9:3.7.10:3.6.13) $ pytest
 ```
 
 If you have `tox` installed, you may instead run `tox` to run the full matrix of tests across all Python versions.
