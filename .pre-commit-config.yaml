@@ -33,11 +33,11 @@ repos:
     rev: v2.7.4
     hooks:
     -   id: pyupgrade
-        args: [--py36-plus]
+        args: [--py37-plus]
 
 # Run black last on Python code so all changes from previous hooks are reformatted
 -   repo: https://github.com/psf/black
-    rev: 20.8b1
+    rev: 21.5b2
     hooks:
     -   id: black
         language_version: python3.7
