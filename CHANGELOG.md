@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Testing matrix and trove classifiers for Python 3.9 and 3.10
+### Removed
+- Support for Python 3.6 has been removed due to its impending end of life and the desire to leverage features from 3.7
 
 ## [5.1.0] - 2020-07-14
 ### Added
