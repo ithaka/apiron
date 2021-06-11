@@ -1,12 +1,16 @@
+from __future__ import annotations
 import collections
 import logging
 import random
+from typing import Any, Dict, Optional, TYPE_CHECKING
 from urllib import parse
 
 import requests
 from requests import adapters
 from requests.packages.urllib3.util import retry
 
+if TYPE_CHECKING:
+    import apiron  # pragma: no cover
 from apiron.exceptions import NoHostsAvailableException
 
 LOGGER = logging.getLogger(__name__)
@@ -30,7 +34,7 @@ DEFAULT_RETRY = retry.Retry(
 )
 
 
-def build_url(host, path):
+def _build_url(host: str, path: str) -> str:
     """
     Builds a valid URL from a host and path which may or may not have slashes in the proper place.
     Does not conform to `IETF RFC 1808 <https://tools.ietf.org/html/rfc1808.html>`_ but instead joins the host and path as given.
@@ -51,7 +55,7 @@ def build_url(host, path):
     return parse.urljoin(host, path)
 
 
-def get_adapted_session(adapter):
+def _adapt_session(session: requests.Session, adapter: requests.adapters.HTTPAdapter) -> requests.Session:
     """
     Mounts an adapter capable of communication over HTTP or HTTPS to the supplied session.
 
@@ -60,13 +64,12 @@ def get_adapted_session(adapter):
     :return:
         The adapted :class:`requests.Session` instance
     """
-    session = requests.Session()
     session.mount("http://", adapter)
     session.mount("https://", adapter)
     return session
 
 
-def get_required_headers(service, endpoint):
+def _get_required_headers(service: apiron.Service, endpoint: apiron.Endpoint) -> Dict[str, str]:
     """
     :param Service service:
         The service being called
@@ -83,39 +86,39 @@ def get_required_headers(service, endpoint):
     return headers
 
 
-def choose_host(service):
+def _choose_host(service: apiron.Service) -> str:
     hosts = service.get_hosts()
     if not hosts:
-        raise NoHostsAvailableException(service.service_name)
+        raise NoHostsAvailableException(getattr(service, "service_name", "UNKNOWN SERVICE"))
     return random.choice(hosts)
 
 
-def build_request_object(
-    session,
-    service,
-    endpoint,
-    method=None,
-    params=None,
-    data=None,
-    files=None,
-    json=None,
-    headers=None,
-    cookies=None,
-    auth=None,
+def _build_request_object(
+    session: requests.Session,
+    service: apiron.Service,
+    endpoint: apiron.Endpoint,
+    method: Optional[str] = None,
+    params: Optional[Dict[str, Any]] = None,
+    data: Optional[Dict[str, Any]] = None,
+    files: Optional[Dict[str, str]] = None,
+    json: Optional[Dict[str, Any]] = None,
+    headers: Optional[Dict[str, Any]] = None,
+    cookies: Optional[Dict[str, Any]] = None,
+    auth: Optional[Any] = None,
     **kwargs,
 ):
-    host = choose_host(service=service)
+    host = _choose_host(service=service)
 
     path = endpoint.get_formatted_path(**kwargs)
 
     merged_params = endpoint.get_merged_params(params)
 
     headers = headers or {}
-    headers.update(get_required_headers(service, endpoint))
+    headers.update(_get_required_headers(service, endpoint))
 
     request = requests.Request(
         method=method or endpoint.default_method,
-        url=build_url(host, path),
+        url=_build_url(host, path),
         params=merged_params,
         data=data,
         files=files,
@@ -128,24 +131,30 @@ def build_request_object(
     return session.prepare_request(request)
 
 
+def _get_guaranteed_session(session: Optional[requests.Session]) -> requests.Session:
+    if session:
+        return session
+    return requests.Session()
+
+
 def call(
-    service,
-    endpoint,
-    method=None,
-    session=None,
-    params=None,
-    data=None,
-    files=None,
-    json=None,
-    headers=None,
-    cookies=None,
-    auth=None,
-    encoding=None,
-    retry_spec=DEFAULT_RETRY,
-    timeout_spec=DEFAULT_TIMEOUT,
-    logger=None,
-    allow_redirects=True,
-    return_raw_response_object=None,
+    service: apiron.Service,
+    endpoint: apiron.Endpoint,
+    method: Optional[str] = None,
+    session: Optional[requests.Session] = None,
+    params: Optional[Dict[str, Any]] = None,
+    data: Optional[Dict[str, Any]] = None,
+    files: Optional[Dict[str, str]] = None,
+    json: Optional[Dict[str, Any]] = None,
+    headers: Optional[Dict[str, Any]] = None,
+    cookies: Optional[Dict[str, Any]] = None,
+    auth: Optional[Any] = None,
+    encoding: Optional[str] = None,
+    retry_spec: retry.Retry = DEFAULT_RETRY,
+    timeout_spec: Timeout = DEFAULT_TIMEOUT,
+    logger: Optional[logging.Logger] = None,
+    allow_redirects: bool = True,
+    return_raw_response_object: Optional[bool] = None,
     **kwargs,
 ):
     """
@@ -219,15 +228,15 @@ def call(
     logger = logger or LOGGER
 
     managing_session = not session
-
-    session = get_adapted_session(adapters.HTTPAdapter(max_retries=retry_spec)) if managing_session else session
+    guaranteed_session = _get_guaranteed_session(session)
+    adapted_session = _adapt_session(guaranteed_session, adapters.HTTPAdapter(max_retries=retry_spec))
 
     method = method or endpoint.default_method
 
-    auth = auth or session.auth or service.auth
+    auth = auth or getattr(session, "auth", None) or service.auth
 
-    request = build_request_object(
-        session,
+    request = _build_request_object(
+        adapted_session,
         service,
         endpoint,
         method=method,
@@ -243,12 +252,12 @@ def call(
 
     logger.info(f"{method} {request.url}")
 
-    response = session.send(
+    response = adapted_session.send(
         request,
         timeout=(timeout_spec.connection_timeout, timeout_spec.read_timeout),
         stream=getattr(endpoint, "streaming", False),
         allow_redirects=allow_redirects,
-        proxies=session.proxies or service.proxies,
+        proxies=adapted_session.proxies or service.proxies,
     )
 
     logger.info(
@@ -260,7 +269,7 @@ def call(
     )
 
     if managing_session:
-        session.close()
+        adapted_session.close()
 
     response.raise_for_status()
 

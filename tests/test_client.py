@@ -28,9 +28,10 @@ def mock_logger():
 
 
 @mock.patch("requests.sessions.Session", autospec=True)
-def test_get_adapted_session(mock_session):
+def test_adapt_session(mock_session):
     adapter = mock.Mock()
-    adapted_session = client.get_adapted_session(adapter)
+    mock_session.get_adapter.return_value = adapter
+    adapted_session = client._adapt_session(mock_session, adapter)
     assert adapter == adapted_session.get_adapter("http://foo.com")
     assert adapter == adapted_session.get_adapter("https://foo.com")
 
@@ -42,11 +43,11 @@ def test_get_required_headers(mock_endpoint):
     expected_headers = {}
     expected_headers.update(service.required_headers)
     expected_headers.update(mock_endpoint.required_headers)
-    assert expected_headers == client.get_required_headers(service, mock_endpoint)
+    assert expected_headers == client._get_required_headers(service, mock_endpoint)
 
 
 @mock.patch("apiron.client.requests.Request")
-@mock.patch("apiron.client.get_required_headers")
+@mock.patch("apiron.client._get_required_headers")
 def test_build_request_object_passes_arguments_to_request_constructor(
     mock_get_required_headers, mock_request_constructor, mock_endpoint
 ):
@@ -74,7 +75,7 @@ def test_build_request_object_passes_arguments_to_request_constructor(
     expected_headers.update(mock_endpoint.required_headers)
 
     with mock.patch.object(session, "prepare_request") as mock_prepare_request:
-        client.build_request_object(
+        client._build_request_object(
             session,
             service,
             mock_endpoint,
@@ -104,15 +105,15 @@ def test_build_request_object_passes_arguments_to_request_constructor(
 
 
 @mock.patch("apiron.client.Timeout")
-@mock.patch("apiron.client.get_adapted_session")
-@mock.patch("apiron.client.build_request_object")
+@mock.patch("apiron.client._adapt_session")
+@mock.patch("apiron.client._build_request_object")
 @mock.patch("requests.adapters.HTTPAdapter", autospec=True)
 @mock.patch("requests.Session", autospec=True)
 def test_call(
     MockSession,
     MockAdapter,
     mock_build_request_object,
-    mock_get_adapted_session,
+    mock_adapt_session,
     mock_timeout,
     mock_response,
     mock_endpoint,
@@ -135,11 +136,11 @@ def test_call(
     mock_session.send.return_value = mock_response
     mock_session.proxies = {}
     mock_session.auth = ()
-    mock_get_adapted_session.return_value = mock_session
+    mock_adapt_session.return_value = mock_session
 
     client.call(service, mock_endpoint, timeout_spec=mock_timeout, logger=mock_logger)
 
-    mock_get_adapted_session.assert_called_once_with(MockAdapter())
+    mock_adapt_session.assert_called_once_with(mock_session, MockAdapter())
     mock_session.send.assert_called_once_with(
         request,
         timeout=(mock_timeout.connection_timeout, mock_timeout.read_timeout),
@@ -182,12 +183,10 @@ def test_call(
     )
 
 
-@mock.patch("apiron.client.build_request_object")
-@mock.patch("apiron.client.get_adapted_session")
+@mock.patch("apiron.client._build_request_object")
+@mock.patch("apiron.client._adapt_session")
 @mock.patch("requests.Session", autospec=True)
-def test_call_auth_priority(
-    MockSession, mock_get_adapted_session, mock_build_request_object, mock_endpoint, mock_logger
-):
+def test_call_auth_priority(MockSession, mock_adapt_session, mock_build_request_object, mock_endpoint, mock_logger):
     service = mock.Mock()
     service.get_hosts.return_value = ["http://host1.biz"]
     service.required_headers = {}
@@ -197,7 +196,7 @@ def test_call_auth_priority(
     mock_session.proxies = {}
     mock_session.auth = ("session-user", "p455w0rd!")
 
-    mock_get_adapted_session.return_value = mock_session
+    mock_adapt_session.return_value = mock_session
 
     client.call(service, mock_endpoint, auth=("direct-user", "p455w0rd!"), session=mock_session, logger=mock_logger)
     assert mock_build_request_object.call_args[1]["auth"] == ("direct-user", "p455w0rd!")
@@ -210,8 +209,7 @@ def test_call_auth_priority(
     assert mock_build_request_object.call_args[1]["auth"] == ("service-user", "p455w0rd!")
 
 
-@mock.patch("apiron.client.get_adapted_session")
-def test_call_with_existing_session(mock_get_adapted_session, mock_response, mock_endpoint, mock_logger):
+def test_call_with_existing_session(mock_response, mock_endpoint, mock_logger):
     service = mock.Mock()
     service.get_hosts.return_value = ["http://host1.biz"]
     service.required_headers = {}
@@ -221,7 +219,6 @@ def test_call_with_existing_session(mock_get_adapted_session, mock_response, moc
 
     client.call(service, mock_endpoint, session=session, logger=mock_logger)
 
-    assert not mock_get_adapted_session.called
     assert not session.close.called
 
 
@@ -243,21 +240,21 @@ def test_build_request_object_raises_no_host_exception():
     service.get_hosts.return_value = []
 
     with pytest.raises(NoHostsAvailableException):
-        client.build_request_object(None, service, None)
+        client._build_request_object(None, service, None)
 
 
 def test_choose_host_returns_one_of_the_available_hosts():
     hosts = ["foo", "bar", "baz"]
     service = mock.Mock()
     service.get_hosts.return_value = hosts
-    assert client.choose_host(service) in hosts
+    assert client._choose_host(service) in hosts
 
 
 def test_choose_host_raises_exception_when_no_hosts_available():
     service = mock.Mock()
     service.get_hosts.return_value = []
     with pytest.raises(NoHostsAvailableException):
-        client.choose_host(service)
+        client._choose_host(service)
 
 
 def test_call_when_raw_response_object_requested(mock_response, mock_endpoint, mock_logger):
@@ -323,4 +320,4 @@ def test_return_raw_response_object_in_call_overrides_endpoint(mock_response, mo
     ],
 )
 def test_build_url(host, path, url):
-    assert url == client.build_url(host, path)
+    assert url == client._build_url(host, path)

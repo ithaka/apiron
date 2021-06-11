@@ -6,13 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Testing matrix and trove classifiers for Python 3.9 and 3.10
+- Testing matrix and trove classifiers for Python 3.9
+- Type hints for all classes, methods, and functions
 
 ### Removed
 - Support for Python 3.6 has been removed due to its impending end of life and the desire to leverage features from 3.7
 
 ### Changed
 - Remove Python 3.10 testing and support for now, as Travis CI only has Python 3.10.0a5 which isn't compatible with recent pytest-randomly releases
+- Indicate (by renaming) that all functions in the `client` module are private, except for `call`
 
 ## [5.1.0] - 2020-07-14
 ### Added

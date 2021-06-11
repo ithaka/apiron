@@ -2,6 +2,9 @@ import logging
 import string
 import warnings
 from functools import partial, update_wrapper
+from typing import Any, Dict, Iterable, List, Union
+
+import requests
 
 from apiron import client
 from apiron.exceptions import UnfulfilledParameterException
@@ -25,11 +28,11 @@ class Endpoint:
 
     def __init__(
         self,
-        path="/",
-        default_method="GET",
-        default_params=None,
-        required_params=None,
-        return_raw_response_object=False,
+        path: str = "/",
+        default_method: str = "GET",
+        default_params: Dict[str, Any] = None,
+        required_params: Iterable[str] = None,
+        return_raw_response_object: bool = False,
     ):
         """
         :param str path:
@@ -63,7 +66,7 @@ class Endpoint:
         self.required_params = required_params or set()
         self.return_raw_response_object = return_raw_response_object
 
-    def format_response(self, response):
+    def format_response(self, response: requests.Response) -> Union[str, Dict[str, Any], Iterable[bytes]]:
         """
         Extracts the appropriate type of response data from a :class:`requests.Response` object
 
@@ -77,7 +80,7 @@ class Endpoint:
         return response.text
 
     @property
-    def required_headers(self):
+    def required_headers(self) -> Dict[str, Any]:
         """
         Generates the headers that must be sent to this endpoint based on its attributes
 
@@ -88,7 +91,7 @@ class Endpoint:
         """
         return {}
 
-    def get_formatted_path(self, **kwargs):
+    def get_formatted_path(self, **kwargs) -> str:
         """
         Format this endpoint's path with the supplied keyword arguments
 
@@ -102,7 +105,7 @@ class Endpoint:
         return self.path.format(**kwargs)
 
     @property
-    def path_placeholders(self):
+    def path_placeholders(self) -> List[str]:
         """
         The formattable placeholders from this endpoint's path, in the order they appear.
 
@@ -116,7 +119,7 @@ class Endpoint:
         parser = string.Formatter()
         return [placeholder_name for _, placeholder_name, _, _ in parser.parse(self.path) if placeholder_name]
 
-    def _validate_path_placeholders(self, placeholder_names, path_kwargs):
+    def _validate_path_placeholders(self, placeholder_names: List[str], path_kwargs: Dict[str, Any]):
         if any(path_kwarg not in placeholder_names for path_kwarg in path_kwargs):
             warnings.warn(
                 f"An unknown path kwarg was supplied to {self}. kwargs supplied: {path_kwargs}",
@@ -124,7 +127,7 @@ class Endpoint:
                 stacklevel=6,
             )
 
-    def _check_for_empty_params(self, params):
+    def _check_for_empty_params(self, params: Dict[str, Any]):
         empty_params = {param: params[param] for param in params if params[param] in (None, "")}
 
         if empty_params:
@@ -134,7 +137,7 @@ class Endpoint:
                 stacklevel=6,
             )
 
-    def _check_for_unfulfilled_params(self, params):
+    def _check_for_unfulfilled_params(self, params: Dict[str, Any]):
         unfulfilled_params = {
             param for param in self.required_params if param not in params and param not in self.default_params
         }
@@ -142,11 +145,11 @@ class Endpoint:
         if unfulfilled_params:
             raise UnfulfilledParameterException(self.path, unfulfilled_params)
 
-    def _validate_params(self, params):
+    def _validate_params(self, params: Dict[str, Any]):
         self._check_for_empty_params(params)
         self._check_for_unfulfilled_params(params)
 
-    def get_merged_params(self, supplied_params=None):
+    def get_merged_params(self, supplied_params: Dict[str, Any] = None) -> Dict[str, Any]:
         """
         Merge this endpoint's default parameters with the supplied parameters
 
@@ -168,8 +171,8 @@ class Endpoint:
         merged_params.update(supplied_params)
         return merged_params
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.path
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.__class__.__name__}(path='{self.path}')"

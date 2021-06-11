@@ -1,3 +1,5 @@
+from typing import Any
+
 from apiron.endpoint import Endpoint
 
 
@@ -12,7 +14,7 @@ class StubEndpoint(Endpoint):
     def __get__(self, instance, owner):
         return self.stub_response
 
-    def __init__(self, stub_response=None, **kwargs):
+    def __init__(self, stub_response: Any = None, **kwargs):
         """
         :param stub_response:
             A pre-baked response or response-determining function.
@@ -31,7 +33,9 @@ class StubEndpoint(Endpoint):
             Arbitrary parameters that can match the intended real endpoint.
             These don't do anything for the stub but streamline the interface.
         """
+
         super().__init__(**kwargs)
+
         if callable(stub_response):
             self.stub_response = stub_response
         elif stub_response:
