@@ -19,6 +19,7 @@ script:
 # The stages will run in the order they appear here.
 stages:
   - lint
+  - typecheck
   - docs
   - test
   - name: deploy
@@ -29,6 +30,10 @@ jobs:
     - stage: lint
       script:
         - tox -e lint
+
+    - stage: typecheck
+      script:
+        - tox -e typecheck
 
     - stage: docs
       script:
