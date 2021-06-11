@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Testing matrix and trove classifiers for Python 3.9 and 3.10
+- Testing matrix and trove classifiers for Python 3.9
 - Type hints for all classes, methods, and functions
 
 ### Removed
