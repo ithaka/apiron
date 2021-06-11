@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from apiron.endpoint.endpoint import Endpoint
 
 
@@ -8,7 +10,7 @@ class StreamingEndpoint(Endpoint):
 
     streaming = True
 
-    def format_response(self, response):
+    def format_response(self, response) -> Iterable[bytes]:
         """
         Stream response in chunks
 
