@@ -58,7 +58,7 @@ jobs:
       - name: Install tox
         run: python -m pip install tox
 
-      - name: Run linting
+      - name: Run type checks
         run: tox -e typecheck
 
   docs:
