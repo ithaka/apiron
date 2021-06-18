@@ -1,9 +1,9 @@
 # apiron
 
-[![PyPI version](https://badge.fury.io/py/apiron.svg)](https://badge.fury.io/py/apiron)
+[![PyPI version](https://badge.fury.io/py/apiron.svg)](https://pypi.org/project/apiron/#history)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/apiron.svg)](https://pypi.org/project/apiron/)
-[![Build Status](https://travis-ci.org/ithaka/apiron.svg?branch=dev)](https://travis-ci.org/ithaka/apiron)
-[![Documentation Status](https://readthedocs.org/projects/apiron/badge/?version=latest)](https://apiron.readthedocs.io/en/latest/?badge=latest)
+[![Build status](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)](https://github.com/ithaka/apiron/actions)
+[![Documentation Status](https://readthedocs.org/projects/apiron/badge/?version=latest)](https://apiron.readthedocs.io)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](code-of-conduct.md)
 
 `apiron` helps you cook a tasty client for RESTful APIs. Just don't wash it with SOAP.

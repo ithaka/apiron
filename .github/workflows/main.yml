@@ -1,0 +1,116 @@
+name: Checks
+on: [push]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install tox
+        run: python -m pip install tox
+
+      - name: Run linting
+        run: tox -e lint
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python:
+          - version: '3.10-dev'
+            toxenv: 'py310'
+          - version: '3.9'
+            toxenv: 'py39'
+          - version: '3.8'
+            toxenv: 'py38'
+          - version: '3.7'
+            toxenv: 'py38'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python ${{ matrix.python.version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python.version }}
+
+      - name: Install tox
+        run: python -m pip install tox
+
+      - name: Run checks
+        run: tox -e ${{ matrix.python.toxenv }}
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install tox
+        run: python -m pip install tox
+
+      - name: Run linting
+        run: tox -e typecheck
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install tox
+        run: python -m pip install tox
+
+      - name: Build docs
+        run: tox -e docs
+
+  publish:
+    needs: [lint, test, typecheck, docs]
+    if: startsWith(github.ref, 'refs/tags')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install pypa/build
+        run: python -m pip install build
+
+      - name: Build distribution
+        run: python -m build --sdist --wheel --outdir dist/
+
+      - name: Publish distribution to Test PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+
+      - name: Publish distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+      - name: Publish distribution to GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/apiron-*.whl
+            dist/apiron-*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
