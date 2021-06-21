@@ -72,5 +72,5 @@ To participate in the release process, you'll need the following:
 1. Once all changes for a release are approved and incorporated into `dev`, update the `setup.cfg` file to a new semantic version. Update `CHANGELOG.md` to reflect the new version and make sure all changes are reflected (see link in `CHANGELOG.md` for formatting).
 1. Open a pull request titled something like "v3.X.X release prep" and merge to `dev`
 1. Tag the head of `dev` as a new GitHub release matching the version in `setup.cfg`, using the body of the version's changes from `CHANGELOG.md` as the release description
-1. Monitor the resulting build on [Travis CI](https://travis-ci.com/github/ithaka/apiron) to make sure the build artifacts are uploaded to PyPI and the GitHub release
+1. Monitor the resulting [actions](https://github.com/ithaka/apiron/actions) to make sure the build artifacts are uploaded to PyPI and the GitHub release
 1. Smoke check the documentation build on Read the Docs
