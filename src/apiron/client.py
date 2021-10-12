@@ -250,7 +250,7 @@ def call(
         **kwargs,
     )
 
-    logger.info(f"{method} {request.url}")
+    logger.info("%s %s", method, request.url)
 
     response = adapted_session.send(
         request,
@@ -261,11 +261,10 @@ def call(
     )
 
     logger.info(
-        "{status} {url}{history}".format(
-            status=response.status_code,
-            url=response.url,
-            history=" ({} redirect(s))".format(len(response.history)) if response.history else "",
-        )
+        "%d %s%s",
+        response.status_code,
+        response.url,
+        " ({} redirect(s))".format(len(response.history)) if response.history else "",
     )
 
     if managing_session:
