@@ -149,8 +149,8 @@ def test_call(
         proxies=service.proxies,
     )
 
-    mock_logger.info.assert_any_call("GET http://host1.biz/foo/")
-    mock_logger.info.assert_any_call("200 http://host1.biz/foo/")
+    mock_logger.info.assert_any_call("%s %s", "GET", "http://host1.biz/foo/")
+    mock_logger.info.assert_any_call("%d %s%s", 200, "http://host1.biz/foo/", "")
 
     mock_endpoint.default_method = "POST"
     request.method = "POST"
@@ -165,8 +165,8 @@ def test_call(
         proxies=service.proxies,
     )
 
-    mock_logger.info.assert_any_call("GET http://host1.biz/foo/")
-    mock_logger.info.assert_any_call("200 http://host1.biz/foo/")
+    mock_logger.info.assert_any_call("%s %s", "GET", "http://host1.biz/foo/")
+    mock_logger.info.assert_any_call("%d %s%s", 200, "http://host1.biz/foo/", "")
 
     request.method = "PUT"
 
