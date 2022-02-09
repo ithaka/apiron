@@ -11,6 +11,8 @@ if TYPE_CHECKING:
     else:
         from typing_extensions import Concatenate, ParamSpec
 
+    from apiron.service import Service
+
     P = ParamSpec("P")
     R = TypeVar("R")
 
@@ -18,13 +20,12 @@ import requests
 
 from apiron import client
 from apiron.exceptions import UnfulfilledParameterException
-from apiron.service import Service
 
 
 LOGGER = logging.getLogger(__name__)
 
 
-def create_caller(
+def __create_caller(
     call_fn: Callable["Concatenate[Service, Endpoint, P]", "R"],
     instance: Any,
     owner: Any,
@@ -38,7 +39,7 @@ class Endpoint:
     """
 
     def __get__(self, instance, owner):
-        caller = create_caller(client.call, owner, self)
+        caller = __create_caller(client.call, owner, self)
         update_wrapper(caller, client.call)
         return caller
 
