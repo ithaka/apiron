@@ -2,15 +2,30 @@ import logging
 import string
 import warnings
 from functools import partial, update_wrapper
-from typing import Any, Dict, Iterable, List, Union
+from typing import Any, Callable, Dict, Iterable, List, TypeVar, Union, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing_extensions import Concatenate, ParamSpec
+
+    P = ParamSpec("P")
+    R = TypeVar("R")
 
 import requests
 
 from apiron import client
 from apiron.exceptions import UnfulfilledParameterException
+from apiron.service import Service
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+def create_caller(
+    call_fn: Callable["Concatenate[Service, Endpoint, P]", "R"],
+    instance: Any,
+    owner: Any,
+) -> Callable[P, R]:
+    return partial(call_fn, instance, owner)
 
 
 class Endpoint:
@@ -19,7 +34,7 @@ class Endpoint:
     """
 
     def __get__(self, instance, owner):
-        caller = partial(client.call, owner, self)
+        caller = create_caller(client.call, owner, self)
         update_wrapper(caller, client.call)
         return caller
 
