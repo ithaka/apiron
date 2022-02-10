@@ -25,8 +25,10 @@ from apiron.exceptions import UnfulfilledParameterException
 LOGGER = logging.getLogger(__name__)
 
 
+# Mypy doesn't fully support PEP 612, hence the type ignore.
+# Ref: https://github.com/python/mypy/issues/8645
 def __create_caller(
-    call_fn: Callable["Concatenate[Service, Endpoint, P]", "R"],
+    call_fn: Callable["Concatenate[Service, Endpoint, P]", "R"],  # type: ignore
     instance: Any,
     owner: Any,
 ) -> Callable["P", "R"]:
