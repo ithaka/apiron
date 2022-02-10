@@ -27,7 +27,7 @@ LOGGER = logging.getLogger(__name__)
 
 # Mypy doesn't fully support PEP 612, hence the type ignore.
 # Ref: https://github.com/python/mypy/issues/8645
-def __create_caller(
+def _create_caller(
     call_fn: Callable["Concatenate[Service, Endpoint, P]", "R"],  # type: ignore
     instance: Any,
     owner: Any,
@@ -41,7 +41,7 @@ class Endpoint:
     """
 
     def __get__(self, instance, owner):
-        caller = __create_caller(client.call, owner, self)
+        caller = _create_caller(client.call, owner, self)
         update_wrapper(caller, client.call)
         return caller
 
