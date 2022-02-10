@@ -29,7 +29,7 @@ def __create_caller(
     call_fn: Callable["Concatenate[Service, Endpoint, P]", "R"],
     instance: Any,
     owner: Any,
-) -> Callable[P, R]:
+) -> Callable["P", "R"]:
     return partial(call_fn, instance, owner)
 
 
