@@ -1,8 +1,22 @@
+from __future__ import annotations
+
 import logging
 import string
+import sys
 import warnings
 from functools import partial, update_wrapper
-from typing import Any, Dict, Iterable, List, Union
+from typing import Any, Callable, Dict, Iterable, List, TypeVar, Union, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    if sys.version_info >= (3, 10):
+        from typing import Concatenate, ParamSpec
+    else:
+        from typing_extensions import Concatenate, ParamSpec
+
+    from apiron.service import Service
+
+    P = ParamSpec("P")
+    R = TypeVar("R")
 
 import requests
 
@@ -13,13 +27,23 @@ from apiron.exceptions import UnfulfilledParameterException
 LOGGER = logging.getLogger(__name__)
 
 
+# Mypy doesn't fully support PEP 612, hence the type ignore.
+# Ref: https://github.com/python/mypy/issues/8645
+def _create_caller(
+    call_fn: Callable["Concatenate[Service, Endpoint, P]", "R"],  # type: ignore
+    instance: Any,
+    owner: Any,
+) -> Callable["P", "R"]:
+    return partial(call_fn, instance, owner)
+
+
 class Endpoint:
     """
     A basic service endpoint that responds with the default ``Content-Type`` for that endpoint
     """
 
     def __get__(self, instance, owner):
-        caller = partial(client.call, owner, self)
+        caller = _create_caller(client.call, owner, self)
         update_wrapper(caller, client.call)
         return caller
 
