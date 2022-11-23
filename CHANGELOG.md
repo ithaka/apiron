@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Run tests against Python 3.11
+- Stop ignoring imports during type checking
 
 ## [6.1.0] - 2021-12-22
 ### Added
