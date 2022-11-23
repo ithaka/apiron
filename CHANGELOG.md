@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Ensure `py.typed` files end up in binary wheel distribution, which may break type checking for consumers
 
+### Added
+- Run tests against Python 3.11
+
 ## [6.1.0] - 2021-12-22
 ### Added
 - Add `py.typed` file so mypy can check against package types in downstream applications
