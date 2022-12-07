@@ -1,4 +1,3 @@
-import io
 from unittest import mock
 
 import pytest
@@ -62,8 +61,8 @@ def test_build_request_object_passes_arguments_to_request_constructor(
 
     params = {"baz": "qux"}
     mock_endpoint.get_merged_params.return_value = params
-    data = "I am a data"
-    files = {"file_name": io.BytesIO(b"this is a test")}
+    data = {"data": "I am a data"}
+    files = {"file_name": "this is a test"}
     json = {"raw": "data"}
     headers = {"Accept": "stuff"}
     cookies = {"chocolate-chip": "yes"}
@@ -240,7 +239,7 @@ def test_build_request_object_raises_no_host_exception():
     service.get_hosts.return_value = []
 
     with pytest.raises(NoHostsAvailableException):
-        client._build_request_object(None, service, None)
+        client._build_request_object(mock.Mock(), service, mock.Mock())
 
 
 def test_choose_host_returns_one_of_the_available_hosts():

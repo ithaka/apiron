@@ -5,7 +5,7 @@ import string
 import sys
 import warnings
 from functools import partial, update_wrapper
-from typing import Any, Callable, Dict, Iterable, List, TypeVar, Union, TYPE_CHECKING
+from typing import Optional, Any, Callable, Dict, Iterable, List, TypeVar, Union, TYPE_CHECKING
 
 if TYPE_CHECKING:
     if sys.version_info >= (3, 10):
@@ -27,10 +27,8 @@ from apiron.exceptions import UnfulfilledParameterException
 LOGGER = logging.getLogger(__name__)
 
 
-# Mypy doesn't fully support PEP 612, hence the type ignore.
-# Ref: https://github.com/python/mypy/issues/8645
 def _create_caller(
-    call_fn: Callable["Concatenate[Service, Endpoint, P]", "R"],  # type: ignore
+    call_fn: Callable["Concatenate[Service, Endpoint, P]", "R"],
     instance: Any,
     owner: Any,
 ) -> Callable["P", "R"]:
@@ -54,8 +52,8 @@ class Endpoint:
         self,
         path: str = "/",
         default_method: str = "GET",
-        default_params: Dict[str, Any] = None,
-        required_params: Iterable[str] = None,
+        default_params: Optional[Dict[str, Any]] = None,
+        required_params: Optional[Iterable[str]] = None,
         return_raw_response_object: bool = False,
     ):
         """
@@ -173,7 +171,7 @@ class Endpoint:
         self._check_for_empty_params(params)
         self._check_for_unfulfilled_params(params)
 
-    def get_merged_params(self, supplied_params: Dict[str, Any] = None) -> Dict[str, Any]:
+    def get_merged_params(self, supplied_params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
         Merge this endpoint's default parameters with the supplied parameters
 

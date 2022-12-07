@@ -7,7 +7,7 @@ from urllib import parse
 
 import requests
 from requests import adapters
-from requests.packages.urllib3.util import retry
+from urllib3.util import retry
 
 if TYPE_CHECKING:
     import apiron  # pragma: no cover
