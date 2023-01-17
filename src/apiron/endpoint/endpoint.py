@@ -2,21 +2,8 @@ from __future__ import annotations
 
 import logging
 import string
-import sys
 import warnings
-from functools import partial, update_wrapper
-from typing import Optional, Any, Callable, Dict, Iterable, List, TypeVar, Union, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    if sys.version_info >= (3, 10):
-        from typing import Concatenate, ParamSpec
-    else:
-        from typing_extensions import Concatenate, ParamSpec
-
-    from apiron.service import Service
-
-    P = ParamSpec("P")
-    R = TypeVar("R")
+from typing import Optional, Iterable, Any, Dict, List, Union
 
 import requests
 
@@ -27,26 +14,13 @@ from apiron.exceptions import UnfulfilledParameterException
 LOGGER = logging.getLogger(__name__)
 
 
-def _create_caller(
-    call_fn: Callable["Concatenate[Service, Endpoint, P]", "R"],
-    instance: Any,
-    owner: Any,
-) -> Callable["P", "R"]:
-    return partial(call_fn, instance, owner)
-
-
 class Endpoint:
     """
     A basic service endpoint that responds with the default ``Content-Type`` for that endpoint
     """
 
-    def __get__(self, instance, owner):
-        caller = _create_caller(client.call, owner, self)
-        update_wrapper(caller, client.call)
-        return caller
-
-    def __call__(self):
-        raise TypeError("Endpoints are only callable in conjunction with a Service class.")
+    def __call__(self, service, *args, **kwargs):
+        return client.call(service, self, *args, **{**self.kwargs, **service._kwargs, **kwargs})
 
     def __init__(
         self,
@@ -55,6 +29,7 @@ class Endpoint:
         default_params: Optional[Dict[str, Any]] = None,
         required_params: Optional[Iterable[str]] = None,
         return_raw_response_object: bool = False,
+        **kwargs,
     ):
         """
         :param str path:
@@ -72,8 +47,11 @@ class Endpoint:
             Whether to return a :class:`requests.Response` object or call :func:`format_response` on it first.
             This can be overridden when calling the endpoint.
             (Default ``False``)
+        :param kwargs:
+            Default arguments to pass through to `apiron.client.call`.
         """
         self.default_method = default_method
+        self.kwargs = kwargs
 
         if "?" in path:
             warnings.warn(

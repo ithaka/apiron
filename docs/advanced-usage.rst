@@ -113,3 +113,40 @@ This is useful for workflows where cookies or other information need to persist 
 It's often more useful in logs to know which module initiated the code doing the logging.
 ``apiron`` allows for an existing logger object to be passed to an endpoint call using the ``logger`` argument
 so that logs will indicate the caller module rather than :mod:`apiron.client`.
+
+
+**********************
+Instantiated endpoints
+**********************
+
+While the other documented usage patterns implement the singleton pattern, you may wish to use instantiated
+services for reasons such as those mentioned `in this issue <https://github.com/ithaka/apiron/issues/119>`_.
+
+This feature can be enabled by setting ``APIRON_INSTANTIATED_SERVICES=1`` either in the shell in which your
+program runs or early in the entrypoint to your program, prior to the evaluation of your service classes.
+
+Endpoints should then be called on instances of ``Service`` subclasses, rather than the class itself:
+
+As an additional benefit, arguments passed into the constructor will be passed through to the endpoint as arguments
+to the caller that forms the request. See ``aprion.client.call`` for all the available options.
+
+.. code-block:: python
+
+    import os
+
+    import requests
+
+    from apiron import JsonEndpoint, Service
+
+    os.environ['APIRON_INSTANTIATED_SERVICES'] = "1"
+
+
+    class GitHub(Service):
+        domain = 'https://api.github.com'
+        user = JsonEndpoint(path='/users/{username}')
+        repo = JsonEndpoint(path='/repos/{org}/{repo}')
+
+
+    service = GitHub(session=requests.Session())
+    response = service.user(username='defunkt')
+    print(response)
