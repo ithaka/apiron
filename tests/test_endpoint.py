@@ -7,14 +7,6 @@ import apiron
 
 
 @pytest.fixture
-def service():
-    class SomeService(apiron.Service):
-        domain = "http://foo.com"
-
-    return SomeService
-
-
-@pytest.fixture
 def stub_function():
     def stub_response(**kwargs):
         if kwargs.get("params") and kwargs["params"].get("param_key") == "param_value":
@@ -28,12 +20,12 @@ def stub_function():
 class TestEndpoint:
     def test_call(self, service):
         service.foo = apiron.Endpoint()
-        service.foo()
+        service.foo()  # type: ignore
 
     def test_call_without_service_raises_exception(self):
         foo = apiron.Endpoint()
         with pytest.raises(TypeError):
-            foo()
+            foo()  # type: ignore
 
     def test_default_attributes_from_constructor(self):
         foo = apiron.Endpoint()
@@ -163,11 +155,11 @@ class TestStreamingEndpoint:
 class TestStubEndpoint:
     def test_stub_default_response(self, service):
         service.stub_endpoint = apiron.StubEndpoint()
-        assert service.stub_endpoint() == {"response": "StubEndpoint(path='/')"}
+        assert service.stub_endpoint() == {"response": "StubEndpoint(path='/')"}  # type: ignore
 
     def test_call_static(self, service):
         service.stub_endpoint = apiron.StubEndpoint(stub_response="stub response")
-        assert service.stub_endpoint() == "stub response"
+        assert service.stub_endpoint() == "stub response"  # type: ignore
 
     @pytest.mark.parametrize(
         "test_call_kwargs,expected_response",
@@ -181,7 +173,7 @@ class TestStubEndpoint:
     def test_call_without_service_raises_exception(self):
         stub_endpoint = apiron.StubEndpoint(stub_response="foo")
         with pytest.raises(TypeError):
-            stub_endpoint()
+            stub_endpoint()  # type: ignore
 
     def test_str_method(self):
         foo = apiron.StubEndpoint(path="/bar/baz")

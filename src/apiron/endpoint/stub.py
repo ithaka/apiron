@@ -11,8 +11,8 @@ class StubEndpoint(Endpoint):
     before the endpoint is complete.
     """
 
-    def __get__(self, instance, owner):
-        return self.stub_response
+    def __call__(self, service, *args, **kwargs):
+        return self.stub_response(*args, **kwargs)
 
     def __init__(self, stub_response: Optional[Any] = None, **kwargs):
         """
