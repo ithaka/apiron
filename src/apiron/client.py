@@ -137,6 +137,14 @@ def _get_guaranteed_session(session: Optional[requests.Session]) -> requests.Ses
     return requests.Session()
 
 
+def _get_retry_spec(endpoint: apiron.Endpoint, retry_spec: Optional[retry.Retry] = None) -> retry.Retry:
+    return retry_spec or endpoint.retry_spec or DEFAULT_RETRY
+
+
+def _get_timeout_spec(endpoint: apiron.Endpoint, timeout_spec: Optional[Timeout] = None) -> Timeout:
+    return timeout_spec or endpoint.timeout_spec or DEFAULT_TIMEOUT
+
+
 def call(
     service: apiron.Service,
     endpoint: apiron.Endpoint,
@@ -150,8 +158,8 @@ def call(
     cookies: Optional[Dict[str, Any]] = None,
     auth: Optional[Any] = None,
     encoding: Optional[str] = None,
-    retry_spec: retry.Retry = DEFAULT_RETRY,
-    timeout_spec: Timeout = DEFAULT_TIMEOUT,
+    retry_spec: Optional[retry.Retry] = None,
+    timeout_spec: Optional[Timeout] = None,
     logger: Optional[logging.Logger] = None,
     allow_redirects: bool = True,
     return_raw_response_object: Optional[bool] = None,
@@ -200,11 +208,11 @@ def call(
     :param urllib3.util.retry.Retry retry_spec:
         (optional)
         An override of the retry behavior for this call.
-        (default ``Retry(total=1, connect=1, read=1, status_forcelist=[500-level status codes])``)
+        (default ``None``)
     :param Timeout timeout_spec:
         (optional)
         An override of the timeout behavior for this call.
-        (default ``Timeout(connection_timeout=1, read_timeout=3)``)
+        (default ``None``)
     :param logging.Logger logger:
         (optional)
         An existing logger for logging from the proper caller for better correlation
@@ -229,7 +237,10 @@ def call(
 
     managing_session = not session
     guaranteed_session = _get_guaranteed_session(session)
-    adapted_session = _adapt_session(guaranteed_session, adapters.HTTPAdapter(max_retries=retry_spec))
+
+    retry_spec_to_use = _get_retry_spec(endpoint, retry_spec)
+
+    adapted_session = _adapt_session(guaranteed_session, adapters.HTTPAdapter(max_retries=retry_spec_to_use))
 
     method = method or endpoint.default_method
 
@@ -252,9 +263,11 @@ def call(
 
     logger.info("%s %s", method, request.url)
 
+    timeout_spec_to_use = _get_timeout_spec(endpoint, timeout_spec)
+
     response = adapted_session.send(
         request,
-        timeout=(timeout_spec.connection_timeout, timeout_spec.read_timeout),
+        timeout=(timeout_spec_to_use.connection_timeout, timeout_spec_to_use.read_timeout),
         stream=getattr(endpoint, "streaming", False),
         allow_redirects=allow_redirects,
         proxies=adapted_session.proxies or service.proxies,

@@ -1,8 +1,9 @@
 from unittest import mock
 
 import pytest
+from urllib3.util import retry
 
-from apiron import client, NoHostsAvailableException
+from apiron import client, NoHostsAvailableException, Timeout
 
 
 @pytest.fixture
@@ -17,6 +18,8 @@ def mock_endpoint():
     endpoint = mock.Mock()
     endpoint.required_headers = {}
     endpoint.get_formatted_path.return_value = "/foo/"
+    endpoint.timeout_spec = None
+    endpoint.retry_spec = None
     del endpoint.stub_response
     return endpoint
 
@@ -232,6 +235,73 @@ def test_call_with_explicit_encoding(mock_response, mock_endpoint, mock_logger):
     client.call(service, mock_endpoint, session=session, logger=mock_logger, encoding="FAKE-CODEC")
 
     assert "FAKE-CODEC" == mock_response.encoding
+
+
+@mock.patch("apiron.client._build_request_object")
+@mock.patch("apiron.client._adapt_session")
+@mock.patch("requests.Session", autospec=True)
+def test_call_uses_configured_endpoint_timeout_spec(
+    MockSession, mock_adapt_session, mock_build_request_object, mock_response, mock_endpoint, mock_logger
+):
+    service = mock.Mock()
+    service.get_hosts.return_value = ["http://host1.biz"]
+    service.required_headers = {}
+
+    session = MockSession()
+    session.send.return_value = mock_response
+
+    request = mock.Mock()
+    mock_build_request_object.return_value = request
+    mock_endpoint.timeout_spec = Timeout(connection_timeout=1_000, read_timeout=1_000)
+
+    mock_session = MockSession()
+    mock_session.send.return_value = mock_response
+    mock_session.proxies = {}
+    mock_session.auth = ()
+    mock_adapt_session.return_value = mock_session
+
+    client.call(service, mock_endpoint, session=mock_session, logger=mock_logger)
+
+    session.send.assert_called_once_with(
+        request,
+        timeout=(1_000, 1_000),
+        stream=mock_endpoint.streaming,
+        allow_redirects=True,
+        proxies=service.proxies,
+    )
+
+
+@mock.patch("apiron.client._build_request_object")
+@mock.patch("apiron.client.adapters.HTTPAdapter", autospec=True)
+@mock.patch("requests.Session", autospec=True)
+def test_call_uses_configured_endpoint_retry_spec(
+    MockSession, MockAdapter, mock_build_request_object, mock_response, mock_endpoint, mock_logger
+):
+    service = mock.Mock()
+    service.get_hosts.return_value = ["http://host1.biz"]
+    service.required_headers = {}
+
+    session = MockSession()
+    session.send.return_value = mock_response
+
+    request = mock.Mock()
+    mock_build_request_object.return_value = request
+    retry_spec = retry.Retry(
+        total=42,
+        connect=42,
+        read=42,
+        status_forcelist=[500],
+    )
+    mock_endpoint.retry_spec = retry_spec
+
+    mock_session = MockSession()
+    mock_session.send.return_value = mock_response
+    mock_session.proxies = {}
+    mock_session.auth = ()
+
+    client.call(service, mock_endpoint, session=mock_session, logger=mock_logger)
+
+    MockAdapter.assert_called_once_with(max_retries=retry_spec)
 
 
 def test_build_request_object_raises_no_host_exception():

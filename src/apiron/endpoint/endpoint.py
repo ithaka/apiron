@@ -7,7 +7,7 @@ import warnings
 from functools import partial, update_wrapper
 from typing import Optional, Any, Callable, Dict, Iterable, List, TypeVar, Union, TYPE_CHECKING
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     if sys.version_info >= (3, 10):
         from typing import Concatenate, ParamSpec
     else:
@@ -19,8 +19,9 @@ if TYPE_CHECKING:
     R = TypeVar("R")
 
 import requests
+from urllib3.util import retry
 
-from apiron import client
+from apiron import client, Timeout
 from apiron.exceptions import UnfulfilledParameterException
 
 
@@ -55,6 +56,8 @@ class Endpoint:
         default_params: Optional[Dict[str, Any]] = None,
         required_params: Optional[Iterable[str]] = None,
         return_raw_response_object: bool = False,
+        timeout_spec: Optional[Timeout] = None,
+        retry_spec: Optional[retry.Retry] = None,
     ):
         """
         :param str path:
@@ -72,6 +75,14 @@ class Endpoint:
             Whether to return a :class:`requests.Response` object or call :func:`format_response` on it first.
             This can be overridden when calling the endpoint.
             (Default ``False``)
+        :param Timeout timeout_spec:
+            (optional)
+            An override of the timeout behavior for calls to this endpoint.
+            (default ``None``)
+        :param urllib3.util.retry.Retry retry_spec:
+            (optional)
+            An override of the retry behavior for calls to this endpoint.
+            (default ``None``)
         """
         self.default_method = default_method
 
@@ -87,6 +98,8 @@ class Endpoint:
         self.default_params = default_params or {}
         self.required_params = required_params or set()
         self.return_raw_response_object = return_raw_response_object
+        self.timeout_spec = timeout_spec
+        self.retry_spec = retry_spec
 
     def format_response(self, response: requests.Response) -> Union[str, Dict[str, Any], Iterable[bytes]]:
         """
