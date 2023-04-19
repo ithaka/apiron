@@ -229,7 +229,10 @@ def call(
 
     managing_session = not session
     guaranteed_session = _get_guaranteed_session(session)
-    adapted_session = _adapt_session(guaranteed_session, adapters.HTTPAdapter(max_retries=retry_spec))
+
+    retry_spec_to_use = endpoint.retry_spec or retry_spec
+
+    adapted_session = _adapt_session(guaranteed_session, adapters.HTTPAdapter(max_retries=retry_spec_to_use))
 
     method = method or endpoint.default_method
 

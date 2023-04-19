@@ -19,6 +19,7 @@ if TYPE_CHECKING:  # pragma: no cover
     R = TypeVar("R")
 
 import requests
+from urllib3.util import retry
 
 from apiron import client, Timeout
 from apiron.exceptions import UnfulfilledParameterException
@@ -56,6 +57,7 @@ class Endpoint:
         required_params: Optional[Iterable[str]] = None,
         return_raw_response_object: bool = False,
         timeout_spec: Optional[Timeout] = None,
+        retry_spec: Optional[retry.Retry] = None,
     ):
         """
         :param str path:
@@ -77,6 +79,10 @@ class Endpoint:
             (optional)
             An override of the timeout behavior for calls to this endpoint.
             (default ``None``)
+        :param urllib3.util.retry.Retry retry_spec:
+            (optional)
+            An override of the retry behavior for calls to this endpoint.
+            (default ``None``)
         """
         self.default_method = default_method
 
@@ -93,6 +99,7 @@ class Endpoint:
         self.required_params = required_params or set()
         self.return_raw_response_object = return_raw_response_object
         self.timeout_spec = timeout_spec
+        self.retry_spec = retry_spec
 
     def format_response(self, response: requests.Response) -> Union[str, Dict[str, Any], Iterable[bytes]]:
         """
