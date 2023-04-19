@@ -252,9 +252,11 @@ def call(
 
     logger.info("%s %s", method, request.url)
 
+    timeout_spec_to_use = endpoint.timeout_spec or timeout_spec
+
     response = adapted_session.send(
         request,
-        timeout=(timeout_spec.connection_timeout, timeout_spec.read_timeout),
+        timeout=(timeout_spec_to_use.connection_timeout, timeout_spec_to_use.read_timeout),
         stream=getattr(endpoint, "streaming", False),
         allow_redirects=allow_redirects,
         proxies=adapted_session.proxies or service.proxies,
