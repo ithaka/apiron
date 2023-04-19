@@ -7,7 +7,7 @@ import warnings
 from functools import partial, update_wrapper
 from typing import Optional, Any, Callable, Dict, Iterable, List, TypeVar, Union, TYPE_CHECKING
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     if sys.version_info >= (3, 10):
         from typing import Concatenate, ParamSpec
     else:
