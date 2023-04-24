@@ -89,6 +89,8 @@ jobs:
     needs: [lint, test, typecheck, docs]
     if: startsWith(github.ref, 'refs/tags')
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v3
 
@@ -106,13 +108,10 @@ jobs:
       - name: Publish distribution to Test PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
 
       - name: Publish distribution to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
 
       - name: Publish distribution to GitHub release
         uses: softprops/action-gh-release@v1
