@@ -5,7 +5,7 @@ import string
 import sys
 import warnings
 from functools import partial, update_wrapper
-from typing import Optional, Any, Callable, Dict, Iterable, List, TypeVar, Union, TYPE_CHECKING
+from typing import Any, Callable, Iterable, TypeVar, TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
     if sys.version_info >= (3, 10):
@@ -29,10 +29,10 @@ LOGGER = logging.getLogger(__name__)
 
 
 def _create_caller(
-    call_fn: Callable["Concatenate[Service, Endpoint, P]", "R"],
+    call_fn: Callable[Concatenate[Service, Endpoint, P], R],
     instance: Any,
     owner: Any,
-) -> Callable["P", "R"]:
+) -> Callable[P, R]:
     return partial(call_fn, instance, owner)
 
 
@@ -53,11 +53,11 @@ class Endpoint:
         self,
         path: str = "/",
         default_method: str = "GET",
-        default_params: Optional[Dict[str, Any]] = None,
-        required_params: Optional[Iterable[str]] = None,
+        default_params: dict[str, Any] | None = None,
+        required_params: Iterable[str] | None = None,
         return_raw_response_object: bool = False,
-        timeout_spec: Optional[Timeout] = None,
-        retry_spec: Optional[retry.Retry] = None,
+        timeout_spec: Timeout | None = None,
+        retry_spec: retry.Retry | None = None,
     ):
         """
         :param str path:
@@ -101,7 +101,7 @@ class Endpoint:
         self.timeout_spec = timeout_spec
         self.retry_spec = retry_spec
 
-    def format_response(self, response: requests.Response) -> Union[str, Dict[str, Any], Iterable[bytes]]:
+    def format_response(self, response: requests.Response) -> str | dict[str, Any] | Iterable[bytes]:
         """
         Extracts the appropriate type of response data from a :class:`requests.Response` object
 
@@ -115,7 +115,7 @@ class Endpoint:
         return response.text
 
     @property
-    def required_headers(self) -> Dict[str, Any]:
+    def required_headers(self) -> dict[str, Any]:
         """
         Generates the headers that must be sent to this endpoint based on its attributes
 
@@ -140,7 +140,7 @@ class Endpoint:
         return self.path.format(**kwargs)
 
     @property
-    def path_placeholders(self) -> List[str]:
+    def path_placeholders(self) -> list[str]:
         """
         The formattable placeholders from this endpoint's path, in the order they appear.
 
@@ -154,7 +154,7 @@ class Endpoint:
         parser = string.Formatter()
         return [placeholder_name for _, placeholder_name, _, _ in parser.parse(self.path) if placeholder_name]
 
-    def _validate_path_placeholders(self, placeholder_names: List[str], path_kwargs: Dict[str, Any]):
+    def _validate_path_placeholders(self, placeholder_names: list[str], path_kwargs: dict[str, Any]):
         if any(path_kwarg not in placeholder_names for path_kwarg in path_kwargs):
             warnings.warn(
                 f"An unknown path kwarg was supplied to {self}. kwargs supplied: {path_kwargs}",
@@ -162,7 +162,7 @@ class Endpoint:
                 stacklevel=6,
             )
 
-    def _check_for_empty_params(self, params: Dict[str, Any]):
+    def _check_for_empty_params(self, params: dict[str, Any]):
         empty_params = {param: params[param] for param in params if params[param] in (None, "")}
 
         if empty_params:
@@ -172,7 +172,7 @@ class Endpoint:
                 stacklevel=6,
             )
 
-    def _check_for_unfulfilled_params(self, params: Dict[str, Any]):
+    def _check_for_unfulfilled_params(self, params: dict[str, Any]):
         unfulfilled_params = {
             param for param in self.required_params if param not in params and param not in self.default_params
         }
@@ -180,11 +180,11 @@ class Endpoint:
         if unfulfilled_params:
             raise UnfulfilledParameterException(self.path, unfulfilled_params)
 
-    def _validate_params(self, params: Dict[str, Any]):
+    def _validate_params(self, params: dict[str, Any]):
         self._check_for_empty_params(params)
         self._check_for_unfulfilled_params(params)
 
-    def get_merged_params(self, supplied_params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def get_merged_params(self, supplied_params: dict[str, Any] | None = None) -> dict[str, Any]:
         """
         Merge this endpoint's default parameters with the supplied parameters
 
