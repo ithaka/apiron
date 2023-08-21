@@ -37,8 +37,6 @@ jobs:
             toxenv: 'py39'
           - version: '3.8'
             toxenv: 'py38'
-          - version: '3.7'
-            toxenv: 'py37'
     steps:
       - uses: actions/checkout@v3
 

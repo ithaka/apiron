@@ -12,7 +12,7 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import datetime
-import importlib_metadata
+import importlib.metadata
 import os
 import sys
 
@@ -28,7 +28,7 @@ project = "apiron"
 copyright = f"2018–{CURRENT_YEAR} {ORG}"
 author = ORG
 
-RELEASE_VERSION = importlib_metadata.version("apiron")
+RELEASE_VERSION = importlib.metadata.version("apiron")
 
 # The short X.Y version
 version = RELEASE_VERSION
@@ -77,7 +77,7 @@ master_doc = "index"
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.

@@ -37,17 +37,8 @@ Nonetheless, when fixing a bug it is helpful to us that you add a failing test t
 If adding a new feature, it should also be thoroughly tested.
 This allows for easier refactoring to prove that nothing broke in transit!
 
-To test `apiron`, check out the repository and:
-
-```
-$ cd /path/to/apiron/
-$ pyenv virtualenv 3.7.10 apiron  # pick your favorite virtual environment tool
-$ pyenv local apiron:3.10-dev:3.9.4:3.8.9:3.7.10  # use any Python versions you want to test
-(apiron:3.10-dev:3.9.4:3.8.9:3.7.10) $ pip install -e .[test]
-(apiron:3.10-dev:3.9.4:3.8.9:3.7.10) $ pytest
-```
-
-If you have `tox` installed, you may instead run `tox` to run the full matrix of tests across all Python versions.
+To test `apiron`, check out the repository and ensure the Python versions you would like to test are available on your `$PATH` as versioned executables like `python3.10`.
+Then, use `tox` to run the tests.
 
 
 ## Code formatting

@@ -2,7 +2,7 @@ from __future__ import annotations
 import collections
 import logging
 import random
-from typing import Any, Dict, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from urllib import parse
 
 import requests
@@ -69,7 +69,7 @@ def _adapt_session(session: requests.Session, adapter: requests.adapters.HTTPAda
     return session
 
 
-def _get_required_headers(service: apiron.Service, endpoint: apiron.Endpoint) -> Dict[str, str]:
+def _get_required_headers(service: apiron.Service, endpoint: apiron.Endpoint) -> dict[str, str]:
     """
     :param Service service:
         The service being called
@@ -97,14 +97,14 @@ def _build_request_object(
     session: requests.Session,
     service: apiron.Service,
     endpoint: apiron.Endpoint,
-    method: Optional[str] = None,
-    params: Optional[Dict[str, Any]] = None,
-    data: Optional[Dict[str, Any]] = None,
-    files: Optional[Dict[str, str]] = None,
-    json: Optional[Dict[str, Any]] = None,
-    headers: Optional[Dict[str, Any]] = None,
-    cookies: Optional[Dict[str, Any]] = None,
-    auth: Optional[Any] = None,
+    method: str | None = None,
+    params: dict[str, Any] | None = None,
+    data: dict[str, Any] | None = None,
+    files: dict[str, str] | None = None,
+    json: dict[str, Any] | None = None,
+    headers: dict[str, Any] | None = None,
+    cookies: dict[str, Any] | None = None,
+    auth: Any | None = None,
     **kwargs,
 ):
     host = _choose_host(service=service)
@@ -131,38 +131,38 @@ def _build_request_object(
     return session.prepare_request(request)
 
 
-def _get_guaranteed_session(session: Optional[requests.Session]) -> requests.Session:
+def _get_guaranteed_session(session: requests.Session | None) -> requests.Session:
     if session:
         return session
     return requests.Session()
 
 
-def _get_retry_spec(endpoint: apiron.Endpoint, retry_spec: Optional[retry.Retry] = None) -> retry.Retry:
+def _get_retry_spec(endpoint: apiron.Endpoint, retry_spec: retry.Retry | None = None) -> retry.Retry:
     return retry_spec or endpoint.retry_spec or DEFAULT_RETRY
 
 
-def _get_timeout_spec(endpoint: apiron.Endpoint, timeout_spec: Optional[Timeout] = None) -> Timeout:
+def _get_timeout_spec(endpoint: apiron.Endpoint, timeout_spec: Timeout | None = None) -> Timeout:
     return timeout_spec or endpoint.timeout_spec or DEFAULT_TIMEOUT
 
 
 def call(
     service: apiron.Service,
     endpoint: apiron.Endpoint,
-    method: Optional[str] = None,
-    session: Optional[requests.Session] = None,
-    params: Optional[Dict[str, Any]] = None,
-    data: Optional[Dict[str, Any]] = None,
-    files: Optional[Dict[str, str]] = None,
-    json: Optional[Dict[str, Any]] = None,
-    headers: Optional[Dict[str, Any]] = None,
-    cookies: Optional[Dict[str, Any]] = None,
-    auth: Optional[Any] = None,
-    encoding: Optional[str] = None,
-    retry_spec: Optional[retry.Retry] = None,
-    timeout_spec: Optional[Timeout] = None,
-    logger: Optional[logging.Logger] = None,
+    method: str | None = None,
+    session: requests.Session | None = None,
+    params: dict[str, Any] | None = None,
+    data: dict[str, Any] | None = None,
+    files: dict[str, str] | None = None,
+    json: dict[str, Any] | None = None,
+    headers: dict[str, Any] | None = None,
+    cookies: dict[str, Any] | None = None,
+    auth: Any | None = None,
+    encoding: str | None = None,
+    retry_spec: retry.Retry | None = None,
+    timeout_spec: Timeout | None = None,
+    logger: logging.Logger | None = None,
     allow_redirects: bool = True,
-    return_raw_response_object: Optional[bool] = None,
+    return_raw_response_object: bool | None = None,
     **kwargs,
 ):
     """
@@ -277,7 +277,7 @@ def call(
         "%d %s%s",
         response.status_code,
         response.url,
-        " ({} redirect(s))".format(len(response.history)) if response.history else "",
+        f" ({len(response.history)} redirect(s))" if response.history else "",
     )
 
     if managing_session:
