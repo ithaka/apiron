@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated documentation to prefer `tox` usage
 - Updated documentation dependencies and removed upper bounds on their versions
 - Add support for Python 3.12
+- Remove upper bound on dependencies
 
 ### Removed
 - apiron no longer supports Python 3.7, which reached end of life on 2023-06-27
