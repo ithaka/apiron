@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [8.0.0] - 2024-09-04
 ### Changed
 - Updated to simpler typing syntax for optional arguments and iterable types using `pyupgrade`
 - Reformatted files constrained to Python 3.8+ syntax using `black`
@@ -15,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - apiron no longer supports Python 3.7, which reached end of life on 2023-06-27
+- apiron no longer supports Python 3.8, which reaches end of life on 2024-10-31
 
 ## [7.1.0-post.3] - 2023-06-20
 ### Fixed
