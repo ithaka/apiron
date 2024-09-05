@@ -1,6 +1,11 @@
-from typing import List, Type
+from typing import Protocol
 
 from apiron.service.base import ServiceBase
+
+
+class Resolver(Protocol):
+    @staticmethod
+    def resolve(service_name: str) -> list[str]: ...
 
 
 class DiscoverableService(ServiceBase):
@@ -11,11 +16,11 @@ class DiscoverableService(ServiceBase):
     and returns a list of host names that correspond to that service.
     """
 
-    host_resolver_class: Type
+    host_resolver_class: type[Resolver]
     service_name: str
 
     @classmethod
-    def get_hosts(cls) -> List[str]:
+    def get_hosts(cls) -> list[str]:
         return cls.host_resolver_class.resolve(cls.service_name)
 
     def __str__(self) -> str:

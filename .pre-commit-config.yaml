@@ -14,7 +14,7 @@ repos:
 
 # Click through to this repository to see what other goodies are available
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0
+    rev: v4.6.0
     hooks:
     -   id: trailing-whitespace  # Removes trailing whitespace from lines in all file types
     -   id: end-of-file-fixer    # Fixes last line of all file types
@@ -22,22 +22,33 @@ repos:
     -   id: no-commit-to-branch  # Checks if you're committing to a disallowed branch
         args: [--branch, dev]
     -   id: check-ast            # Checks that Python files are valid syntax
+    -   id: check-toml # Checks TOML files for syntax errors
 
 ##########
 # Python #
 ##########
 
 # pyupgrade updates older syntax to newer syntax.
-# It's particularly handy for updating `.format()` calls to f-strings.
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v2.7.4
+    rev: v3.17.0
     hooks:
     -   id: pyupgrade
-        args: [--py37-plus]
+        args: [--py39-plus]
 
 # Run black last on Python code so all changes from previous hooks are reformatted
 -   repo: https://github.com/psf/black
-    rev: 21.5b2
+    rev: 24.8.0
     hooks:
     -   id: black
-        language_version: python3.7
+        language_version: python3.9
+
+-   repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+    -   id: isort
+
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.11.1
+    hooks:
+    -   id: mypy
+        additional_dependencies: [typing_extensions, types-requests, types-urllib3]

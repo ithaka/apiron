@@ -1,6 +1,3 @@
-from typing import Set
-
-
 class APIException(Exception):
     pass
 
@@ -12,6 +9,6 @@ class NoHostsAvailableException(APIException):
 
 
 class UnfulfilledParameterException(APIException):
-    def __init__(self, endpoint_path: str, unfulfilled_params: Set[str]):
+    def __init__(self, endpoint_path: str, unfulfilled_params: set[str]):
         message = f"The {endpoint_path} endpoint was called without required parameters: {unfulfilled_params}"
         super().__init__(message)
