@@ -1,15 +1,15 @@
-from typing import Any, Dict, List, Set
+from typing import Any
 
 from apiron import Endpoint
 
 
 class ServiceMeta(type):
     @property
-    def required_headers(cls) -> Dict[str, str]:
+    def required_headers(cls) -> dict[str, str]:
         return cls().required_headers
 
     @property
-    def endpoints(cls) -> Set[Endpoint]:
+    def endpoints(cls) -> set[Endpoint]:
         return {attr for attr_name, attr in cls.__dict__.items() if isinstance(attr, Endpoint)}
 
     def __str__(cls) -> str:
@@ -20,12 +20,12 @@ class ServiceMeta(type):
 
 
 class ServiceBase(metaclass=ServiceMeta):
-    required_headers: Dict[str, Any] = {}
+    required_headers: dict[str, Any] = {}
     auth = ()
-    proxies: Dict[str, str] = {}
+    proxies: dict[str, str] = {}
 
     @classmethod
-    def get_hosts(cls) -> List[str]:
+    def get_hosts(cls) -> list[str]:
         """
         The fully-qualified hostnames that correspond to this service.
         These are often determined by asking a load balancer or service discovery mechanism.
@@ -48,7 +48,7 @@ class Service(ServiceBase):
     domain: str
 
     @classmethod
-    def get_hosts(cls) -> List[str]:
+    def get_hosts(cls) -> list[str]:
         """
         The fully-qualified hostnames that correspond to this service.
         These are often determined by asking a load balancer or service discovery mechanism.

@@ -3,7 +3,7 @@ from unittest import mock
 import pytest
 from urllib3.util import retry
 
-from apiron import client, NoHostsAvailableException, Timeout
+from apiron import NoHostsAvailableException, Timeout, client
 
 
 @pytest.fixture

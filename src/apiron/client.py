@@ -1,8 +1,9 @@
 from __future__ import annotations
+
 import collections
 import logging
 import random
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 from urllib import parse
 
 import requests
@@ -11,6 +12,7 @@ from urllib3.util import retry
 
 if TYPE_CHECKING:
     import apiron  # pragma: no cover
+
 from apiron.exceptions import NoHostsAvailableException
 
 LOGGER = logging.getLogger(__name__)

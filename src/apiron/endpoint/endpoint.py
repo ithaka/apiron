@@ -4,8 +4,9 @@ import logging
 import string
 import sys
 import warnings
+from collections.abc import Iterable
 from functools import partial, update_wrapper
-from typing import Any, Callable, Iterable, TypeVar, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Callable, TypeVar
 
 if TYPE_CHECKING:  # pragma: no cover
     if sys.version_info >= (3, 10):
@@ -21,9 +22,8 @@ if TYPE_CHECKING:  # pragma: no cover
 import requests
 from urllib3.util import retry
 
-from apiron import client, Timeout
+from apiron import Timeout, client
 from apiron.exceptions import UnfulfilledParameterException
-
 
 LOGGER = logging.getLogger(__name__)
 

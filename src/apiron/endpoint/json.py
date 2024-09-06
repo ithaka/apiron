@@ -1,5 +1,6 @@
 import collections
-from typing import Any, Dict, Iterable, Optional
+from collections.abc import Iterable
+from typing import Any, Optional
 
 from apiron.endpoint.endpoint import Endpoint
 
@@ -14,7 +15,7 @@ class JsonEndpoint(Endpoint):
         *args,
         path: str = "/",
         default_method: str = "GET",
-        default_params: Optional[Dict[str, Any]] = None,
+        default_params: Optional[dict[str, Any]] = None,
         required_params: Optional[Iterable[str]] = None,
         preserve_order: bool = False,
     ):
@@ -23,7 +24,7 @@ class JsonEndpoint(Endpoint):
         )
         self.preserve_order = preserve_order
 
-    def format_response(self, response) -> Dict[str, Any]:
+    def format_response(self, response) -> dict[str, Any]:
         """
         Extracts JSON data from the response
 
@@ -40,5 +41,5 @@ class JsonEndpoint(Endpoint):
         return response.json(object_pairs_hook=collections.OrderedDict if self.preserve_order else None)
 
     @property
-    def required_headers(self) -> Dict[str, str]:
+    def required_headers(self) -> dict[str, str]:
         return {"Accept": "application/json"}
