@@ -2,9 +2,142 @@
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "apiron"
+version = "8.0.0"
+description = "apiron helps you cook a tasty client for RESTful APIs. Just don't wash it with SOAP."
+authors = [
+    { name = "Ithaka Harbors, Inc.", email = "opensource@ithaka.org" },
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "License :: OSI Approved :: MIT License",
+]
+license = { file = "LICENSE" }
+dynamic = ["readme"]
+dependencies = [
+    "requests>=2.11.1",
+    "urllib3>=1.26.13",
+]
+
+[project.optional-dependencies]
+docs = [
+    "sphinx>=7.2.2",
+    "sphinx-autobuild>=2021.3.14",
+]
+
+[project.urls]
+Repository = "https://github.com/ithaka/apiron"
+Changelog = "https://github.com/ithaka/apiron/blob/main/CHANGELOG.md"
+Documentation = "https://apiron.readthedocs.io"
+Issues = "https://github.com/ithaka/apiron/issues"
+
+[tool.setuptools.dynamic]
+readme = { file = "README.md", content-type = "text/markdown" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["tests*"]
+
+######################
+# Tool configuration #
+######################
+
 [tool.black]
 line-length = 120
 target-version = ['py39', 'py310', 'py311', 'py312', 'py313']
 
 [tool.isort]
 profile = "black"
+
+[tool.mypy]
+python_version = "3.9"
+warn_unused_configs = true
+show_error_context = true
+pretty = true
+namespace_packages = true
+check_untyped_defs = true
+
+[tool.coverage.run]
+branch = true
+source = ["apiron"]
+omit = [
+    "tests/*",
+]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = true
+
+[tool.coverage.paths]
+source = [
+    "src",
+    ".tox/**/site-packages",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-markers", "--cov"]
+xfail_strict = true
+
+[tool.tox]
+envlist = ["py39", "py310", "py311", "py312", "py313"]
+isolated_build = true
+
+[tool.tox.env_run_base]
+package = "wheel"
+wheel_build_env = ".pkg"
+deps = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.1.0",
+    "pytest-randomly>=3.15.0",
+]
+commands = [
+    ["pytest", { replace = "posargs", default = [], extend = true }],
+]
+
+[tool.tox.env.docs]
+extras = [
+    "docs",
+]
+commands = [
+    ["sphinx-build", "-b", "html", "docs", "{envtmpdir}/docs"]
+]
+
+[tool.tox.env.lint]
+skip_install = true
+deps = [
+    "black",
+    "isort",
+    "ruff",
+]
+commands = [
+    ["ruff", "check", { replace = "posargs", default = ["src", "tests"], extend = true }],
+    ["black", { replace = "posargs", default = ["--check", "--diff", "src", "tests"], extend = true }],
+    ["isort", { replace = "posargs", default = ["--check", "--diff", "src", "tests"], extend = true }],
+]
+
+[tool.tox.env.typecheck]
+deps = [
+    { replace = "ref", of = ["tool", "tox", "env_run_base", "deps"], extend = true },
+    "mypy",
+    "typing_extensions",
+    "types-requests",
+    "types-urllib3",
+]
+commands = [
+    ["mypy", { replace = "posargs", default = ["src", "tests"], extend = true }],
+]
+passenv = ["TERM"]

@@ -26,7 +26,10 @@ def stub_function():
 
 
 class TestEndpoint:
-    def test_call(self, service):
+    @mock.patch("requests.Session", autospec=True)
+    def test_call(self, MockSession, service):
+        mock_session = MockSession()
+        mock_session.proxies = {}
         service.foo = apiron.Endpoint()
         service.foo()
 
