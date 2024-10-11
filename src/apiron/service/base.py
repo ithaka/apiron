@@ -45,7 +45,7 @@ class Service(ServiceBase):
     A service has a domain off of which one or more endpoints stem.
     """
 
-    domain: str
+    domain = "UNKNOWN"
 
     @classmethod
     def get_hosts(cls) -> list[str]:
