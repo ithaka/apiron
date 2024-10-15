@@ -61,7 +61,7 @@ class Service(ServiceBase):
         return [cls.domain]
 
     def __str__(self) -> str:
-        return self.__class__.domain
+        return getattr(self.__class__, "domain", "UNKNOWN")
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(domain={self.__class__.domain})"

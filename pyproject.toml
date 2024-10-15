@@ -132,7 +132,7 @@ commands = [
 [tool.tox.env.typecheck]
 deps = [
     { replace = "ref", of = ["tool", "tox", "env_run_base", "deps"], extend = true },
-    "mypy",
+    "mypy<1.12.0",  # https://github.com/python/mypy/issues/17960
     "typing_extensions",
     "types-requests",
     "types-urllib3",

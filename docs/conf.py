@@ -68,7 +68,7 @@ templates_path = ["_templates"]
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = ".rst"
+source_suffix = {".rst": "restructuredtext"}
 
 # The master toctree document.
 master_doc = "index"
@@ -170,8 +170,8 @@ texinfo_documents = [
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
-    "requests": ("https://docs.python-requests.org/en/master/", None),
-    "urllib3": ("https://urllib3.readthedocs.io/en/latest/", None),
+    "requests": ("https://docs.python-requests.org/en/latest", None),
+    "urllib3": ("https://urllib3.readthedocs.io/en/latest", None),
 }
 
 # -- Options for todo extension ----------------------------------------------
