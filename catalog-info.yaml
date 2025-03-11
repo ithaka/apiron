@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: apiron
+  description: Auto-generated catalog-info.yaml.
+  tags:
+  - python
+spec:
+  type: unknown
+  owner: group:ui-engineering
+  lifecycle: unknown
