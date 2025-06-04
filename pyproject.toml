@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "apiron"
-version = "8.0.0-post.1"
+version = "8.0.1"
 description = "apiron helps you cook a tasty client for RESTful APIs. Just don't wash it with SOAP."
 authors = [
     { name = "Ithaka Harbors, Inc.", email = "opensource@ithaka.org" },
