@@ -1,5 +1,3 @@
-from typing import Any
-
 from apiron import Endpoint
 
 
@@ -20,9 +18,20 @@ class ServiceMeta(type):
 
 
 class ServiceBase(metaclass=ServiceMeta):
-    required_headers: dict[str, Any] = {}
     auth = ()
     proxies: dict[str, str] = {}
+
+    @property
+    def required_headers(self) -> dict[str, str]:
+        """
+        The headers that are required to be present in requests to this service.
+
+        :return:
+            A dictionary of header names and their expected values
+        :rtype:
+            dict
+        """
+        return {}
 
     @classmethod
     def get_hosts(cls) -> list[str]:

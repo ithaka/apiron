@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.1] - 2025-06-04
+### Fixed
+- Fix type disagreement for `required_headers` in service code
+
 ## [8.0.0-post.1] - 2024-10-28
 ### Changed
 - Modernize package quality tooling and configuration
