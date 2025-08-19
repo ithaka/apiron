@@ -13,19 +13,20 @@
 #
 import datetime
 import importlib.metadata
-import os
 import sys
+from datetime import timezone
+from pathlib import Path
 
-REPO = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-sys.path.insert(0, REPO)
+REPO = Path.resolve(Path(__file__) / ".." / "..")
+sys.path.insert(0, str(REPO))
 
 # -- Project information -----------------------------------------------------
 
-CURRENT_YEAR = datetime.datetime.now().year
+CURRENT_YEAR = datetime.datetime.now(tz=timezone.utc).year
 ORG = "Ithaka Harbors, Inc."
 
 project = "apiron"
-copyright = f"2018–{CURRENT_YEAR} {ORG}"
+copyright = f"2018–{CURRENT_YEAR} {ORG}"  # noqa: A001, RUF001
 author = ORG
 
 RELEASE_VERSION = importlib.metadata.version("apiron")

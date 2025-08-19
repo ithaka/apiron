@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "apiron"
-version = "8.0.2"
+version = "9.0.0"
 description = "apiron helps you cook a tasty client for RESTful APIs. Just don't wash it with SOAP."
 authors = [
     { name = "Ithaka Harbors, Inc.", email = "opensource@ithaka.org" },
@@ -15,7 +15,6 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -54,15 +53,37 @@ exclude = ["tests*"]
 # Tool configuration #
 ######################
 
-[tool.black]
+[tool.ruff]
 line-length = 120
-target-version = ['py39', 'py310', 'py311', 'py312', 'py313']
+target-version = "py310"
 
-[tool.isort]
-profile = "black"
+[tool.ruff.lint]
+select = [
+    "A",
+    "B",
+    "C4",
+    "DTZ",
+    "E",
+    "F",
+    "I",
+    "ISC",
+    "LOG",
+    "PT",
+    "PTH",
+    "RUF",
+    "S",
+    "SIM",
+    "UP",
+]
+ignore = [
+    "E501",
+    "PT019",
+    "S101",
+    "S105",
+]
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.10"
 warn_unused_configs = true
 show_error_context = true
 pretty = true
@@ -93,7 +114,7 @@ addopts = ["-ra", "--strict-markers", "--cov"]
 xfail_strict = true
 
 [tool.tox]
-envlist = ["py39", "py310", "py311", "py312", "py313"]
+envlist = ["py310", "py311", "py312", "py313"]
 isolated_build = true
 
 [tool.tox.env_run_base]
@@ -116,28 +137,33 @@ commands = [
     ["sphinx-build", "-b", "html", "docs", "{envtmpdir}/docs"]
 ]
 
-[tool.tox.env.lint]
+[tool.tox.env.format]
 skip_install = true
 deps = [
-    "black",
-    "isort",
     "ruff",
 ]
 commands = [
-    ["ruff", "check", { replace = "posargs", default = ["src", "tests"], extend = true }],
-    ["black", { replace = "posargs", default = ["--check", "--diff", "src", "tests"], extend = true }],
-    ["isort", { replace = "posargs", default = ["--check", "--diff", "src", "tests"], extend = true }],
+    ["ruff", "format", { replace = "posargs", default = ["src", "tests", "docs"], extend = true }],
+]
+
+[tool.tox.env.lint]
+skip_install = true
+deps = [
+    "ruff",
+]
+commands = [
+    ["ruff", "check", { replace = "posargs", default = ["src", "tests", "docs"], extend = true }],
 ]
 
 [tool.tox.env.typecheck]
 deps = [
     { replace = "ref", of = ["tool", "tox", "env_run_base", "deps"], extend = true },
-    "mypy<1.12.0",  # https://github.com/python/mypy/issues/17960
+    "mypy",
     "typing_extensions",
     "types-requests",
     "types-urllib3",
 ]
 commands = [
-    ["mypy", { replace = "posargs", default = ["src", "tests"], extend = true }],
+    ["mypy", { replace = "posargs", default = ["src", "tests", "docs"], extend = true }],
 ]
 passenv = ["TERM"]

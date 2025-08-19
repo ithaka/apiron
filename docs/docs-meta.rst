@@ -31,8 +31,8 @@ Use your favorite method to create a virtual environment and install the package
 .. code-block:: shell
 
     $ cd /path/to/apiron/
-    $ pyenv virtualenv 3.9.0 apiron  # pick your favorite virtual environment tool
-    $ pyenv local apiron
+    $ python -m venv .venv --prompt apiron
+    $ source .venv/bin/activate
     (apiron) $ pip install -e .[docs]
 
 
