@@ -1,6 +1,6 @@
 import collections
 from collections.abc import Iterable
-from typing import Any, Optional
+from typing import Any
 
 from apiron.endpoint.endpoint import Endpoint
 
@@ -15,12 +15,15 @@ class JsonEndpoint(Endpoint):
         *args,
         path: str = "/",
         default_method: str = "GET",
-        default_params: Optional[dict[str, Any]] = None,
-        required_params: Optional[Iterable[str]] = None,
+        default_params: dict[str, Any] | None = None,
+        required_params: Iterable[str] | None = None,
         preserve_order: bool = False,
     ):
         super().__init__(
-            path=path, default_method=default_method, default_params=default_params, required_params=required_params
+            path=path,
+            default_method=default_method,
+            default_params=default_params,
+            required_params=required_params,
         )
         self.preserve_order = preserve_order
 

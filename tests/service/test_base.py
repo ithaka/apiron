@@ -13,24 +13,24 @@ def service():
 
 class TestServiceBase:
     def test_get_hosts_returns_empty_list_by_default(self):
-        assert [] == ServiceBase.get_hosts()
+        assert ServiceBase.get_hosts() == []
 
     def test_required_headers_returns_empty_dict_by_default(self, service):
-        assert {} == service.required_headers
+        assert service.required_headers == {}
 
 
 class TestService:
     def test_get_hosts_returns_domain(self, service):
-        assert ["http://foo.com"] == service.get_hosts()
+        assert service.get_hosts() == ["http://foo.com"]
 
     def test_str_method_on_class(self, service):
-        assert "http://foo.com" == str(service)
+        assert str(service) == "http://foo.com"
 
     def test_repr_method_on_class(self, service):
-        assert "SomeService(domain=http://foo.com)" == repr(service)
+        assert repr(service) == "SomeService(domain=http://foo.com)"
 
     def test_required_headers_returns_empty_dict_by_default(self, service):
-        assert {} == service.required_headers
+        assert service.required_headers == {}
 
     def test_endpoints_when_no_endpoints(self, service):
         assert service.endpoints == set()

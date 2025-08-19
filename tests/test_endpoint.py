@@ -40,57 +40,59 @@ class TestEndpoint:
 
     def test_default_attributes_from_constructor(self):
         foo = apiron.Endpoint()
-        assert "/" == foo.path
-        assert "GET" == foo.default_method
+        assert foo.path == "/"
+        assert foo.default_method == "GET"
 
     def test_constructor_stores_passed_attributes(self):
         foo = apiron.Endpoint(path="/foo/", default_method="POST")
-        assert "/foo/" == foo.path
-        assert "POST" == foo.default_method
+        assert foo.path == "/foo/"
+        assert foo.default_method == "POST"
 
     def test_format_response(self):
         foo = apiron.Endpoint()
         mock_response = mock.Mock()
         mock_response.text = "foobar"
-        assert "foobar" == foo.format_response(mock_response)
+        assert foo.format_response(mock_response) == "foobar"
 
     def test_required_headers(self):
         foo = apiron.Endpoint()
-        assert {} == foo.required_headers
+        assert foo.required_headers == {}
 
     def test_path_placeholders_when_none_present(self):
         foo = apiron.Endpoint()
-        assert [] == foo.path_placeholders
+        assert foo.path_placeholders == []
 
     def test_path_placeholders_when_present(self):
         foo = apiron.Endpoint(path="/foo/{one}/{two}")
-        assert ["one", "two"] == foo.path_placeholders
+        assert foo.path_placeholders == ["one", "two"]
 
     def test_format_path_with_correct_kwargs(self):
         foo = apiron.Endpoint(path="/{one}/{two}/")
         path_kwargs = {"one": "foo", "two": "bar"}
-        assert "/foo/bar/" == foo.get_formatted_path(**path_kwargs)
+        assert foo.get_formatted_path(**path_kwargs) == "/foo/bar/"
 
     def test_format_path_with_incorrect_kwargs(self):
         foo = apiron.Endpoint(path="/{one}/{two}/")
         path_kwargs = {"foo": "bar"}
-        with pytest.warns(RuntimeWarning, match="An unknown path kwarg was supplied"):
-            with pytest.raises(KeyError):
-                foo.get_formatted_path(**path_kwargs)
+        with pytest.raises(KeyError), pytest.warns(RuntimeWarning, match="An unknown path kwarg was supplied"):
+            foo.get_formatted_path(**path_kwargs)
 
     def test_format_path_with_extra_kwargs(self):
         foo = apiron.Endpoint(path="/{one}/{two}/")
         path_kwargs = {"one": "foo", "two": "bar", "three": "not used"}
         with pytest.warns(RuntimeWarning, match="An unknown path kwarg was supplied"):
-            assert "/foo/bar/" == foo.get_formatted_path(**path_kwargs)
+            assert foo.get_formatted_path(**path_kwargs) == "/foo/bar/"
 
     def test_query_parameter_in_path_generates_warning(self):
-        with pytest.warns(UserWarning, match=r"Endpoint path \('/\?foo=bar'\) may contain query parameters"):
+        with pytest.warns(
+            UserWarning,
+            match=r"Endpoint path \('/\?foo=bar'\) may contain query parameters",
+        ):
             _ = apiron.Endpoint(path="/?foo=bar")
 
     def test_get_merged_params(self):
         foo = apiron.Endpoint(default_params={"foo": "bar"}, required_params={"baz"})
-        assert {"foo": "bar", "baz": "qux"} == foo.get_merged_params({"baz": "qux"})
+        assert foo.get_merged_params({"baz": "qux"}) == {"foo": "bar", "baz": "qux"}
 
     def test_get_merged_params_with_unsupplied_param(self):
         foo = apiron.Endpoint(default_params={"foo": "bar"}, required_params={"baz"})
@@ -101,11 +103,11 @@ class TestEndpoint:
     def test_get_merged_params_with_empty_param(self):
         foo = apiron.Endpoint(default_params={"foo": "bar"}, required_params={"baz"})
         with pytest.warns(RuntimeWarning, match="endpoint was called with empty parameters"):
-            assert {"foo": "bar", "baz": None} == foo.get_merged_params({"baz": None})
+            assert foo.get_merged_params({"baz": None}) == {"foo": "bar", "baz": None}
 
     def test_get_merged_params_with_required_and_default_param(self):
         foo = apiron.Endpoint(default_params={"foo": "bar"}, required_params={"foo"})
-        assert {"foo": "bar"} == foo.get_merged_params()
+        assert foo.get_merged_params() == {"foo": "bar"}
 
     def test_str_method(self):
         foo = apiron.Endpoint(path="/bar/baz")
@@ -123,7 +125,7 @@ class TestJsonEndpoint:
 
         with mock.patch.object(mock_response, "json") as mock_json:
             mock_json.return_value = {"foo": "bar"}
-            assert {"foo": "bar"} == foo.format_response(mock_response)
+            assert foo.format_response(mock_response) == {"foo": "bar"}
             mock_json.assert_called_once_with(object_pairs_hook=None)
 
     def test_format_response_when_ordered(self):
@@ -132,12 +134,12 @@ class TestJsonEndpoint:
 
         with mock.patch.object(mock_response, "json") as mock_json:
             mock_json.return_value = {"foo": "bar"}
-            assert {"foo": "bar"} == foo.format_response(mock_response)
+            assert foo.format_response(mock_response) == {"foo": "bar"}
             mock_json.assert_called_once_with(object_pairs_hook=collections.OrderedDict)
 
     def test_required_headers(self):
         foo = apiron.JsonEndpoint()
-        assert {"Accept": "application/json"} == foo.required_headers
+        assert foo.required_headers == {"Accept": "application/json"}
 
     def test_str_method(self):
         foo = apiron.JsonEndpoint(path="/bar/baz")
@@ -173,8 +175,11 @@ class TestStubEndpoint:
         assert service.stub_endpoint() == "stub response"
 
     @pytest.mark.parametrize(
-        "test_call_kwargs,expected_response",
-        [({}, {"default": "response"}), ({"params": {"param_key": "param_value"}}, {"stub response": "stubby!"})],
+        ("test_call_kwargs", "expected_response"),
+        [
+            ({}, {"default": "response"}),
+            ({"params": {"param_key": "param_value"}}, {"stub response": "stubby!"}),
+        ],
     )
     def test_call_dynamic(self, test_call_kwargs, expected_response, service, stub_function):
         service.stub_endpoint = apiron.StubEndpoint(stub_response=stub_function)

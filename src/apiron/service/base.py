@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from apiron import Endpoint
 
 
@@ -19,7 +21,7 @@ class ServiceMeta(type):
 
 class ServiceBase(metaclass=ServiceMeta):
     auth = ()
-    proxies: dict[str, str] = {}
+    proxies: ClassVar[dict[str, str]] = {}
 
     @property
     def required_headers(self) -> dict[str, str]:

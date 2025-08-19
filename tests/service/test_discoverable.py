@@ -21,10 +21,10 @@ def service():
 
 class TestDiscoverableService:
     def test_get_hosts_returns_hosts_from_resolver(self, service):
-        assert ["fake"] == service.get_hosts()
+        assert service.get_hosts() == ["fake"]
 
     def test_str_method_on_class(self, service):
-        assert "fake-service" == str(service)
+        assert str(service) == "fake-service"
 
     def test_repr_method_on_class(self, service):
-        assert "FakeService(service_name=fake-service, host_resolver=FakeResolver)" == repr(service)
+        assert repr(service) == "FakeService(service_name=fake-service, host_resolver=FakeResolver)"

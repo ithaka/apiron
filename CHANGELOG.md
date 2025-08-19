@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.0.0] - 2025-08-19
+### Removed
+- apiron no longer supports Python 3.9, which reaches end of life on 2025-10-31
+
+### Changed
+- Replace black, isort, and pyupgrade with ruff and use more ruff linting rules
+
 ## [8.0.2] - 2025-06-04
 ### Fixed
 - Republish after deferring digital attestations to get around existing release artifacts from failed 8.0.1 release

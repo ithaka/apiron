@@ -2,17 +2,13 @@ from __future__ import annotations
 
 import logging
 import string
-import sys
 import warnings
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from functools import partial, update_wrapper
-from typing import TYPE_CHECKING, Any, Callable, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 if TYPE_CHECKING:  # pragma: no cover
-    if sys.version_info >= (3, 10):
-        from typing import Concatenate, ParamSpec
-    else:
-        from typing_extensions import Concatenate, ParamSpec
+    from typing import Concatenate, ParamSpec
 
     from apiron.service import Service
 
@@ -167,7 +163,7 @@ class Endpoint:
 
         if empty_params:
             warnings.warn(
-                f"The {self.path} endpoint " f"was called with empty parameters: {empty_params}",
+                f"The {self.path} endpoint was called with empty parameters: {empty_params}",
                 RuntimeWarning,
                 stacklevel=6,
             )

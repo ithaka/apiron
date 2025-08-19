@@ -92,7 +92,7 @@ def _choose_host(service: apiron.Service) -> str:
     hosts = service.get_hosts()
     if not hosts:
         raise NoHostsAvailableException(getattr(service, "service_name", "UNKNOWN SERVICE"))
-    return random.choice(hosts)
+    return random.choice(hosts)  # noqa: S311
 
 
 def _build_request_object(
@@ -269,7 +269,10 @@ def call(
 
     response = adapted_session.send(
         request,
-        timeout=(timeout_spec_to_use.connection_timeout, timeout_spec_to_use.read_timeout),
+        timeout=(
+            timeout_spec_to_use.connection_timeout,
+            timeout_spec_to_use.read_timeout,
+        ),
         stream=getattr(endpoint, "streaming", False),
         allow_redirects=allow_redirects,
         proxies=adapted_session.proxies or service.proxies,

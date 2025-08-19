@@ -103,7 +103,7 @@ def test_build_request_object_passes_arguments_to_request_constructor(
             auth=auth,
         )
 
-        assert 1 == mock_prepare_request.call_count
+        assert mock_prepare_request.call_count == 1
 
 
 @mock.patch("apiron.client.Timeout")
@@ -157,7 +157,13 @@ def test_call(
     mock_endpoint.default_method = "POST"
     request.method = "POST"
 
-    client.call(service, mock_endpoint, session=mock_session, timeout_spec=mock_timeout, logger=mock_logger)
+    client.call(
+        service,
+        mock_endpoint,
+        session=mock_session,
+        timeout_spec=mock_timeout,
+        logger=mock_logger,
+    )
 
     mock_session.send.assert_any_call(
         request,
@@ -173,7 +179,12 @@ def test_call(
     request.method = "PUT"
 
     client.call(
-        service, mock_endpoint, method="PUT", session=mock_session, timeout_spec=mock_timeout, logger=mock_logger
+        service,
+        mock_endpoint,
+        method="PUT",
+        session=mock_session,
+        timeout_spec=mock_timeout,
+        logger=mock_logger,
     )
 
     mock_session.send.assert_any_call(
@@ -188,7 +199,13 @@ def test_call(
 @mock.patch("apiron.client._build_request_object")
 @mock.patch("apiron.client._adapt_session")
 @mock.patch("requests.Session", autospec=True)
-def test_call_auth_priority(MockSession, mock_adapt_session, mock_build_request_object, mock_endpoint, mock_logger):
+def test_call_auth_priority(
+    MockSession,
+    mock_adapt_session,
+    mock_build_request_object,
+    mock_endpoint,
+    mock_logger,
+):
     service = mock.Mock()
     service.get_hosts.return_value = ["http://host1.biz"]
     service.required_headers = {}
@@ -200,15 +217,30 @@ def test_call_auth_priority(MockSession, mock_adapt_session, mock_build_request_
 
     mock_adapt_session.return_value = mock_session
 
-    client.call(service, mock_endpoint, auth=("direct-user", "p455w0rd!"), session=mock_session, logger=mock_logger)
-    assert mock_build_request_object.call_args[1]["auth"] == ("direct-user", "p455w0rd!")
+    client.call(
+        service,
+        mock_endpoint,
+        auth=("direct-user", "p455w0rd!"),
+        session=mock_session,
+        logger=mock_logger,
+    )
+    assert mock_build_request_object.call_args[1]["auth"] == (
+        "direct-user",
+        "p455w0rd!",
+    )
 
     client.call(service, mock_endpoint, session=mock_session, logger=mock_logger)
-    assert mock_build_request_object.call_args[1]["auth"] == ("session-user", "p455w0rd!")
+    assert mock_build_request_object.call_args[1]["auth"] == (
+        "session-user",
+        "p455w0rd!",
+    )
 
     mock_session.auth = ()
     client.call(service, mock_endpoint, logger=mock_logger)
-    assert mock_build_request_object.call_args[1]["auth"] == ("service-user", "p455w0rd!")
+    assert mock_build_request_object.call_args[1]["auth"] == (
+        "service-user",
+        "p455w0rd!",
+    )
 
 
 def test_call_with_existing_session(mock_response, mock_endpoint, mock_logger):
@@ -232,16 +264,27 @@ def test_call_with_explicit_encoding(mock_response, mock_endpoint, mock_logger):
     session = mock.Mock()
     session.send.return_value = mock_response
 
-    client.call(service, mock_endpoint, session=session, logger=mock_logger, encoding="FAKE-CODEC")
+    client.call(
+        service,
+        mock_endpoint,
+        session=session,
+        logger=mock_logger,
+        encoding="FAKE-CODEC",
+    )
 
-    assert "FAKE-CODEC" == mock_response.encoding
+    assert mock_response.encoding == "FAKE-CODEC"
 
 
 @mock.patch("apiron.client._build_request_object")
 @mock.patch("apiron.client._adapt_session")
 @mock.patch("requests.Session", autospec=True)
 def test_call_uses_configured_endpoint_timeout_spec(
-    MockSession, mock_adapt_session, mock_build_request_object, mock_response, mock_endpoint, mock_logger
+    MockSession,
+    mock_adapt_session,
+    mock_build_request_object,
+    mock_response,
+    mock_endpoint,
+    mock_logger,
 ):
     service = mock.Mock()
     service.get_hosts.return_value = ["http://host1.biz"]
@@ -275,7 +318,12 @@ def test_call_uses_configured_endpoint_timeout_spec(
 @mock.patch("apiron.client.adapters.HTTPAdapter", autospec=True)
 @mock.patch("requests.Session", autospec=True)
 def test_call_uses_configured_endpoint_retry_spec(
-    MockSession, MockAdapter, mock_build_request_object, mock_response, mock_endpoint, mock_logger
+    MockSession,
+    MockAdapter,
+    mock_build_request_object,
+    mock_response,
+    mock_endpoint,
+    mock_logger,
 ):
     service = mock.Mock()
     service.get_hosts.return_value = ["http://host1.biz"]
@@ -334,7 +382,13 @@ def test_call_when_raw_response_object_requested(mock_response, mock_endpoint, m
     session = mock.Mock()
     session.send.return_value = mock_response
 
-    response = client.call(service, mock_endpoint, session=session, logger=mock_logger, return_raw_response_object=True)
+    response = client.call(
+        service,
+        mock_endpoint,
+        session=session,
+        logger=mock_logger,
+        return_raw_response_object=True,
+    )
 
     assert response is mock_response
 
@@ -376,7 +430,7 @@ def test_return_raw_response_object_in_call_overrides_endpoint(mock_response, mo
 
 
 @pytest.mark.parametrize(
-    "host,path,url",
+    ("host", "path", "url"),
     [
         ("http://biz.com", "/endpoint", "http://biz.com/endpoint"),
         ("http://biz.com/", "endpoint", "http://biz.com/endpoint"),
