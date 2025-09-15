@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.1.0] - 2025-09-15
+### Added
+- Added support configurable a timeout, retry policy, and raw response return for `JsonEndpoint`
+
 ## [9.0.0] - 2025-08-19
 ### Removed
 - apiron no longer supports Python 3.9, which reaches end of life on 2025-10-31
