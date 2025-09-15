@@ -2,9 +2,10 @@ import collections
 from collections.abc import Iterable
 from typing import Any
 
+from urllib3.util import retry
+
 from apiron import Timeout
 from apiron.endpoint.endpoint import Endpoint
-from urllib3.util import retry
 
 
 class JsonEndpoint(Endpoint):
