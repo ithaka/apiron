@@ -2,6 +2,7 @@ import collections
 from unittest import mock
 
 import pytest
+from urllib3.util import retry
 
 import apiron
 
@@ -149,6 +150,19 @@ class TestJsonEndpoint:
         foo = apiron.JsonEndpoint(path="/bar/baz")
         assert repr(foo) == "JsonEndpoint(path='/bar/baz')"
 
+    def test_timeout_spec_parameter(self):
+        timeout_spec = apiron.Timeout(connection_timeout=5, read_timeout=10)
+        foo = apiron.JsonEndpoint(timeout_spec=timeout_spec)
+        assert foo.timeout_spec == timeout_spec
+
+    def test_retry_spec_parameter(self):
+        retry_spec = retry.Retry(total=3, backoff_factor=1)
+        foo = apiron.JsonEndpoint(retry_spec=retry_spec)
+        assert foo.retry_spec == retry_spec
+
+    def test_return_raw_response_object_parameter(self):
+        foo = apiron.JsonEndpoint(return_raw_response_object=True)
+        assert foo.return_raw_response_object is True
 
 class TestStreamingEndpoint:
     def test_format_response(self):
