@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [9.1.0] - 2025-09-15
 ### Added
-- Added support configurable a timeout, retry policy, and raw response return for `JsonEndpoint`
+- Added support for a configurable timeout and retry spec, and raw response return for `JsonEndpoint`
 
 ## [9.0.0] - 2025-08-19
 ### Removed
