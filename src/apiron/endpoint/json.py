@@ -2,7 +2,9 @@ import collections
 from collections.abc import Iterable
 from typing import Any
 
+from apiron import Timeout
 from apiron.endpoint.endpoint import Endpoint
+from urllib3.util import retry
 
 
 class JsonEndpoint(Endpoint):
@@ -18,12 +20,18 @@ class JsonEndpoint(Endpoint):
         default_params: dict[str, Any] | None = None,
         required_params: Iterable[str] | None = None,
         preserve_order: bool = False,
+        return_raw_response_object: bool = False,
+        timeout_spec: Timeout | None = None,
+        retry_spec: retry.Retry | None = None,
     ):
         super().__init__(
             path=path,
             default_method=default_method,
             default_params=default_params,
             required_params=required_params,
+            return_raw_response_object=return_raw_response_object,
+            timeout_spec=timeout_spec,
+            retry_spec=retry_spec,
         )
         self.preserve_order = preserve_order
 
